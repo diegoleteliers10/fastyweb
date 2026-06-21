@@ -82,30 +82,35 @@ $ <span class="c-fn">powermetrics</span> --samplers cpu_power -i 1000 -n 1 <span
             )}
 
             {f.visual === "tabs" && (
-              <div class="visual-tabs">
-                <div class="win win-1">
-                  <div class="win-bar mono">~/projects/fasty</div>
-                  <div class="win-body">
-                    <div class="win-line"><span class="ws">❯</span> cargo build</div>
-                    <div class="win-line"><span class="ws">❯</span></div>
+              <div class="tear-stage" aria-hidden="true">
+                <div class="tear-window tear-window-1">
+                  <div class="tear-tabs">
+                    <span class="tear-tab tear-tab-active">~/projects/fasty</span>
+                    <span class="tear-tab tear-tab-active tear-tab-torn">~/projects/fasty</span>
+                  </div>
+                  <div class="tear-body">
+                    <div class="tear-line"><span class="ws">❯</span> cargo build</div>
+                    <div class="tear-line"><span class="ws">❯</span></div>
                   </div>
                 </div>
-                <div class="tab-arrow" aria-hidden="true">
-                  <svg width="40" height="24" viewBox="0 0 40 24" fill="none">
-                    <path d="M4 12 L34 12 M28 6 L34 12 L28 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                  </svg>
-                </div>
-                <div class="win win-2">
-                  <div class="win-bar mono">~/projects/fasty</div>
-                  <div class="win-body">
-                    <div class="win-line"><span class="ws">❯</span> cargo build</div>
-                    <div class="win-line"><span class="ws">❯</span></div>
+
+                <div class="tear-window tear-window-2">
+                  <div class="tear-tabs">
+                    <span class="tear-tab tear-tab-active">~/projects/fasty</span>
+                  </div>
+                  <div class="tear-body">
+                    <div class="tear-line"><span class="ws">❯</span> cargo build</div>
+                    <div class="tear-line"><span class="ws">❯</span></div>
                   </div>
                 </div>
-                <div class="visual-tabs-caption mono">
-                  shared atlas via <span>Arc</span> · spawn: <span>0.8 ms</span>
+
+                <div class="tear-ghost">
+                  <span class="tear-tab tear-tab-active tear-tab-dragging">~/projects/fasty</span>
                 </div>
               </div>
+              <p class="tear-caption mono">
+                shared atlas via <span>Arc</span> · spawn: <span>0.8 ms</span>
+              </p>
             )}
 
             {f.visual === "bottombar" && (
@@ -369,6 +374,162 @@ $ <span class="c-fn">powermetrics</span> --samplers cpu_power -i 1000 -n 1 <span
     color: var(--color-on-surface);
   }
 
+  .tear-stage {
+    position: relative;
+    height: 168px;
+    margin-bottom: 10px;
+  }
+
+  .tear-window {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 56%;
+    background: var(--voltage-deep);
+    border: 1px solid var(--voltage-line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .tear-window-1 {
+    z-index: 2;
+  }
+
+  .tear-window-2 {
+    z-index: 1;
+    opacity: 0;
+    transform: translate(0, 0) scale(0.96);
+    animation: tear-spawn 7s var(--ease-out) infinite;
+    transform-origin: 0 50%;
+  }
+
+  .tear-tabs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 10px;
+    background: #0a0907;
+    border-bottom: 1px solid var(--voltage-line);
+  }
+
+  .tear-tab {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    background: var(--voltage-overlay);
+    border: 1px solid var(--voltage-line);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-on-surface);
+    height: 22px;
+    white-space: nowrap;
+  }
+
+  .tear-tab-active {
+    color: var(--voltage-orange);
+    border-color: rgba(255, 157, 0, 0.3);
+  }
+
+  .tear-tab-torn {
+    animation: tear-leave 7s var(--ease-out) infinite;
+    transform-origin: center;
+  }
+
+  .tear-tab-dragging {
+    box-shadow:
+      0 10px 24px rgba(0, 0, 0, 0.55),
+      0 0 0 1px var(--voltage-orange),
+      0 0 22px rgba(255, 157, 0, 0.18);
+    border-color: var(--voltage-orange);
+  }
+
+  .tear-body {
+    padding: 14px 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--color-on-surface);
+  }
+
+  .tear-line {
+    color: var(--voltage-text-muted);
+  }
+
+  .tear-ghost {
+    position: absolute;
+    top: 16px;
+    left: 140px;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0;
+    animation: tear-drag 7s var(--ease-out) infinite;
+    transform-origin: 0 50%;
+  }
+
+  @keyframes tear-drag {
+    0%, 18% {
+      opacity: 0;
+      transform: translate(0, 0) rotate(0deg);
+    }
+    22% {
+      opacity: 1;
+      transform: translate(0, 0) rotate(0deg);
+    }
+    56% {
+      opacity: 1;
+      transform: translate(118%, 14px) rotate(-2deg);
+    }
+    62%, 100% {
+      opacity: 0;
+      transform: translate(118%, 14px) rotate(-2deg);
+    }
+  }
+
+  @keyframes tear-leave {
+    0%, 22% {
+      opacity: 1;
+      transform: translate(0, 0) scale(1);
+    }
+    40% {
+      opacity: 0;
+      transform: translate(0, 0) scale(0.92);
+    }
+    92% {
+      opacity: 0;
+      transform: translate(0, 0) scale(0.92);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(0, 0) scale(1);
+    }
+  }
+
+  @keyframes tear-spawn {
+    0%, 55% {
+      opacity: 0;
+      transform: translate(0, 0) scale(0.96);
+    }
+    72%, 92% {
+      opacity: 1;
+      transform: translate(118%, 14px) scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(118%, 14px) scale(1);
+    }
+  }
+
+  .tear-caption {
+    font-size: 11px;
+    color: var(--voltage-text-muted);
+    text-align: right;
+  }
+
+  .tear-caption span {
+    color: var(--color-on-surface);
+  }
+
   .visual-bottombar {
     display: flex;
     flex-direction: column;
@@ -450,6 +611,15 @@ $ <span class="c-fn">powermetrics</span> --samplers cpu_power -i 1000 -n 1 <span
 
   .secondary-title {
     font-size: 22px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tear-tab-torn,
+    .tear-window-2,
+    .tear-ghost {
+      animation: none !important;
+      transition: none !important;
+    }
   }
 
   @media (max-width: 900px) {
