@@ -1,5 +1,10 @@
 ---
+import { fetchRepo, stripVersionPrefix } from "../../lib/repo";
+
 const platforms = ["macOS", "Linux", "Windows"];
+
+const { version } = await fetchRepo();
+const numericVersion = stripVersionPrefix(version);
 ---
 
 <section class="hero">
@@ -11,7 +16,7 @@ const platforms = ["macOS", "Linux", "Windows"];
       </h1>
 
       <p class="hero-sub">
-        Fasty is a GPU-accelerated terminal emulator written in Rust on
+        A GPU-accelerated terminal emulator written in Rust on
         wgpu and winit. The event loop rests. The PTY blocks. The cursor
         blinks in 423 nanoseconds.
       </p>
@@ -29,45 +34,63 @@ const platforms = ["macOS", "Linux", "Windows"];
     </div>
 
     <div class="hero-terminal-wrap">
-      <div class="terminal" role="img" aria-label="Fasty terminal showing cargo bench output, git status, and bottombar widgets">
+      <div class="terminal" role="img" aria-label="Fasty terminal showing a cargo bench session, fasty CLI invocation, and bottombar widgets">
         <div class="terminal-bar">
-          <span class="terminal-tab mono">~/projects/fasty</span>
-          <span class="terminal-tab-idle mono">+</span>
-          <span class="terminal-tab-idle mono">api · bun</span>
+          <div class="terminal-dots" aria-hidden="true">
+            <span class="dot dot-r"></span>
+            <span class="dot dot-y"></span>
+            <span class="dot dot-g"></span>
+          </div>
+          <div class="terminal-tab">
+            <span class="terminal-tab-dot" aria-hidden="true"></span>
+            <span class="terminal-tab-name mono">~/projects/fasty</span>
+          </div>
+          <div class="terminal-tab-idle mono">+</div>
+          <div class="terminal-tab-idle mono">api · bun</div>
+          <div class="terminal-spacer"></div>
+          <div class="terminal-stats mono" aria-hidden="true">
+            <span><i class="stat-dot"></i>0.7% cpu</span>
+            <span><i class="stat-dot stat-dot-amber"></i>wgpu</span>
+          </div>
         </div>
 
-        <div class="terminal-body">
-          <div class="terminal-prompt mono">
-            ~/projects/fasty <span class="dim">on</span> main <span class="arrow">↑2</span> <span class="arrow">●3</span>
+        <div class="terminal-prompt mono">
+          ~/projects/fasty <span class="dim">on</span> main <span class="arrow">↑2</span> <span class="arrow">●3</span>
+        </div>
+
+        <div class="terminal-body" data-terminal>
+          <div class="terminal-line" data-line="1">
+            <span class="prompt-sigil">❯</span><span class="line-cmd mono" data-typed="cargo bench --release"></span><span class="cursor" data-cursor="1"></span>
           </div>
 
-          <div class="terminal-line">
-            <span class="prompt-sigil">❯</span>
-            <span class="line-cmd mono">cargo bench --release</span>
+          <div class="terminal-output" data-output="1">
+            <div class="out-dim mono">   Compiling fasty {numericVersion} (38 crates)</div>
+            <div class="out-dim mono">    Finished `release` profile [optimized] in 4.21s</div>
+            <div class="out-section mono">   Running benches/parser_bench</div>
+            <div class="bench-row mono">
+              <span>parser_plain_text</span>
+              <span>[<b>374.70 µs</b> <b class="best">413.21 µs</b> <b>451.07 µs</b>]</span>
+            </div>
+            <div class="bench-row mono">
+              <span>parser_sgr_ansi</span>
+              <span>[<b>675.72 µs</b> <b class="best">692.18 µs</b> <b>710.08 µs</b>]</span>
+            </div>
+            <div class="bench-row mono">
+              <span>parser_complex</span>
+              <span>[<b>380.68 µs</b> <b class="best">389.77 µs</b> <b>399.65 µs</b>]</span>
+            </div>
           </div>
 
-          <div class="terminal-output mono">
-            <div class="out-dim">   Compiling fasty v0.3.9 (38 crates)</div>
-            <div class="out-dim">    Finished `release` profile [optimized] in 4.21s</div>
-            <div>&nbsp;</div>
-            <div class="out-section">   Running benches/fasty</div>
-            <div class="bench-row"><span>cursor/blink_fastpath</span><span>[<b>412 ns</b> <b class="best">423 ns</b> <b>434 ns</b>]</span></div>
-            <div class="bench-row"><span>idle_cpu/wakeups</span><span>[<b>0.00 ms</b> <b class="best">0.00 ms</b> <b>0.00 ms</b>]</span></div>
-            <div class="bench-row"><span>frame/render</span><span>[<b>1.82 ms</b> <b class="best">1.91 ms</b> <b>2.04 ms</b>]</span></div>
-            <div>&nbsp;</div>
+          <div class="terminal-line" data-line="2">
+            <span class="prompt-sigil">❯</span><span class="line-cmd mono" data-typed='fasty --title "Dev Server" -d ~/api -e bun run dev'></span><span class="cursor" data-cursor="2"></span>
           </div>
 
-          <div class="terminal-line">
-            <span class="prompt-sigil">❯</span>
-            <span class="line-cmd mono">fasty --title "Dev Server" -d ~/api -e bun run dev</span>
-          </div>
-          <div class="terminal-output mono">
-            <div class="ok-line"><span class="ok">✓</span> spawned tab <b>"Dev Server"</b><span class="ok-time">in 0.8 ms</span></div>
+          <div class="terminal-output" data-output="2">
+            <div class="ok-line mono"><span class="ok">✓</span> spawned tab <b>"Dev Server"</b><span class="ok-time">in 0.8 ms</span></div>
           </div>
 
-          <div class="terminal-line terminal-line-active">
-            <span class="prompt-sigil">❯</span>
-            <span class="cursor" aria-hidden="true"></span>
+          <div class="terminal-line terminal-line-active" data-line="3">
+            <span class="prompt-sigil">❯</span><span class="cursor" data-cursor="3"></span>
           </div>
         </div>
 
@@ -82,6 +105,114 @@ const platforms = ["macOS", "Linux", "Windows"];
     </div>
   </div>
 </section>
+
+<script>
+  const initTerminal = () => {
+    const terminal = document.querySelector("[data-terminal]") as HTMLElement | null;
+    if (!terminal) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return;
+
+    const typed = terminal.querySelectorAll<HTMLElement>("[data-typed]");
+    const outputs = terminal.querySelectorAll<HTMLElement>("[data-output]");
+    const cursors = terminal.querySelectorAll<HTMLElement>("[data-cursor]");
+
+    if (typed.length < 2 || outputs.length < 2 || cursors.length < 3) return;
+
+    const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+    const rand = (min: number, max: number) => min + Math.random() * (max - min);
+
+    outputs.forEach((o) => (o.hidden = true));
+    cursors.forEach((c, i) => {
+      if (i > 0) (c as HTMLElement).style.display = "none";
+    });
+    typed.forEach((el) => (el.textContent = ""));
+
+    const typeText = async (el: HTMLElement, text: string) => {
+      el.textContent = "";
+      for (const ch of text) {
+        el.textContent += ch;
+        const isPunct = ch === " " || ch === "-" || ch === "/" || ch === ".";
+        await sleep(isPunct ? rand(35, 55) : rand(28, 52));
+      }
+    };
+
+    const revealOutput = async (output: HTMLElement, stagger: number) => {
+      const lines = Array.from(output.children) as HTMLElement[];
+      lines.forEach((line) => {
+        line.style.opacity = "0";
+        line.style.transform = "translateY(3px)";
+      });
+      output.hidden = false;
+      void output.offsetHeight;
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        line.style.transition = `opacity 220ms var(--ease-out), transform 220ms var(--ease-out)`;
+        line.style.opacity = "1";
+        line.style.transform = "none";
+        await sleep(stagger);
+      }
+    };
+
+    const setCursor = (active: number) => {
+      cursors.forEach((c, i) => {
+        (c as HTMLElement).style.display = i === active ? "inline-block" : "none";
+      });
+    };
+
+    const reset = () => {
+      typed.forEach((el) => (el.textContent = ""));
+      outputs.forEach((o) => {
+        o.hidden = true;
+        Array.from(o.children).forEach((line) => {
+          (line as HTMLElement).style.opacity = "";
+          (line as HTMLElement).style.transform = "";
+          (line as HTMLElement).style.transition = "";
+        });
+      });
+      setCursor(0);
+    };
+
+    const cycle = async () => {
+      while (true) {
+        await sleep(1800);
+
+        await typeText(typed[0], typed[0].dataset.typed ?? "");
+        await sleep(300);
+        setCursor(0);
+
+        if (outputs[0]) {
+          await revealOutput(outputs[0], 90);
+          await sleep(600);
+        }
+
+        setCursor(1);
+        await typeText(typed[1], typed[1].dataset.typed ?? "");
+        await sleep(400);
+        setCursor(1);
+
+        if (outputs[1]) {
+          await revealOutput(outputs[1], 60);
+          await sleep(400);
+        }
+
+        setCursor(2);
+        await sleep(5500);
+
+        reset();
+      }
+    };
+
+    cycle();
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initTerminal, { once: true });
+  } else {
+    initTerminal();
+  }
+</script>
 
 <style>
   .hero {
@@ -174,6 +305,23 @@ const platforms = ["macOS", "Linux", "Windows"];
     transition: background 320ms var(--ease-out);
   }
 
+  .terminal-dots {
+    display: inline-flex;
+    gap: 6px;
+    margin-right: 6px;
+  }
+
+  .dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: #2a2a2a;
+  }
+
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
   .terminal-tab {
     display: inline-flex;
     align-items: center;
@@ -206,14 +354,16 @@ const platforms = ["macOS", "Linux", "Windows"];
     color: var(--theme-fg, var(--color-on-surface));
     flex: 1;
     overflow: hidden;
+    min-height: 360px;
     transition: color 320ms var(--ease-out);
   }
 
   .terminal-prompt {
+    padding: 12px 22px 10px;
     color: var(--theme-dim, var(--voltage-text-muted));
     font-size: 12px;
-    margin-bottom: 14px;
     transition: color 320ms var(--ease-out);
+    flex-shrink: 0;
   }
 
   .terminal-prompt .dim {
@@ -225,11 +375,24 @@ const platforms = ["macOS", "Linux", "Windows"];
     transition: color 320ms var(--ease-out);
   }
 
+  .terminal-body {
+    padding: 4px 22px 16px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--theme-fg, var(--color-on-surface));
+    flex: 1;
+    overflow: hidden;
+    height: 260px;
+    transition: color 320ms var(--ease-out);
+    position: relative;
+  }
+
   .terminal-line {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
+    display: block;
     margin: 4px 0;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   .terminal-line-active {
@@ -239,6 +402,7 @@ const platforms = ["macOS", "Linux", "Windows"];
   .prompt-sigil {
     color: var(--theme-prompt, var(--voltage-orange));
     font-weight: 600;
+    margin-right: 10px;
     transition: color 320ms var(--ease-out);
   }
 
@@ -263,6 +427,10 @@ const platforms = ["macOS", "Linux", "Windows"];
     font-weight: 600;
     font-size: 12px;
     transition: color 320ms var(--ease-out);
+  }
+
+  .out-line-spacer {
+    height: 8px;
   }
 
   .bench-row {
@@ -327,6 +495,7 @@ const platforms = ["macOS", "Linux", "Windows"];
     background: var(--theme-accent, var(--voltage-orange));
     border-radius: 1px;
     vertical-align: text-bottom;
+    margin-left: 1px;
     animation: blink 1.05s steps(2) infinite;
     transition: background 320ms var(--ease-out);
   }
@@ -391,16 +560,6 @@ const platforms = ["macOS", "Linux", "Windows"];
     flex: 1;
   }
 
-  @media (max-width: 1024px) {
-    .hero-grid {
-      grid-template-columns: 1fr;
-      gap: 48px;
-    }
-    .hero-title {
-      font-size: 44px;
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .terminal,
     .terminal-bar,
@@ -431,6 +590,16 @@ const platforms = ["macOS", "Linux", "Windows"];
     }
   }
 
+  @media (max-width: 1024px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    .hero-title {
+      font-size: 44px;
+    }
+  }
+
   @media (max-width: 720px) {
     .hero {
       padding-block: 32px 16px;
@@ -444,9 +613,13 @@ const platforms = ["macOS", "Linux", "Windows"];
     .terminal-body {
       padding: 16px;
       font-size: 11.5px;
+      min-height: 320px;
     }
     .bench-row > span:first-child {
       min-width: 150px;
+    }
+    .bench-row {
+      gap: 10px;
     }
     .terminal-tab-idle {
       display: none;

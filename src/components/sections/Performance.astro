@@ -1,12 +1,41 @@
 ---
+import { fetchRepo, stripVersionPrefix } from "../../lib/repo";
+
+const { version } = await fetchRepo();
+const numericVersion = stripVersionPrefix(version);
+
 const comparison = [
-  { name: "Fasty 0.3.9", idle: "0.7%", ram: "52 MB", cold: "32 ms", ui: "wgpu · WGSL" },
-  { name: "Alacritty 0.13", idle: "0.4%", ram: "44 MB", cold: "38 ms", ui: "OpenGL" },
-  { name: "Kitty 0.30", idle: "1.1%", ram: "78 MB", cold: "62 ms", ui: "OpenGL ES" },
-  { name: "WezTerm 20240203", idle: "1.8%", ram: "112 MB", cold: "184 ms", ui: "WebGPU" },
-  { name: "Terminal.app", idle: "0.3%", ram: "38 MB", cold: "12 ms", ui: "Core Text" },
-  { name: "Windows Terminal", idle: "3.4%", ram: "284 MB", cold: "920 ms", ui: "Direct2D" },
+  {
+    name: `Fasty ${numericVersion}`,
+    startup: "1.05s",
+    startupErr: "± 0.28s",
+    plain: "1.99s",
+    plainErr: "± 0.08s",
+    ansi: "1.94s",
+    ansiErr: "± 0.13s",
+  },
+  {
+    name: "Ghostty",
+    startup: "1.77s",
+    startupErr: "± 0.30s",
+    plain: "2.41s",
+    plainErr: "± 0.28s",
+    ansi: "1.99s",
+    ansiErr: "± 0.25s",
+  },
+  {
+    name: "Konsole",
+    startup: "0.68s",
+    startupErr: "± 0.25s",
+    plain: "2.26s",
+    plainErr: "± 0.49s",
+    ansi: "1.20s",
+    ansiErr: "± 0.32s",
+  },
 ];
+
+const benchmarkSource = "scripts/benchmark_e2e.py · 3 runs · Acer Aspire 3 · CachyOS";
+---
 ---
 
 <section class="section perf" id="performance">
@@ -18,59 +47,105 @@ const comparison = [
         boring on purpose.
       </h2>
       <p class="perf-lead">
-        Measurements from a stock M3 Pro and a Ryzen 7 5800X. Single tab,
-        idle shell prompt, JetBrains Mono 14pt. Methodology and benchmark
-        sources live in the repo under <span class="inline-mono">benches/</span>.
+        Measurements on an Acer Aspire 3 with a Ryzen 5 and 8 GB of RAM,
+        running CachyOS. Single tab, idle shell prompt, JetBrains Mono 14pt.
+        Methodology and benchmark sources live in the repo under
+        <span class="inline-mono">benches/</span>.
       </p>
     </header>
 
     <div class="perf-bench">
       <div class="bench-head mono">
         <span>fasty % cargo bench --release</span>
-        <span class="bench-host">m3-pro · 14c · arm64</span>
+        <span class="bench-host">cachyos · ryzen 5 · 8gb</span>
       </div>
-      <pre class="bench-output mono"><code>   Compiling fasty v0.3.9 (38 crates)
+      <pre class="bench-output mono"><code>   Compiling fasty {numericVersion} (38 crates)
     Finished `release` profile [optimized] in 4.21s
 
-   Running benches/fasty
-<span class="b-section">   </span><span class="b-name">cursor/blink_fastpath    </span><span class="b-time">time:   [<span class="b-num">412 ns</span> <span class="b-best">423 ns</span> <span class="b-num">434 ns</span>]</span>
-<span class="b-section">   </span><span class="b-name">idle_cpu/wakeups        </span><span class="b-time">time:   [<span class="b-num">0.00 ms</span> <span class="b-best">0.00 ms</span> <span class="b-num">0.00 ms</span>]</span>
-<span class="b-section">   </span><span class="b-name">frame/render            </span><span class="b-time">time:   [<span class="b-num">1.82 ms</span> <span class="b-best">1.91 ms</span> <span class="b-num">2.04 ms</span>]</span>
-<span class="b-section">   </span><span class="b-name">pty/read_idle_block     </span><span class="b-time">time:   [<span class="b-num">0 ns</span> <span class="b-best">0 ns</span> <span class="b-num">0 ns</span>]</span>
-<span class="b-section">   </span><span class="b-name">window/spawn_tearout    </span><span class="b-time">time:   [<span class="b-num">720 µs</span> <span class="b-best">810 µs</span> <span class="b-num">890 µs</span>]</span>
+   Running benches/parser_bench
+<span class="b-section">   </span><span class="b-name">parser_plain_text   </span><span class="b-time">time:   [<span class="b-num">374.70 µs</span> <span class="b-best">413.21 µs</span> <span class="b-num">451.07 µs</span>]</span>
+<span class="b-section">   </span><span class="b-name">parser_sgr_ansi     </span><span class="b-time">time:   [<span class="b-num">675.72 µs</span> <span class="b-best">692.18 µs</span> <span class="b-num">710.08 µs</span>]</span>
+<span class="b-section">   </span><span class="b-name">parser_complex      </span><span class="b-time">time:   [<span class="b-num">380.68 µs</span> <span class="b-best">389.77 µs</span> <span class="b-num">399.65 µs</span>]</span>
 
-<span class="b-dim">Found 5 benchmarks; finish in 4.21s</span></code></pre>
+<span class="b-dim">Found 3 benchmarks; finish in 4.21s</span></code></pre>
       <div class="bench-foot mono">
         <span><span class="bf-dot"></span> profile: <b>release</b> · LTO fat · codegen-units=1 · strip · panic=unwind</span>
       </div>
+
+      <dl class="bench-glossary">
+        <div class="bench-key">
+          <dt><span class="inline-mono">parser_plain_text</span></dt>
+          <dd>
+            Feeds <span class="inline-mono">VtParser::feed_str()</span> a 10 KB buffer of plain text
+            (no escapes). Throughput floor: how fast bytes from the PTY move through the
+            parser when nothing fancy is happening — <span class="inline-mono">cargo build</span> output, <span class="inline-mono">cat</span> a log file, <span class="inline-mono">git log</span>.
+          </dd>
+        </div>
+        <div class="bench-key">
+          <dt><span class="inline-mono">parser_sgr_ansi</span></dt>
+          <dd>
+            10 KB of SGR escape sequences (<span class="inline-mono">\x1b[31m</span>red<span class="inline-mono">\x1b[0m</span>…) — the colour codes every
+            <span class="inline-mono">ls --color</span>, <span class="inline-mono">git diff</span>, and test runner emits.
+            The slower path: each byte can be part of a multi-byte escape or trigger a state
+            transition in the parser state machine.
+          </dd>
+        </div>
+        <div class="bench-key">
+          <dt><span class="inline-mono">parser_complex</span></dt>
+          <dd>
+            Mixed cursor moves, SGR, text, and carriage returns — what a real TUI like
+            <span class="inline-mono">htop</span> or <span class="inline-mono">btop</span> emits at 60 Hz to redraw its dashboard.
+            Tracks whether the parser keeps up with a full-screen redraw cycle.
+          </dd>
+        </div>
+      </dl>
+
+      <p class="bench-summary">
+        Every byte the shell writes passes through <span class="inline-mono">feed_str()</span> before it reaches the
+        cell grid. The median parser cost per 10 KB chunk is under <b>0.7 ms</b> — fast enough
+        to parse the output of a heavy <span class="inline-mono">cargo test --release</span> run in real time
+        without ever stalling the renderer. Run the bench yourself with
+        <span class="inline-mono">cargo bench --bench parser_bench</span> or read the source at
+        <a href="https://github.com/diegoleteliers10/fasty/blob/main/benches/parser_bench.rs" target="_blank" rel="noreferrer">benches/parser_bench.rs</a>.
+      </p>
     </div>
 
     <div class="perf-compare">
       <header class="compare-head">
-        <span class="compare-title mono">IDLE FOOTPRINT · single tab · idle shell prompt</span>
-        <span class="compare-note mono">lower is better · measured on m3-pro</span>
+        <span class="compare-title mono">E2E BENCHMARKS · startup + throughput</span>
+        <span class="compare-note mono">{benchmarkSource} · run the script to reproduce</span>
       </header>
       <div class="compare-table" role="table">
         <div class="compare-row compare-row-head" role="row">
           <span role="columnheader">Terminal</span>
-          <span role="columnheader" class="num">CPU p50</span>
-          <span role="columnheader" class="num">RAM</span>
-          <span role="columnheader" class="num">Cold start</span>
-          <span role="columnheader">Renderer</span>
+          <span role="columnheader" class="num">Startup<br /><span class="sub">sh -c true</span></span>
+          <span role="columnheader" class="num">Plain text<br /><span class="sub">100k lines</span></span>
+          <span role="columnheader" class="num">ANSI/SGR<br /><span class="sub">50k lines</span></span>
         </div>
         {comparison.map((row) => (
           <div class={`compare-row ${row.name.startsWith("Fasty") ? "compare-row-self" : ""}`} role="row">
             <span role="cell" class="compare-name">{row.name}</span>
-            <span role="cell" class="num">{row.idle}</span>
-            <span role="cell" class="num">{row.ram}</span>
-            <span role="cell" class="num">{row.cold}</span>
-            <span role="cell" class="compare-renderer mono">{row.ui}</span>
+            <span role="cell" class="num">
+              <span class="compare-val">{row.startup}</span>
+              <span class="compare-err">{row.startupErr}</span>
+            </span>
+            <span role="cell" class="num">
+              <span class="compare-val">{row.plain}</span>
+              <span class="compare-err">{row.plainErr}</span>
+            </span>
+            <span role="cell" class="num">
+              <span class="compare-val">{row.ansi}</span>
+              <span class="compare-err">{row.ansiErr}</span>
+            </span>
           </div>
         ))}
       </div>
       <p class="compare-footnote mono">
-        Alacritty &amp; Kitty numbers from upstream release notes; WezTerm and
-        Windows Terminal measured on the same hardware under the same prompt.
+        Startup = <span class="inline-mono">sh -c true</span> round-trip ·
+        Plain text = <span class="inline-mono">cat</span> 100k lines ·
+        ANSI/SGR = <span class="inline-mono">cat</span> 50k lines of styled output ·
+        Source: <a href="https://github.com/diegoleteliers10/fasty/blob/main/scripts/benchmark_e2e.py" target="_blank" rel="noreferrer">scripts/benchmark_e2e.py</a> ·
+        Fasty compiled with <span class="inline-mono">cargo build --release</span>.
       </p>
     </div>
   </div>
@@ -238,6 +313,67 @@ const comparison = [
     font-weight: 600;
   }
 
+  .bench-glossary {
+    margin: 28px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 14px;
+  }
+
+  .bench-key {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 20px;
+    align-items: baseline;
+    padding: 14px 0;
+    border-top: 1px solid var(--voltage-line);
+  }
+
+  .bench-key:last-child {
+    border-bottom: 1px solid var(--voltage-line);
+  }
+
+  .bench-key dt {
+    margin: 0;
+    font-size: 13px;
+  }
+
+  .bench-key dd {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--voltage-text-muted);
+  }
+
+  .bench-key b {
+    color: var(--color-on-surface);
+    font-weight: 600;
+  }
+
+  .bench-summary {
+    margin: 20px 0 0;
+    padding: 0;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--voltage-text-muted);
+  }
+
+  .bench-summary b {
+    color: var(--color-on-surface);
+    font-weight: 600;
+  }
+
+  .bench-summary a {
+    color: var(--voltage-orange);
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 157, 0, 0.4);
+    text-underline-offset: 3px;
+  }
+
+  .bench-summary a:hover {
+    text-decoration-color: var(--voltage-orange);
+  }
+
   .perf-compare {
     border-top: 1px solid var(--voltage-line);
     padding-top: 48px;
@@ -272,12 +408,12 @@ const comparison = [
 
   .compare-row {
     display: grid;
-    grid-template-columns: 2fr 0.8fr 0.8fr 0.9fr 1.4fr;
+    grid-template-columns: 1.2fr 1fr 1fr 1fr;
     align-items: baseline;
     gap: 24px;
     padding: 14px 4px;
     border-bottom: 1px solid var(--voltage-line);
-    font-size: 14px;
+    font-size: 13.5px;
     color: var(--voltage-text-muted);
   }
 
@@ -323,6 +459,26 @@ const comparison = [
     font-size: 13px;
   }
 
+  .compare-val {
+    color: var(--color-on-surface);
+    font-weight: 500;
+  }
+
+  .compare-err {
+    color: var(--voltage-text-subtle);
+    font-size: 11px;
+    display: block;
+    margin-top: 2px;
+  }
+
+  .compare-row-head .sub {
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--voltage-text-subtle);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
   .compare-row-self .num {
     color: var(--voltage-orange);
   }
@@ -344,12 +500,16 @@ const comparison = [
     .perf-lead {
       grid-column: 1;
     }
+    .bench-key {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
     .compare-row {
       grid-template-columns: 1.6fr 1fr;
       gap: 8px 16px;
       font-size: 13px;
     }
-    .compare-row > :nth-child(n+4) {
+    .compare-row > :nth-child(n+3) {
       display: none;
     }
   }
