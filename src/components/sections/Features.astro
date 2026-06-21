@@ -1,0 +1,480 @@
+---
+const features = [
+  {
+    eyebrow: "01",
+    title: "Cell rendering in WGSL",
+    body: "Every glyph, every cursor blink, every scroll update passes through a single wgpu pipeline. WGSL shaders handle the cell grid across Vulkan, Metal, DX12 and GLES with one shader set.",
+    visual: "wgsl",
+  },
+  {
+    eyebrow: "02",
+    title: "Sub-1% CPU at idle",
+    body: "The event loop rests in Wait. The PTY reader blocks at the kernel. The cursor blinks through a 48-byte fast-path that skips cell iteration, atlas dirty checks, and font rasterization.",
+    visual: "idle",
+  },
+  {
+    eyebrow: "03",
+    title: "Tab tear-out, sub-millisecond",
+    body: "Drag a tab outside the window. The GPU atlases are shared via Arc, so the new window spawns without recompiling glyph caches. The OS drag gesture takes it from there.",
+    visual: "tabs",
+  },
+  {
+    eyebrow: "04",
+    title: "Bottombar widgets",
+    body: "A 20px strip above the scrollback for what you actually want to see. Git status, clock, kubectl context, AWS profile, or anything you can run as a shell command. Click actions: copy, run, open.",
+    visual: "bottombar",
+  },
+];
+---
+
+<section class="section features" id="features">
+  <div class="container">
+    <header class="features-intro">
+      <span class="section-num mono">[01 / 04]</span>
+      <h2 class="features-title">
+        Six primitives, one<br />
+        quiet terminal.
+      </h2>
+      <p class="features-lead">
+        Fasty is small on purpose. No plugin runtime, no daemon, no telemetry.
+        The whole binary is one Rust crate plus the bits you can see in
+        <span class="inline-mono">src/</span>. Every feature earned its keep.
+      </p>
+    </header>
+
+    <div class="features-list">
+      {features.map((f, i) => (
+        <article class="feature-row" data-side={i % 2 === 0 ? "left" : "right"}>
+          <div class="feature-text">
+            <span class="feature-num mono">{f.eyebrow}</span>
+            <h3 class="feature-title">{f.title}</h3>
+            <p class="feature-body">{f.body}</p>
+          </div>
+
+          <div class="feature-visual">
+            {f.visual === "wgsl" && (
+              <pre class="code-block"><code><span class="c-cmt">// renderer/pipeline.wgsl</span>
+<span class="c-attr">@vertex</span>
+<span class="c-kw">fn</span> <span class="c-fn">vs_cell</span>(
+  <span class="c-attr">@location</span>(<span class="c-num">0</span>) pos: <span class="c-type">vec2</span>&lt;<span class="c-type">f32</span>&gt;,
+  <span class="c-attr">@location</span>(<span class="c-num">1</span>) cell: <span class="c-type">vec4</span>&lt;<span class="c-type">u32</span>&gt;,
+) <span class="c-kw">-&gt;</span> <span class="c-type">VSOut</span> {'{'}
+  <span class="c-kw">var</span> out: <span class="c-type">VSOut</span>;
+  out.clip = cell;
+  out.pos  = vec4&lt;f32&gt;(pos, <span class="c-num">0.0</span>, <span class="c-num">1.0</span>);
+  <span class="c-kw">return</span> out;
+{'}'}
+
+<span class="c-attr">@fragment</span>
+<span class="c-kw">fn</span> <span class="c-fn">fs_cell</span>(in: <span class="c-type">VSOut</span>) <span class="c-kw">-&gt;</span> <span class="c-attr">@location</span>(<span class="c-num">0</span>) <span class="c-type">vec4</span>&lt;<span class="c-type">f32</span>&gt; {'{'}
+  <span class="c-kw">return</span> <span class="c-fn">sample_atlas</span>(in.clip);
+{'}'}</code></pre>
+            )}
+
+            {f.visual === "idle" && (
+              <pre class="code-block"><code><span class="c-cmt"># stock M3 Pro · single tab · idle shell prompt</span>
+$ <span class="c-fn">ps</span> -p $(<span class="c-fn">pgrep</span> fasty) -o %cpu,rss,etime,thcount
+  %CPU    RSS       ELAPSED   TH
+  <span class="c-num">0.7</span>     <span class="c-num">52416</span>    <span class="c-num">02:14:08</span>   <span class="c-num">4</span>
+
+$ <span class="c-fn">powermetrics</span> --samplers cpu_power -i 1000 -n 1 <span class="c-pipe">|</span> <span class="c-fn">grep</span> fasty
+  fasty: <span class="c-accent">idle</span>   wakeups/s: <span class="c-accent">0.0</span>   pkg_energy: <span class="c-num">12</span> mJ</code></pre>
+            )}
+
+            {f.visual === "tabs" && (
+              <div class="visual-tabs">
+                <div class="win win-1">
+                  <div class="win-bar mono">~/projects/fasty</div>
+                  <div class="win-body">
+                    <div class="win-line"><span class="ws">❯</span> cargo build</div>
+                    <div class="win-line"><span class="ws">❯</span></div>
+                  </div>
+                </div>
+                <div class="tab-arrow" aria-hidden="true">
+                  <svg width="40" height="24" viewBox="0 0 40 24" fill="none">
+                    <path d="M4 12 L34 12 M28 6 L34 12 L28 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="win win-2">
+                  <div class="win-bar mono">~/projects/fasty</div>
+                  <div class="win-body">
+                    <div class="win-line"><span class="ws">❯</span> cargo build</div>
+                    <div class="win-line"><span class="ws">❯</span></div>
+                  </div>
+                </div>
+                <div class="visual-tabs-caption mono">
+                  shared atlas via <span>Arc</span> · spawn: <span>0.8 ms</span>
+                </div>
+              </div>
+            )}
+
+            {f.visual === "bottombar" && (
+              <div class="visual-bottombar">
+                <div class="vb-scrollback mono">
+                  <div class="vb-line"><span class="ws">❯</span> kubectl get pods -n prod</div>
+                  <div class="vb-line vb-dim">NAME                  READY   STATUS    RESTARTS   AGE</div>
+                  <div class="vb-line vb-dim">api-7d4b9c-xjp2       1/1     Running   0          14m</div>
+                  <div class="vb-line vb-dim">api-7d4b9c-kw7r       1/1     Running   0          14m</div>
+                  <div class="vb-line vb-dim">worker-9f3a-mn1       2/2     Running   1          3h</div>
+                </div>
+                <div class="vb-bottombar mono">
+                  <span class="vb-seg vb-git"><span class="vb-icon">⎇</span> main <span class="vb-meta">↑2 <span class="vb-dirty">●3</span></span></span>
+                  <span class="vb-seg vb-time">14:32:08</span>
+                  <span class="vb-spacer"></span>
+                  <span class="vb-seg vb-click">kube: <b>prod</b> <span class="vb-hint">click → cycle</span></span>
+                  <span class="vb-seg">aws: <b>dev</b></span>
+                </div>
+                <div class="vb-caption mono">
+                  widgets.toml → poll interval · click action · align
+                </div>
+              </div>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <div class="features-secondary">
+      <div class="secondary-row">
+        <div class="secondary-text">
+          <span class="feature-num mono">[+]</span>
+          <h3 class="feature-title secondary-title">Snippets, TUI-safe.</h3>
+          <p class="feature-body">
+            Type <span class="inline-mono">gst</span>, press Tab, get <span class="inline-mono">git status</span>.
+            Bundled defaults cover git, docker, rust, filesystem, search, system.
+            VSCode-style placeholders, live reload. TUI apps take precedence
+            and Tab passes through to vim, fzf, htop.
+          </p>
+        </div>
+        <pre class="code-block code-snippets"><code><span class="c-cmt"># snippets.toml</span>
+<span class="c-kw">[</span><span class="c-fn">snippet</span><span class="c-kw">]</span>
+
+<span class="c-str">"gst"</span> = <span class="c-str">"git status"</span>
+<span class="c-str">"gcm"</span> = <span class="c-str">"git commit -m \&#34;<span class="c-pp">$&#123;1:message&#125;</span>\&#34;"</span>
+<span class="c-str">"cb"</span>  = <span class="c-str">"cargo build"</span>
+<span class="c-str">"dps"</span> = <span class="c-str">"docker ps"</span>
+<span class="c-str">"ll"</span>  = <span class="c-str">"ls -lah"</span>
+<span class="c-str">"ports"</span> = <span class="c-str">"ss -tlnp"</span></code></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .features {
+    border-top: 1px solid var(--voltage-line);
+    padding-block: 96px 72px;
+  }
+
+  @media (min-width: 901px) {
+    .features {
+      padding-block: 112px;
+    }
+  }
+
+  .features-intro {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    column-gap: 32px;
+    row-gap: 20px;
+    align-items: baseline;
+    max-width: 920px;
+    margin-bottom: 80px;
+  }
+
+  .features-intro .section-num {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 11px;
+    color: var(--voltage-text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    align-self: start;
+    padding-top: 12px;
+  }
+
+  .features-title {
+    grid-column: 2;
+    grid-row: 1;
+    font-family: var(--font-sans);
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    color: var(--color-on-surface);
+  }
+
+  .features-lead {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--voltage-text-muted);
+    max-width: 60ch;
+  }
+
+  .inline-mono {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    color: var(--color-on-surface);
+    background: var(--voltage-overlay);
+    border: 1px solid var(--voltage-line);
+    border-radius: var(--radius-sm);
+    padding: 0 6px;
+  }
+
+  .features-list {
+    display: flex;
+    flex-direction: column;
+    gap: 72px;
+  }
+
+  .feature-row {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 72px;
+    align-items: start;
+  }
+
+  .feature-row[data-side="right"] .feature-text {
+    order: 2;
+  }
+
+  .feature-row[data-side="right"] .feature-visual {
+    order: 1;
+  }
+
+  .feature-text {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 8px;
+  }
+
+  .feature-num {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--voltage-text-muted);
+    text-transform: uppercase;
+  }
+
+  .feature-title {
+    font-family: var(--font-sans);
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    color: var(--color-on-surface);
+  }
+
+  .feature-body {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--voltage-text-muted);
+    max-width: 50ch;
+  }
+
+  .feature-visual {
+    min-width: 0;
+  }
+
+  .code-block {
+    background: var(--voltage-deep);
+    border: 1px solid var(--voltage-line);
+    border-radius: 6px;
+    padding: 18px 20px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--color-on-surface);
+    overflow-x: auto;
+    margin: 0;
+  }
+
+  .code-block code {
+    font-family: inherit;
+    color: inherit;
+    background: none;
+    padding: 0;
+  }
+
+  .c-kw  { color: #b294bb; }
+  .c-fn  { color: #82a8d8; }
+  .c-type { color: #f0c674; }
+  .c-str { color: #b5bd68; }
+  .c-num { color: #f0c674; }
+  .c-cmt { color: var(--voltage-text-subtle); font-style: italic; }
+  .c-attr { color: #cc6666; }
+  .c-pipe { color: var(--voltage-text-muted); }
+  .c-accent { color: var(--voltage-orange); font-weight: 600; }
+
+  .visual-tabs {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .win {
+    background: var(--voltage-deep);
+    border: 1px solid var(--voltage-line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .win-bar {
+    padding: 6px 12px;
+    background: #0a0907;
+    border-bottom: 1px solid var(--voltage-line);
+    font-size: 11px;
+    color: var(--voltage-text-muted);
+  }
+
+  .win-body {
+    padding: 14px 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--color-on-surface);
+  }
+
+  .win-line {
+    color: var(--voltage-text-muted);
+  }
+
+  .win-2 {
+    opacity: 0.7;
+  }
+
+  .ws {
+    color: var(--voltage-orange);
+  }
+
+  .tab-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 32px;
+    color: var(--voltage-orange);
+  }
+
+  .visual-tabs-caption {
+    font-size: 11px;
+    color: var(--voltage-text-muted);
+    text-align: right;
+    padding-top: 4px;
+  }
+
+  .visual-tabs-caption span {
+    color: var(--color-on-surface);
+  }
+
+  .visual-bottombar {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .vb-scrollback {
+    background: var(--voltage-deep);
+    border: 1px solid var(--voltage-line);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    padding: 18px 20px;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  .vb-line {
+    color: var(--color-on-surface);
+  }
+
+  .vb-line.vb-dim {
+    color: var(--voltage-text-muted);
+  }
+
+  .vb-bottombar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 7px 18px;
+    background: #070504;
+    border: 1px solid var(--voltage-line);
+    border-radius: 0 0 6px 6px;
+    font-size: 11px;
+    color: var(--voltage-text-muted);
+  }
+
+  .vb-seg {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+  }
+
+  .vb-git { color: var(--color-on-surface); font-weight: 600; }
+  .vb-git .vb-icon { color: var(--voltage-orange); }
+  .vb-meta { color: var(--voltage-text-muted); font-weight: 400; }
+  .vb-dirty { color: var(--voltage-yellow); }
+  .vb-time { font-variant-numeric: tabular-nums; }
+  .vb-click b { color: var(--color-on-surface); font-weight: 500; }
+  .vb-hint { color: var(--voltage-text-subtle); font-size: 10px; }
+  .vb-spacer { flex: 1; }
+  .vb-seg b { color: var(--color-on-surface); font-weight: 500; }
+
+  .vb-caption {
+    margin-top: 12px;
+    font-size: 11px;
+    color: var(--voltage-text-subtle);
+    text-align: right;
+  }
+
+  .features-secondary {
+    margin-top: 96px;
+    padding-top: 64px;
+    border-top: 1px solid var(--voltage-line);
+  }
+
+  .secondary-row {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 72px;
+    align-items: start;
+  }
+
+  .secondary-text {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 8px;
+  }
+
+  .secondary-title {
+    font-size: 22px;
+  }
+
+  @media (max-width: 900px) {
+    .features-intro {
+      grid-template-columns: 1fr;
+      row-gap: 8px;
+    }
+    .features-intro .section-num,
+    .features-title,
+    .features-lead {
+      grid-column: 1;
+    }
+    .feature-row,
+    .secondary-row {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .feature-row[data-side="right"] .feature-text {
+      order: 1;
+    }
+    .feature-row[data-side="right"] .feature-visual {
+      order: 2;
+    }
+    .features-list {
+      gap: 64px;
+    }
+  }
+</style>

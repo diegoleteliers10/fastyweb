@@ -1,0 +1,460 @@
+---
+const platforms = ["macOS", "Linux", "Windows"];
+---
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-text">
+      <h1 class="hero-title">
+        A terminal that<br />
+        <span class="hero-title-accent">runs at idle.</span>
+      </h1>
+
+      <p class="hero-sub">
+        Fasty is a GPU-accelerated terminal emulator written in Rust on
+        wgpu and winit. The event loop rests. The PTY blocks. The cursor
+        blinks in 423 nanoseconds.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#install">Install Fasty</a>
+        <a class="btn btn-secondary" href="https://github.com/diegoleteliers10/fasty" target="_blank" rel="noreferrer">View source</a>
+      </div>
+
+      <ul class="hero-platforms" aria-label="Available platforms">
+        {platforms.map((p) => (
+          <li class="hero-platform mono">{p}</li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="hero-terminal-wrap">
+      <div class="terminal" role="img" aria-label="Fasty terminal showing cargo bench output, git status, and bottombar widgets">
+        <div class="terminal-bar">
+          <span class="terminal-tab mono">~/projects/fasty</span>
+          <span class="terminal-tab-idle mono">+</span>
+          <span class="terminal-tab-idle mono">api · bun</span>
+        </div>
+
+        <div class="terminal-body">
+          <div class="terminal-prompt mono">
+            ~/projects/fasty <span class="dim">on</span> main <span class="arrow">↑2</span> <span class="arrow">●3</span>
+          </div>
+
+          <div class="terminal-line">
+            <span class="prompt-sigil">❯</span>
+            <span class="line-cmd mono">cargo bench --release</span>
+          </div>
+
+          <div class="terminal-output mono">
+            <div class="out-dim">   Compiling fasty v0.3.9 (38 crates)</div>
+            <div class="out-dim">    Finished `release` profile [optimized] in 4.21s</div>
+            <div>&nbsp;</div>
+            <div class="out-section">   Running benches/fasty</div>
+            <div class="bench-row"><span>cursor/blink_fastpath</span><span>[<b>412 ns</b> <b class="best">423 ns</b> <b>434 ns</b>]</span></div>
+            <div class="bench-row"><span>idle_cpu/wakeups</span><span>[<b>0.00 ms</b> <b class="best">0.00 ms</b> <b>0.00 ms</b>]</span></div>
+            <div class="bench-row"><span>frame/render</span><span>[<b>1.82 ms</b> <b class="best">1.91 ms</b> <b>2.04 ms</b>]</span></div>
+            <div>&nbsp;</div>
+          </div>
+
+          <div class="terminal-line">
+            <span class="prompt-sigil">❯</span>
+            <span class="line-cmd mono">fasty --title "Dev Server" -d ~/api -e bun run dev</span>
+          </div>
+          <div class="terminal-output mono">
+            <div class="ok-line"><span class="ok">✓</span> spawned tab <b>"Dev Server"</b><span class="ok-time">in 0.8 ms</span></div>
+          </div>
+
+          <div class="terminal-line terminal-line-active">
+            <span class="prompt-sigil">❯</span>
+            <span class="cursor" aria-hidden="true"></span>
+          </div>
+        </div>
+
+        <div class="terminal-bottombar mono" aria-hidden="true">
+          <span class="bb-seg bb-git"><span class="bb-icon">⎇</span> main <span class="bb-meta">↑2 <span class="bb-dirty">●3</span></span></span>
+          <span class="bb-seg bb-time">14:32:08</span>
+          <span class="bb-spacer"></span>
+          <span class="bb-seg">kube: <b>prod</b></span>
+          <span class="bb-seg">aws: <b>dev</b></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: 56px 24px;
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.15fr);
+    gap: 72px;
+    align-items: center;
+  }
+
+  .hero-text {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 480px;
+  }
+
+  .hero-title {
+    font-family: var(--font-sans);
+    font-size: 56px;
+    font-weight: 600;
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    color: var(--color-on-surface);
+  }
+
+  .hero-title-accent {
+    color: var(--voltage-orange);
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--voltage-text-muted);
+    max-width: 46ch;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .hero-platforms {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;
+  }
+
+  .hero-platform {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--voltage-text-subtle);
+  }
+
+  .hero-terminal-wrap {
+    min-width: 0;
+  }
+
+  .terminal {
+    background: var(--theme-bg, var(--voltage-panel));
+    border: 1px solid var(--voltage-line);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.02) inset,
+      0 24px 60px -24px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    transition: background 320ms var(--ease-out),
+      border-color 320ms var(--ease-out);
+  }
+
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: var(--theme-bg-bar, #0a0907);
+    border-bottom: 1px solid var(--voltage-line);
+    flex-shrink: 0;
+    transition: background 320ms var(--ease-out);
+  }
+
+  .terminal-tab {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--voltage-line);
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    color: var(--theme-fg, var(--color-on-surface));
+    height: 22px;
+    transition: color 320ms var(--ease-out),
+      background 320ms var(--ease-out);
+  }
+
+  .terminal-tab-idle {
+    padding: 3px 8px;
+    color: var(--theme-dim, var(--voltage-text-muted));
+    background: transparent;
+    border: 1px dashed var(--voltage-line);
+    font-size: 11px;
+    height: 22px;
+    transition: color 320ms var(--ease-out);
+  }
+
+  .terminal-body {
+    padding: 20px 22px 16px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--theme-fg, var(--color-on-surface));
+    flex: 1;
+    overflow: hidden;
+    transition: color 320ms var(--ease-out);
+  }
+
+  .terminal-prompt {
+    color: var(--theme-dim, var(--voltage-text-muted));
+    font-size: 12px;
+    margin-bottom: 14px;
+    transition: color 320ms var(--ease-out);
+  }
+
+  .terminal-prompt .dim {
+    color: var(--theme-dim, var(--voltage-text-subtle));
+  }
+
+  .terminal-prompt .arrow {
+    color: var(--theme-accent, var(--voltage-orange));
+    transition: color 320ms var(--ease-out);
+  }
+
+  .terminal-line {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin: 4px 0;
+  }
+
+  .terminal-line-active {
+    margin-top: 10px;
+  }
+
+  .prompt-sigil {
+    color: var(--theme-prompt, var(--voltage-orange));
+    font-weight: 600;
+    transition: color 320ms var(--ease-out);
+  }
+
+  .line-cmd {
+    color: var(--theme-fg, var(--color-on-surface));
+    transition: color 320ms var(--ease-out);
+  }
+
+  .terminal-output {
+    margin: 6px 0 4px;
+  }
+
+  .out-dim {
+    color: var(--theme-dim, var(--voltage-text-subtle));
+    font-size: 12px;
+    transition: color 320ms var(--ease-out);
+  }
+
+  .out-section {
+    color: var(--theme-accent, var(--voltage-orange));
+    margin: 8px 0 4px;
+    font-weight: 600;
+    font-size: 12px;
+    transition: color 320ms var(--ease-out);
+  }
+
+  .bench-row {
+    display: flex;
+    gap: 14px;
+    padding: 1px 0;
+    font-size: 12px;
+    color: var(--theme-dim, var(--voltage-text-muted));
+    align-items: baseline;
+    transition: color 320ms var(--ease-out);
+  }
+
+  .bench-row > span:first-child {
+    color: var(--theme-fg, var(--color-on-surface));
+    min-width: 200px;
+    flex-shrink: 0;
+    transition: color 320ms var(--ease-out);
+  }
+
+  .bench-row b {
+    color: var(--theme-dim, #c5b8a6);
+    font-weight: 400;
+    transition: color 320ms var(--ease-out);
+  }
+
+  .bench-row .best {
+    color: var(--theme-type, var(--voltage-yellow));
+    font-weight: 600;
+    transition: color 320ms var(--ease-out);
+  }
+
+  .ok-line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    padding: 2px 0;
+  }
+
+  .ok-line b {
+    font-weight: 500;
+    color: var(--theme-fg, var(--color-on-surface));
+    transition: color 320ms var(--ease-out);
+  }
+
+  .ok {
+    color: #6ec77a;
+    font-weight: 700;
+  }
+
+  .ok-time {
+    margin-left: auto;
+    color: var(--theme-accent, var(--voltage-orange));
+    font-weight: 600;
+    transition: color 320ms var(--ease-out);
+  }
+
+  .cursor {
+    display: inline-block;
+    width: 7px;
+    height: 14px;
+    background: var(--theme-accent, var(--voltage-orange));
+    border-radius: 1px;
+    vertical-align: text-bottom;
+    animation: blink 1.05s steps(2) infinite;
+    transition: background 320ms var(--ease-out);
+  }
+
+  .terminal-bottombar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 5px 14px;
+    background: var(--theme-bg-bar, #070504);
+    border-top: 1px solid var(--voltage-line);
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--theme-dim, var(--voltage-text-muted));
+    flex-shrink: 0;
+    transition: background 320ms var(--ease-out),
+      color 320ms var(--ease-out);
+  }
+
+  .bb-seg {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  .bb-git .bb-icon {
+    color: var(--theme-prompt, var(--voltage-orange));
+    transition: color 320ms var(--ease-out);
+  }
+
+  .bb-git {
+    color: var(--theme-fg, var(--color-on-surface));
+    font-weight: 600;
+    transition: color 320ms var(--ease-out);
+  }
+
+  .bb-meta {
+    color: var(--theme-dim, var(--voltage-text-muted));
+    font-weight: 400;
+    transition: color 320ms var(--ease-out);
+  }
+
+  .bb-dirty {
+    color: var(--theme-type, var(--voltage-yellow));
+    transition: color 320ms var(--ease-out);
+  }
+
+  .bb-time {
+    font-variant-numeric: tabular-nums;
+    color: var(--theme-dim, var(--voltage-text-muted));
+    transition: color 320ms var(--ease-out);
+  }
+
+  .bb-seg b {
+    color: var(--theme-fg, var(--color-on-surface));
+    font-weight: 500;
+    transition: color 320ms var(--ease-out);
+  }
+
+  .bb-spacer {
+    flex: 1;
+  }
+
+  @media (max-width: 1024px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    .hero-title {
+      font-size: 44px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .terminal,
+    .terminal-bar,
+    .terminal-tab,
+    .terminal-tab-idle,
+    .terminal-body,
+    .terminal-prompt,
+    .terminal-prompt .arrow,
+    .prompt-sigil,
+    .line-cmd,
+    .out-dim,
+    .out-section,
+    .bench-row,
+    .bench-row > span:first-child,
+    .bench-row b,
+    .bench-row .best,
+    .ok-line b,
+    .ok-time,
+    .cursor,
+    .terminal-bottombar,
+    .bb-git .bb-icon,
+    .bb-git,
+    .bb-meta,
+    .bb-dirty,
+    .bb-time,
+    .bb-seg b {
+      transition: opacity 100ms linear, color 100ms linear;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .hero {
+      padding-block: 32px 16px;
+    }
+    .hero-title {
+      font-size: 36px;
+    }
+    .hero-sub {
+      font-size: 15px;
+    }
+    .terminal-body {
+      padding: 16px;
+      font-size: 11.5px;
+    }
+    .bench-row > span:first-child {
+      min-width: 150px;
+    }
+    .terminal-tab-idle {
+      display: none;
+    }
+    .terminal-bottombar {
+      font-size: 10px;
+      padding: 5px 10px;
+      gap: 10px;
+    }
+  }
+</style>

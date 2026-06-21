@@ -1,0 +1,197 @@
+---
+const columns = [
+  {
+    title: "Docs",
+    links: [
+      { href: "https://github.com/diegoleteliers10/fasty#installation--setup", label: "Installation" },
+      { href: "https://github.com/diegoleteliers10/fasty#configuration", label: "fasty.toml" },
+      { href: "https://github.com/diegoleteliers10/fasty#keybindings", label: "Keybindings" },
+      { href: "https://github.com/diegoleteliers10/fasty#bottombar-widgets", label: "Bottombar widgets" },
+      { href: "https://github.com/diegoleteliers10/fasty#snippets", label: "Snippets" },
+    ],
+  },
+  {
+    title: "Project",
+    links: [
+      { href: "https://github.com/diegoleteliers10/fasty", label: "Source" },
+      { href: "https://github.com/diegoleteliers10/fasty/issues", label: "Issues" },
+      { href: "https://github.com/diegoleteliers10/fasty/releases", label: "Releases" },
+      { href: "https://github.com/diegoleteliers10/fasty/blob/main/CHANGELOG", label: "Changelog" },
+      { href: "https://github.com/sponsors/diegoleteliers10", label: "Sponsor" },
+    ],
+  },
+];
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-mark-block">
+        <a class="footer-mark" href="/" aria-label="Fasty home">
+          <img src="/fastySmallIcon.png" alt="" width="24" height="24" />
+          <span class="footer-name mono">fasty</span>
+        </a>
+      <p class="footer-tag">
+        GPU-accelerated terminal emulator.<br />
+        Rust · wgpu · winit.
+      </p>
+    </div>
+
+    <div class="footer-cols">
+      {columns.map((col) => (
+        <div class="footer-col">
+          <h3 class="footer-col-title mono">{col.title}</h3>
+          <ul class="footer-col-list">
+            {col.links.map((l) => (
+              <li><a href={l.href} class="footer-col-link" target={l.href.startsWith("http") ? "_blank" : undefined} rel={l.href.startsWith("http") ? "noreferrer" : undefined}>{l.label}</a></li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <span class="footer-meta mono">© {year} Fasty</span>
+    <span class="footer-meta mono">Built in Rust · runs on macOS · Linux · Windows</span>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--voltage-line);
+    padding-block: 64px 32px;
+    background: #0a0806;
+  }
+
+  .footer-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 64px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid var(--voltage-line);
+  }
+
+  .footer-mark-block {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: opacity 180ms var(--ease-out),
+      transform 160ms var(--ease-out);
+  }
+
+  .footer-mark:hover {
+    opacity: 0.8;
+  }
+
+  .footer-mark:active {
+    transform: scale(0.97);
+  }
+
+  .footer-mark img {
+    display: block;
+  }
+
+  .footer-mark:hover {
+    opacity: 0.8;
+  }
+
+  .footer-mark:active {
+    transform: scale(0.97);
+  }
+
+  .footer-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-on-surface);
+    letter-spacing: -0.02em;
+  }
+
+  .footer-tag {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--voltage-text-muted);
+  }
+
+  .footer-cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 48px;
+  }
+
+  .footer-col-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--voltage-text-muted);
+    margin-bottom: 14px;
+  }
+
+  .footer-col-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .footer-col-link {
+    font-size: 13px;
+    color: var(--voltage-text-muted);
+    transition: color 180ms var(--ease-out);
+    position: relative;
+    display: inline-block;
+  }
+
+  .footer-col-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 1px;
+    background: var(--voltage-orange);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 220ms var(--ease-out);
+  }
+
+  .footer-col-link:hover {
+    color: var(--voltage-orange);
+  }
+
+  .footer-col-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-top: 24px;
+  }
+
+  .footer-meta {
+    font-size: 11.5px;
+    color: var(--voltage-text-subtle);
+  }
+
+  @media (max-width: 720px) {
+    .footer-inner {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+</style>

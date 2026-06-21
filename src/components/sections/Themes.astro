@@ -1,0 +1,651 @@
+---
+type ThemePalette = {
+  bg: string;
+  bgBar: string;
+  fg: string;
+  dim: string;
+  accent: string;
+  prompt: string;
+  kw: string;
+  fn: string;
+  type: string;
+  str: string;
+  cmt: string;
+};
+
+type Theme = {
+  id: string;
+  name: string;
+  file: string;
+  note: string;
+  badge: string | null;
+  palette: ThemePalette;
+};
+
+const themes: Theme[] = [
+  {
+    id: "fasty",
+    name: "Fasty",
+    file: "default",
+    note: "Tomorrow Night palette · bundled",
+    badge: "DEFAULT",
+    palette: {
+      bg: "#0C0C0C",
+      bgBar: "#0a0907",
+      fg: "#C5C8C6",
+      dim: "#5a5754",
+      accent: "#b5bd68",
+      prompt: "#b5bd68",
+      kw: "#b294bb",
+      fn: "#81a2be",
+      type: "#f0c674",
+      str: "#b5bd68",
+      cmt: "#5a5754",
+    },
+  },
+  {
+    id: "catppuccin",
+    name: "Catppuccin",
+    file: "catppuccin",
+    note: "github.com/catppuccin · bundled",
+    badge: null,
+    palette: {
+      bg: "#24273A",
+      bgBar: "#1e2030",
+      fg: "#CAD3F5",
+      dim: "#8087a2",
+      accent: "#c6a0f6",
+      prompt: "#f5bde6",
+      kw: "#c6a0f6",
+      fn: "#8aadf4",
+      type: "#f5a97f",
+      str: "#a6da95",
+      cmt: "#6e738d",
+    },
+  },
+  {
+    id: "one-dark",
+    name: "One Dark",
+    file: "one-dark",
+    note: "Atom One Dark · bundled",
+    badge: null,
+    palette: {
+      bg: "#282C34",
+      bgBar: "#21252b",
+      fg: "#ABB2BF",
+      dim: "#5c6370",
+      accent: "#61afef",
+      prompt: "#98c379",
+      kw: "#c678dd",
+      fn: "#61afef",
+      type: "#e5c07b",
+      str: "#98c379",
+      cmt: "#5c6370",
+    },
+  },
+  {
+    id: "solarized-dark",
+    name: "Solarized Dark",
+    file: "solarized-dark",
+    note: "Ethan Schoonover · bundled",
+    badge: null,
+    palette: {
+      bg: "#002B36",
+      bgBar: "#001f27",
+      fg: "#839496",
+      dim: "#586e75",
+      accent: "#b58900",
+      prompt: "#268bd2",
+      kw: "#859900",
+      fn: "#268bd2",
+      type: "#b58900",
+      str: "#2aa198",
+      cmt: "#586e75",
+    },
+  },
+  {
+    id: "high-contrast",
+    name: "High Contrast",
+    file: "high-contrast",
+    note: "WCAG AAA · bundled",
+    badge: "A11Y",
+    palette: {
+      bg: "#000000",
+      bgBar: "#000000",
+      fg: "#FFFFFF",
+      dim: "#999999",
+      accent: "#FFFF00",
+      prompt: "#FFFF00",
+      kw: "#FFFF00",
+      fn: "#00FFFF",
+      type: "#FFFF00",
+      str: "#00FF00",
+      cmt: "#999999",
+    },
+  },
+];
+
+const STORAGE_KEY = "fasty-theme";
+---
+
+<section class="section themes" id="themes">
+  <div class="container">
+    <header class="themes-intro">
+      <span class="section-num mono">[03 / 04]</span>
+      <h2 class="themes-title">
+        Five built-ins,<br />
+        infinite drop-ins.
+      </h2>
+      <p class="themes-lead">
+        Fasty ships with five tuned palettes and reads custom JSON themes
+        from <span class="inline-mono">~/.config/fasty/themes/</span>. Drop a
+        file in, name it after the theme, switch from the command palette.
+        Theme changes re-render every surface live: scrollback, topbar,
+        tabs, settings, context menu.
+      </p>
+    </header>
+
+    <div class="themes-split">
+      <div class="themes-featured">
+        <header class="featured-bar">
+          <div class="featured-dots" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <span class="featured-name mono" data-theme-label>fasty.toml · theme = "fasty"</span>
+          <span class="featured-tag mono">Live preview</span>
+        </header>
+        <div class="featured-body mono">
+          <div class="featured-line">
+            <span class="line-num">1</span>
+            <span><span class="tk-kw">use</span> <span class="tk-fn">fasty</span><span>:</span><span class="tk-type">:</span><span class="tk-fn">config</span><span>:</span><span class="tk-type">:</span><span class="tk-fn">Profile</span>;</span>
+          </div>
+          <div class="featured-line">
+            <span class="line-num">2</span>
+            <span>&nbsp;</span>
+          </div>
+          <div class="featured-line">
+            <span class="line-num">3</span>
+            <span><span class="tk-kw">fn</span> <span class="tk-fn">load_user_themes</span><span>() -&gt; </span><span class="tk-type">Vec</span><span>&lt;</span><span class="tk-type">Profile</span><span>&gt; {</span>
+          </div>
+          <div class="featured-line">
+            <span class="line-num">4</span>
+            <span>&nbsp;&nbsp;<span class="tk-str">"default"</span>.<span class="tk-fn">into</span>()</span>
+          </div>
+          <div class="featured-line">
+            <span class="line-num">5</span>
+            <span>}</span>
+          </div>
+          <div class="featured-line">
+            <span class="line-num">&nbsp;</span>
+            <span>&nbsp;</span>
+          </div>
+          <div class="featured-line">
+            <span class="line-num">&gt;</span>
+            <span class="tk-prompt">❯</span>
+            <span class="cursor" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="themes-list">
+        <header class="list-head mono">
+          <span>REGISTRY · 5 bundled + custom</span>
+          <span class="list-head-meta">~/.config/fasty/themes/</span>
+        </header>
+        <ul class="theme-list" role="list">
+          {themes.map((t) => (
+            <li
+              class="theme-item"
+              role="button"
+              tabindex="0"
+              data-theme={t.id}
+              data-theme-name={t.name.toLowerCase()}
+              aria-pressed="false"
+            >
+              <div class="theme-swatch" aria-hidden="true">
+                <span class="swatch-bg" style={`background:${t.palette.bg};border-color:${t.palette.fg}`}></span>
+                <span class="swatch-fg" style={`background:${t.palette.fg}`}></span>
+                <span class="swatch-accent" style={`background:${t.palette.accent}`}></span>
+              </div>
+              <div class="theme-meta">
+                <span class="theme-name-row">
+                  <span class="theme-name">{t.name}</span>
+                  {t.badge && <span class="theme-badge mono">{t.badge}</span>}
+                </span>
+                <span class="theme-note mono">{t.note}</span>
+              </div>
+              <span class="theme-file mono">{t.file}</span>
+              <span class="theme-active-dot" aria-hidden="true"></span>
+            </li>
+          ))}
+        </ul>
+        <p class="themes-footnote mono">
+          Custom themes are JSON files. All 18 ANSI fields are optional except
+          <span class="inline-mono">background</span> and
+          <span class="inline-mono">foreground</span>; missing colors fall
+          back to the foreground.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ themes, STORAGE_KEY }}>
+  const themesMap = {};
+  for (const t of themes) themesMap[t.id] = t;
+
+  const applyTheme = (id) => {
+    const theme = themesMap[id];
+    if (!theme) return;
+    const root = document.documentElement;
+    const p = theme.palette;
+    root.style.setProperty("--theme-bg", p.bg);
+    root.style.setProperty("--theme-bg-bar", p.bgBar);
+    root.style.setProperty("--theme-fg", p.fg);
+    root.style.setProperty("--theme-dim", p.dim);
+    root.style.setProperty("--theme-accent", p.accent);
+    root.style.setProperty("--theme-prompt", p.prompt);
+    root.style.setProperty("--theme-kw", p.kw);
+    root.style.setProperty("--theme-fn", p.fn);
+    root.style.setProperty("--theme-type", p.type);
+    root.style.setProperty("--theme-str", p.str);
+    root.style.setProperty("--theme-cmt", p.cmt);
+
+    document.querySelectorAll(".theme-item").forEach((el) => {
+      const isActive = el.dataset.theme === id;
+      el.dataset.active = isActive ? "true" : undefined;
+      el.setAttribute("aria-pressed", isActive ? "true" : "false");
+    });
+
+    document.querySelectorAll("[data-theme-label]").forEach((el) => {
+      el.textContent = `fasty.toml · theme = "${theme.id}"`;
+    });
+
+    try {
+      window.localStorage.setItem(STORAGE_KEY, id);
+    } catch {}
+  };
+
+  const initial = (() => {
+    try {
+      const saved = window.localStorage.getItem(STORAGE_KEY);
+      if (saved && themesMap[saved]) return saved;
+    } catch {}
+    return "fasty";
+  })();
+
+  applyTheme(initial);
+
+  document.querySelectorAll(".theme-item").forEach((el) => {
+    const handler = () => {
+      const id = el.dataset.theme;
+      if (id) applyTheme(id);
+    };
+    el.addEventListener("click", handler);
+    el.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        handler();
+      }
+    });
+  });
+</script>
+
+<style>
+  .themes {
+    border-top: 1px solid var(--voltage-line);
+    padding-block: 96px;
+  }
+
+  .themes-intro {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    column-gap: 32px;
+    row-gap: 20px;
+    align-items: baseline;
+    max-width: 920px;
+    margin-bottom: 56px;
+  }
+
+  .themes-intro .section-num {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 11px;
+    color: var(--voltage-text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding-top: 12px;
+  }
+
+  .themes-title {
+    grid-column: 2;
+    grid-row: 1;
+    font-family: var(--font-sans);
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    color: var(--color-on-surface);
+  }
+
+  .themes-lead {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--voltage-text-muted);
+    max-width: 60ch;
+  }
+
+  .inline-mono {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    color: var(--color-on-surface);
+    background: var(--voltage-overlay);
+    border: 1px solid var(--voltage-line);
+    border-radius: var(--radius-sm);
+    padding: 0 6px;
+  }
+
+  .themes-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 48px;
+    align-items: start;
+  }
+
+  .themes-featured {
+    background: var(--theme-bg, #0C0C0C);
+    border: 1px solid var(--voltage-line);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: background 320ms var(--ease-out),
+      border-color 320ms var(--ease-out);
+  }
+
+  .featured-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--theme-bg-bar, #0a0907);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    transition: background 320ms var(--ease-out);
+  }
+
+  .featured-dots {
+    display: inline-flex;
+    gap: 4px;
+  }
+
+  .featured-dots span {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  .featured-name {
+    font-size: 11px;
+    color: var(--theme-fg, #C5C8C6);
+    opacity: 0.8;
+    flex: 1;
+    transition: color 320ms var(--ease-out);
+  }
+
+  .featured-tag {
+    font-size: 10px;
+    color: var(--theme-accent, #b5bd68);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 600;
+    transition: color 320ms var(--ease-out);
+  }
+
+  .featured-body {
+    padding: 22px 24px 24px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.85;
+    color: var(--theme-fg, #C5C8C6);
+    transition: color 320ms var(--ease-out);
+  }
+
+  .featured-line {
+    display: flex;
+    gap: 12px;
+  }
+
+  .line-num {
+    opacity: 0.3;
+    user-select: none;
+    min-width: 18px;
+    text-align: right;
+    flex-shrink: 0;
+    color: var(--theme-dim, #5a5754);
+  }
+
+  .tk-kw { color: var(--theme-kw, #b294bb); transition: color 320ms var(--ease-out); }
+  .tk-fn { color: var(--theme-fn, #81a2be); transition: color 320ms var(--ease-out); }
+  .tk-type { color: var(--theme-type, #f0c674); transition: color 320ms var(--ease-out); }
+  .tk-str { color: var(--theme-str, #b5bd68); transition: color 320ms var(--ease-out); }
+  .tk-prompt { color: var(--theme-prompt, #b5bd68); font-weight: 600; transition: color 320ms var(--ease-out); }
+
+  .cursor {
+    display: inline-block;
+    width: 7px;
+    height: 14px;
+    background: var(--theme-accent, #b5bd68);
+    border-radius: 1px;
+    vertical-align: text-bottom;
+    margin-left: 4px;
+    animation: blink 1.05s steps(2) infinite;
+    transition: background 320ms var(--ease-out);
+  }
+
+  .themes-list {
+    background: var(--voltage-panel);
+    border: 1px solid var(--voltage-line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .list-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 10px 16px;
+    background: #0a0907;
+    border-bottom: 1px solid var(--voltage-line);
+    font-size: 11px;
+    color: var(--voltage-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .list-head-meta {
+    color: var(--voltage-text-subtle);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .theme-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .theme-item {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--voltage-line);
+    cursor: pointer;
+    transition: background 180ms var(--ease-out),
+      transform 160ms var(--ease-out);
+    outline: none;
+    position: relative;
+  }
+
+  .theme-item:last-child {
+    border-bottom: none;
+  }
+
+  .theme-item:hover {
+    background: var(--voltage-overlay);
+  }
+
+  .theme-item:active {
+    transform: scale(0.99);
+  }
+
+  .theme-item:focus-visible {
+    box-shadow: inset 2px 0 0 var(--voltage-orange);
+  }
+
+  .theme-item[data-active="true"] {
+    background: rgba(255, 157, 0, 0.05);
+  }
+
+  .theme-item[data-active="true"]::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--voltage-orange);
+  }
+
+  .theme-swatch {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    background: var(--voltage-overlay);
+    border-radius: var(--radius-sm);
+  }
+
+  .swatch-bg {
+    width: 16px;
+    height: 22px;
+    border-radius: 1px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .swatch-fg {
+    width: 4px;
+    height: 22px;
+    border-radius: 1px;
+  }
+
+  .swatch-accent {
+    width: 4px;
+    height: 22px;
+    border-radius: 1px;
+  }
+
+  .theme-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .theme-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .theme-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-on-surface);
+    transition: color 180ms var(--ease-out);
+  }
+
+  .theme-item[data-active="true"] .theme-name {
+    color: var(--voltage-orange);
+  }
+
+  .theme-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--voltage-orange);
+    padding: 2px 6px;
+    background: rgba(255, 157, 0, 0.08);
+    border: 1px solid rgba(255, 157, 0, 0.22);
+    border-radius: var(--radius-sm);
+  }
+
+  .theme-note {
+    font-size: 11px;
+    color: var(--voltage-text-subtle);
+  }
+
+  .theme-file {
+    font-size: 11px;
+    color: var(--voltage-text-muted);
+  }
+
+  .theme-active-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1.5px solid var(--voltage-text-subtle);
+    transition: background 200ms var(--ease-out),
+      border-color 200ms var(--ease-out),
+      transform 220ms var(--ease-spring);
+    flex-shrink: 0;
+  }
+
+  .theme-item[data-active="true"] .theme-active-dot {
+    background: var(--voltage-orange);
+    border-color: var(--voltage-orange);
+    transform: scale(1.15);
+    box-shadow: 0 0 10px rgba(255, 157, 0, 0.4);
+  }
+
+  .themes-footnote {
+    padding: 16px;
+    border-top: 1px solid var(--voltage-line);
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: var(--voltage-text-muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .theme-item,
+    .theme-item:active,
+    .theme-active-dot,
+    .themes-featured,
+    .featured-bar,
+    .featured-name,
+    .featured-tag,
+    .featured-body,
+    .tk-kw, .tk-fn, .tk-type, .tk-str, .tk-prompt,
+    .cursor {
+      transition: opacity 100ms linear, color 100ms linear;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .themes-intro {
+      grid-template-columns: 1fr;
+      row-gap: 8px;
+    }
+    .themes-intro .section-num,
+    .themes-title,
+    .themes-lead {
+      grid-column: 1;
+    }
+    .themes-split {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+  }
+</style>

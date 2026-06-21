@@ -1,0 +1,250 @@
+---
+const links = [
+  { href: "#features", label: "Features" },
+  { href: "#performance", label: "Performance" },
+  { href: "#themes", label: "Themes" },
+  { href: "#install", label: "Install" },
+];
+
+const GITHUB_REPO = "diegoleteliers10/fasty";
+const GITHUB_URL = `https://github.com/${GITHUB_REPO}`;
+
+type RepoData = { stars: number; url: string };
+
+const fetchRepo = async (): Promise<RepoData> => {
+  try {
+    const response = await fetch(`https://api.github.com/repos/${GITHUB_REPO}`, {
+      headers: { Accept: "application/vnd.github+json", "User-Agent": "fasty-site" },
+    });
+    if (!response.ok) return { stars: 0, url: GITHUB_URL };
+    const data = (await response.json()) as { stargazers_count?: number; html_url?: string };
+    return {
+      stars: typeof data.stargazers_count === "number" ? data.stargazers_count : 0,
+      url: typeof data.html_url === "string" ? data.html_url : GITHUB_URL,
+    };
+  } catch {
+    return { stars: 0, url: GITHUB_URL };
+  }
+};
+
+const formatStars = (n: number): string => {
+  if (n < 1000) return String(n);
+  if (n < 10_000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "k";
+  if (n < 1_000_000) return Math.round(n / 1000) + "k";
+  return (n / 1_000_000).toFixed(1).replace(/\.0$/, "") + "m";
+};
+
+const { stars, url } = await fetchRepo();
+const starsLabel = stars > 0 ? formatStars(stars) : null;
+---
+
+<header class="nav">
+  <div class="container nav-inner">
+    <a class="brand" href="/" aria-label="Fasty home">
+      <span class="brand-mark" aria-hidden="true">
+        <img src="/fastySmallIcon.png" alt="" width="22" height="22" />
+      </span>
+      <span class="brand-name">fasty</span>
+      <span class="brand-tag mono">v0.3.9</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Primary">
+      {links.map((l) => (
+        <a href={l.href} class="nav-link mono">{l.label}</a>
+      ))}
+    </nav>
+
+    <div class="nav-actions">
+      <a
+        class="github-badge mono"
+        href={url}
+        target="_blank"
+        rel="noreferrer"
+        aria-label={`View Fasty on GitHub${starsLabel ? `, ${stars} stars` : ""}`}
+        title={`${stars} stars on GitHub`}
+      >
+        <svg class="github-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.36 6.84 9.72.5.09.68-.22.68-.49v-1.7c-2.78.62-3.37-1.36-3.37-1.36-.46-1.18-1.11-1.49-1.11-1.49-.91-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.36-2.22-.26-4.55-1.13-4.55-5.04 0-1.11.39-2.02 1.03-2.74-.1-.26-.45-1.3.1-2.71 0 0 .84-.27 2.75 1.05A9.4 9.4 0 0112 6.84c.85 0 1.7.12 2.5.34 1.91-1.32 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.74 0 3.92-2.34 4.78-4.57 5.03.36.32.68.94.68 1.9v2.81c0 .27.18.59.69.49A10.04 10.04 0 0022 12.25C22 6.58 17.52 2 12 2z"/>
+        </svg>
+        <span class="github-stars">{starsLabel ?? "—"}</span>
+        <svg class="github-star" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 2.5l2.95 6.34 6.55.81-4.86 4.63 1.27 6.72L12 17.77l-5.91 3.23 1.27-6.72L2.5 9.65l6.55-.81L12 2.5z"/>
+        </svg>
+      </a>
+      <a class="btn btn-primary nav-cta" href="#install">
+        <span>Install</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<style>
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    background: rgba(8, 8, 8, 0.72);
+    border-bottom: 1px solid var(--voltage-line);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    height: 64px;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    color: var(--color-on-surface);
+  }
+
+  .brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
+    border: 1px solid var(--voltage-line);
+    box-shadow: 0 0 18px -6px rgba(255, 157, 0, 0.25);
+  }
+
+  .brand-name {
+    line-height: 1;
+    font-family: var(--font-mono);
+    letter-spacing: -0.02em;
+  }
+
+  .brand-tag {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--voltage-orange);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 157, 0, 0.08);
+    border: 1px solid rgba(255, 157, 0, 0.22);
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .nav-link {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--voltage-text-muted);
+    padding: 6px 12px;
+    border-radius: var(--radius);
+    transition: color 150ms var(--ease-out), background 150ms var(--ease-out);
+  }
+
+  .nav-link:hover {
+    color: var(--color-on-surface);
+    background: var(--voltage-overlay);
+  }
+
+  .nav-link:active {
+    transform: scale(0.97);
+  }
+
+  .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .github-badge {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 34px;
+    padding: 0 12px;
+    border-radius: var(--radius);
+    background: var(--voltage-panel);
+    border: 1px solid var(--voltage-line);
+    color: var(--color-on-surface);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    transition: color 180ms var(--ease-out),
+      border-color 180ms var(--ease-out),
+      background 180ms var(--ease-out),
+      transform 160ms var(--ease-out);
+    white-space: nowrap;
+  }
+
+  .github-badge:hover {
+    color: var(--voltage-orange);
+    border-color: var(--voltage-orange);
+    background: rgba(255, 157, 0, 0.04);
+  }
+
+  .github-badge:active {
+    transform: scale(0.97);
+  }
+
+  .github-icon {
+    color: var(--voltage-text-muted);
+    transition: color 180ms var(--ease-out);
+    flex-shrink: 0;
+  }
+
+  .github-badge:hover .github-icon {
+    color: var(--voltage-orange);
+  }
+
+  .github-stars {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .github-star {
+    color: var(--voltage-orange);
+    transition: color 180ms var(--ease-out),
+      transform 220ms var(--ease-out);
+    flex-shrink: 0;
+  }
+
+  .github-badge:hover .github-star {
+    color: var(--voltage-yellow);
+    transform: scale(1.15);
+  }
+
+  .nav-cta {
+    height: 34px;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+
+  @media (max-width: 720px) {
+    .nav-links {
+      display: none;
+    }
+    .brand-tag {
+      display: none;
+    }
+    .github-badge {
+      padding: 0 10px;
+      gap: 6px;
+    }
+  }
+</style>

@@ -1,0 +1,465 @@
+---
+type Platform = {
+  id: "macos" | "linux" | "windows" | "source";
+  label: string;
+  command: string;
+  hint: string;
+};
+
+const platforms: Platform[] = [
+  {
+    id: "macos",
+    label: "macOS",
+    command: "curl -fsSL https://raw.githubusercontent.com/diegoleteliers10/fasty/main/instalar.sh | bash",
+    hint: "Apple Silicon & Intel · installs to /Applications · CLI symlink to /usr/local/bin/fasty",
+  },
+  {
+    id: "linux",
+    label: "Linux",
+    command: "curl -fsSL https://raw.githubusercontent.com/diegoleteliers10/fasty/main/instalar.sh | bash",
+    hint: "Wayland & X11 · installs to ~/.local/bin/fasty · honors $FASTY_USER_INSTALL=1",
+  },
+  {
+    id: "windows",
+    label: "Windows",
+    command: "irm https://raw.githubusercontent.com/diegoleteliers10/fasty/main/instalar.ps1 | iex",
+    hint: "Windows 10+ · PowerShell 5+ · auto-registers Start Menu shortcut on first launch",
+  },
+  {
+    id: "source",
+    label: "From source",
+    command: "git clone https://github.com/diegoleteliers10/fasty && cd fasty && cargo build --release",
+    hint: "Rust 1.78+ · 38 crates · ~90s on M-series · LTO + strip enabled in release profile",
+  },
+];
+---
+
+<section class="section install" id="install">
+  <div class="container">
+    <header class="install-intro">
+      <span class="section-num mono">[04 / 04]</span>
+      <h2 class="install-title">
+        One curl.<br />
+        You're in.
+      </h2>
+      <p class="install-lead">
+        The installer scripts detect your OS and architecture, pull the
+        matching release, and drop the binary where it belongs. No daemon.
+        No background service. No telemetry phone-home.
+      </p>
+    </header>
+
+    <div class="install-card">
+      <div class="install-tabs" role="tablist">
+        {platforms.map((p, i) => (
+          <button
+            class="install-tab mono"
+            role="tab"
+            data-platform={p.id}
+            data-active={i === 0 ? "true" : undefined}
+            aria-selected={i === 0 ? "true" : "false"}
+            type="button"
+          >
+            {p.label}
+          </button>
+        ))}
+        <span class="install-tab-indicator mono" aria-hidden="true"></span>
+      </div>
+
+      {platforms.map((p, i) => (
+        <div
+          class="install-pane"
+          data-platform={p.id}
+          data-active={i === 0 ? "true" : undefined}
+          role="tabpanel"
+          hidden={i !== 0}
+        >
+          <div class="install-cmd mono">
+            <span class="install-prompt">$</span>
+            <code class="install-code">{p.command}</code>
+            <button class="install-copy mono" type="button" aria-label="Copy command" data-copy={p.command}>
+              <svg class="copy-icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2" stroke="currentColor" stroke-width="1.6"/>
+              </svg>
+              <svg class="copy-icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span class="copy-label">copy</span>
+            </button>
+          </div>
+          <p class="install-hint mono">{p.hint}</p>
+        </div>
+      ))}
+    </div>
+
+    <p class="install-footnote mono">
+      Manual builds and per-arch archives on the
+      <a href="https://github.com/diegoleteliers10/fasty/releases" target="_blank" rel="noreferrer">releases page</a>.
+      First-run config lives at <span class="inline-mono">~/.config/fasty/fasty.toml</span>.
+    </p>
+  </div>
+</section>
+
+<script>
+  const tabs = document.querySelectorAll<HTMLButtonElement>(".install-tab");
+  const panes = document.querySelectorAll<HTMLElement>(".install-pane");
+  const indicator = document.querySelector<HTMLElement>(".install-tab-indicator");
+
+  const moveIndicator = (tab: HTMLElement, instant = false) => {
+    if (!indicator) return;
+    if (instant) {
+      indicator.style.transition = "none";
+    } else {
+      indicator.style.transition = "";
+    }
+    const parent = tab.parentElement;
+    if (!parent) return;
+    const parentRect = parent.getBoundingClientRect();
+    const tabRect = tab.getBoundingClientRect();
+    const x = tabRect.left - parentRect.left;
+    indicator.style.width = `${tabRect.width}px`;
+    indicator.style.transform = `translateX(${x}px)`;
+    if (instant) {
+      void indicator.offsetWidth;
+      indicator.style.transition = "";
+    }
+  };
+
+  const activeTab = document.querySelector<HTMLButtonElement>('.install-tab[data-active="true"]');
+  if (activeTab) moveIndicator(activeTab, true);
+
+  const observer = new ResizeObserver(() => {
+    const active = document.querySelector<HTMLButtonElement>('.install-tab[data-active="true"]');
+    if (active) moveIndicator(active, true);
+  });
+  const tabsContainer = document.querySelector<HTMLElement>(".install-tabs");
+  if (tabsContainer) observer.observe(tabsContainer);
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const target = tab.dataset.platform;
+      if (!target) return;
+      tabs.forEach((t) => {
+        const isActive = t.dataset.platform === target;
+        t.dataset.active = isActive ? "true" : undefined;
+        t.setAttribute("aria-selected", isActive ? "true" : "false");
+      });
+      panes.forEach((p) => {
+        const isActive = p.dataset.platform === target;
+        p.dataset.active = isActive ? "true" : undefined;
+        p.hidden = !isActive;
+      });
+      moveIndicator(tab);
+    });
+  });
+
+  const copyButtons = document.querySelectorAll<HTMLButtonElement>(".install-copy");
+  copyButtons.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const text = btn.dataset.copy;
+      if (!text) return;
+      try {
+        await navigator.clipboard.writeText(text);
+        btn.classList.add("is-copied");
+        window.setTimeout(() => {
+          btn.classList.remove("is-copied");
+        }, 1600);
+      } catch {
+        // No clipboard permission — silent fallback
+      }
+    });
+  });
+</script>
+
+<style>
+  .install {
+    border-top: 1px solid var(--voltage-line);
+    padding-block: 96px;
+    background: var(--voltage-deep);
+  }
+
+  .install-intro {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    column-gap: 32px;
+    row-gap: 20px;
+    align-items: baseline;
+    max-width: 920px;
+    margin-bottom: 48px;
+  }
+
+  .install-intro .section-num {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 11px;
+    color: var(--voltage-text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding-top: 12px;
+  }
+
+  .install-title {
+    grid-column: 2;
+    grid-row: 1;
+    font-family: var(--font-sans);
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    color: var(--color-on-surface);
+  }
+
+  .install-lead {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--voltage-text-muted);
+    max-width: 60ch;
+  }
+
+  .inline-mono {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    color: var(--color-on-surface);
+    background: var(--voltage-overlay);
+    border: 1px solid var(--voltage-line);
+    border-radius: var(--radius-sm);
+    padding: 0 6px;
+  }
+
+  .install-card {
+    background: var(--voltage-panel);
+    border: 1px solid var(--voltage-line);
+    border-radius: 6px;
+    overflow: hidden;
+    max-width: 920px;
+  }
+
+  .install-tabs {
+    display: flex;
+    position: relative;
+    border-bottom: 1px solid var(--voltage-line);
+    background: #0a0907;
+    overflow-x: auto;
+  }
+
+  .install-tab {
+    padding: 14px 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: var(--voltage-text-muted);
+    border-right: 1px solid var(--voltage-line);
+    position: relative;
+    transition: color 180ms var(--ease-out),
+      background 180ms var(--ease-out),
+      transform 160ms var(--ease-out);
+    white-space: nowrap;
+  }
+
+  .install-tab:hover {
+    color: var(--color-on-surface);
+    background: var(--voltage-overlay);
+  }
+
+  .install-tab:active {
+    transform: scale(0.97);
+  }
+
+  .install-tab[data-active="true"] {
+    color: var(--color-on-surface);
+    background: var(--voltage-panel);
+  }
+
+  .install-tab-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 0;
+    background: var(--voltage-orange);
+    transition: transform 280ms var(--ease-out),
+      width 280ms var(--ease-out);
+    pointer-events: none;
+    will-change: transform, width;
+  }
+
+  .install-pane {
+    padding: 28px 24px 20px;
+  }
+
+  .install-pane[hidden] {
+    display: none;
+  }
+
+  .install-cmd {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 18px;
+    background: var(--voltage-deep);
+    border: 1px solid var(--voltage-line);
+    border-radius: 4px;
+    font-size: 14px;
+  }
+
+  .install-prompt {
+    color: var(--voltage-orange);
+    font-weight: 700;
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .install-code {
+    flex: 1;
+    color: var(--color-on-surface);
+    background: transparent;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .install-copy {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--voltage-text-muted);
+    background: transparent;
+    border: 1px solid var(--voltage-line);
+    border-radius: var(--radius-sm);
+    transition: color 180ms var(--ease-out),
+      border-color 180ms var(--ease-out),
+      background 180ms var(--ease-out),
+      transform 160ms var(--ease-out);
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .install-copy:hover {
+    color: var(--voltage-orange);
+    border-color: var(--voltage-orange);
+  }
+
+  .install-copy:active {
+    transform: scale(0.95);
+  }
+
+  .install-copy.is-copied {
+    color: #6ec77a;
+    border-color: #6ec77a;
+    background: rgba(110, 199, 122, 0.08);
+  }
+
+  .copy-icon-copy,
+  .copy-icon-check {
+    flex-shrink: 0;
+    transition: transform 220ms var(--ease-out),
+      opacity 180ms var(--ease-out);
+  }
+
+  .copy-icon-check {
+    position: absolute;
+    transform: scale(0.5) rotate(-30deg);
+    opacity: 0;
+  }
+
+  .install-copy .copy-icon-copy {
+    position: relative;
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+
+  .install-copy.is-copied .copy-icon-copy {
+    transform: scale(0.5) rotate(30deg);
+    opacity: 0;
+  }
+
+  .install-copy.is-copied .copy-icon-check {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+
+  .install-copy .copy-icon-check,
+  .install-copy .copy-icon-copy {
+    margin-left: -20px;
+  }
+
+  .install-copy .copy-label {
+    transition: color 180ms var(--ease-out);
+  }
+
+  .install-copy.is-copied .copy-label::after {
+    content: "ied";
+  }
+
+  .install-copy .copy-label::after {
+    content: "";
+  }
+
+  .install-hint {
+    margin: 14px 0 0;
+    font-size: 12px;
+    color: var(--voltage-text-subtle);
+    line-height: 1.5;
+  }
+
+  .install-footnote {
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--voltage-text-muted);
+    line-height: 1.6;
+    max-width: 920px;
+  }
+
+  .install-footnote a {
+    color: var(--voltage-orange);
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 157, 0, 0.4);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 180ms var(--ease-out);
+  }
+
+  .install-footnote a:hover {
+    text-decoration-color: var(--voltage-orange);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .install-tab-indicator {
+      transition: none;
+    }
+    .copy-icon-copy,
+    .copy-icon-check {
+      transition: opacity 80ms linear;
+    }
+    .btn:active,
+    .nav-link:active,
+    .github-badge:active,
+    .install-tab:active,
+    .install-copy:active {
+      transform: none;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .install-intro {
+      grid-template-columns: 1fr;
+      row-gap: 8px;
+    }
+    .install-intro .section-num,
+    .install-title,
+    .install-lead {
+      grid-column: 1;
+    }
+    .install-code {
+      font-size: 11px;
+    }
+  }
+</style>

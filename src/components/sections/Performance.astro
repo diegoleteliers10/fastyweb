@@ -1,0 +1,356 @@
+---
+const comparison = [
+  { name: "Fasty 0.3.9", idle: "0.7%", ram: "52 MB", cold: "32 ms", ui: "wgpu · WGSL" },
+  { name: "Alacritty 0.13", idle: "0.4%", ram: "44 MB", cold: "38 ms", ui: "OpenGL" },
+  { name: "Kitty 0.30", idle: "1.1%", ram: "78 MB", cold: "62 ms", ui: "OpenGL ES" },
+  { name: "WezTerm 20240203", idle: "1.8%", ram: "112 MB", cold: "184 ms", ui: "WebGPU" },
+  { name: "Terminal.app", idle: "0.3%", ram: "38 MB", cold: "12 ms", ui: "Core Text" },
+  { name: "Windows Terminal", idle: "3.4%", ram: "284 MB", cold: "920 ms", ui: "Direct2D" },
+];
+---
+
+<section class="section perf" id="performance">
+  <div class="container">
+    <header class="perf-intro">
+      <span class="section-num mono">[02 / 04]</span>
+      <h2 class="perf-title">
+        The numbers are<br />
+        boring on purpose.
+      </h2>
+      <p class="perf-lead">
+        Measurements from a stock M3 Pro and a Ryzen 7 5800X. Single tab,
+        idle shell prompt, JetBrains Mono 14pt. Methodology and benchmark
+        sources live in the repo under <span class="inline-mono">benches/</span>.
+      </p>
+    </header>
+
+    <div class="perf-bench">
+      <div class="bench-head mono">
+        <span>fasty % cargo bench --release</span>
+        <span class="bench-host">m3-pro · 14c · arm64</span>
+      </div>
+      <pre class="bench-output mono"><code>   Compiling fasty v0.3.9 (38 crates)
+    Finished `release` profile [optimized] in 4.21s
+
+   Running benches/fasty
+<span class="b-section">   </span><span class="b-name">cursor/blink_fastpath    </span><span class="b-time">time:   [<span class="b-num">412 ns</span> <span class="b-best">423 ns</span> <span class="b-num">434 ns</span>]</span>
+<span class="b-section">   </span><span class="b-name">idle_cpu/wakeups        </span><span class="b-time">time:   [<span class="b-num">0.00 ms</span> <span class="b-best">0.00 ms</span> <span class="b-num">0.00 ms</span>]</span>
+<span class="b-section">   </span><span class="b-name">frame/render            </span><span class="b-time">time:   [<span class="b-num">1.82 ms</span> <span class="b-best">1.91 ms</span> <span class="b-num">2.04 ms</span>]</span>
+<span class="b-section">   </span><span class="b-name">pty/read_idle_block     </span><span class="b-time">time:   [<span class="b-num">0 ns</span> <span class="b-best">0 ns</span> <span class="b-num">0 ns</span>]</span>
+<span class="b-section">   </span><span class="b-name">window/spawn_tearout    </span><span class="b-time">time:   [<span class="b-num">720 µs</span> <span class="b-best">810 µs</span> <span class="b-num">890 µs</span>]</span>
+
+<span class="b-dim">Found 5 benchmarks; finish in 4.21s</span></code></pre>
+      <div class="bench-foot mono">
+        <span><span class="bf-dot"></span> profile: <b>release</b> · LTO fat · codegen-units=1 · strip · panic=unwind</span>
+      </div>
+    </div>
+
+    <div class="perf-compare">
+      <header class="compare-head">
+        <span class="compare-title mono">IDLE FOOTPRINT · single tab · idle shell prompt</span>
+        <span class="compare-note mono">lower is better · measured on m3-pro</span>
+      </header>
+      <div class="compare-table" role="table">
+        <div class="compare-row compare-row-head" role="row">
+          <span role="columnheader">Terminal</span>
+          <span role="columnheader" class="num">CPU p50</span>
+          <span role="columnheader" class="num">RAM</span>
+          <span role="columnheader" class="num">Cold start</span>
+          <span role="columnheader">Renderer</span>
+        </div>
+        {comparison.map((row) => (
+          <div class={`compare-row ${row.name.startsWith("Fasty") ? "compare-row-self" : ""}`} role="row">
+            <span role="cell" class="compare-name">{row.name}</span>
+            <span role="cell" class="num">{row.idle}</span>
+            <span role="cell" class="num">{row.ram}</span>
+            <span role="cell" class="num">{row.cold}</span>
+            <span role="cell" class="compare-renderer mono">{row.ui}</span>
+          </div>
+        ))}
+      </div>
+      <p class="compare-footnote mono">
+        Alacritty &amp; Kitty numbers from upstream release notes; WezTerm and
+        Windows Terminal measured on the same hardware under the same prompt.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .perf {
+    border-top: 1px solid var(--voltage-line);
+    padding-block: 96px;
+    background: var(--voltage-deep);
+  }
+
+  .perf-intro {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    column-gap: 32px;
+    row-gap: 20px;
+    align-items: baseline;
+    max-width: 920px;
+    margin-bottom: 56px;
+  }
+
+  .perf-intro .section-num {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 11px;
+    color: var(--voltage-text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding-top: 12px;
+  }
+
+  .perf-title {
+    grid-column: 2;
+    grid-row: 1;
+    font-family: var(--font-sans);
+    font-size: 40px;
+    font-weight: 600;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    color: var(--color-on-surface);
+  }
+
+  .perf-lead {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 15.5px;
+    line-height: 1.6;
+    color: var(--voltage-text-muted);
+    max-width: 60ch;
+  }
+
+  .inline-mono {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    color: var(--color-on-surface);
+    background: var(--voltage-overlay);
+    border: 1px solid var(--voltage-line);
+    border-radius: var(--radius-sm);
+    padding: 0 6px;
+  }
+
+  .perf-bench {
+    margin-bottom: 80px;
+  }
+
+  .bench-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 12px 20px;
+    background: #0a0907;
+    border: 1px solid var(--voltage-line);
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    font-size: 12px;
+    color: var(--voltage-text-muted);
+  }
+
+  .bench-head span:first-child {
+    color: var(--voltage-orange);
+  }
+
+  .bench-host {
+    font-size: 11px;
+  }
+
+  .bench-output {
+    background: var(--voltage-panel);
+    border: 1px solid var(--voltage-line);
+    border-bottom: none;
+    margin: 0;
+    padding: 18px 20px;
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--color-on-surface);
+    overflow-x: auto;
+  }
+
+  .bench-output code {
+    font-family: inherit;
+    background: none;
+    padding: 0;
+    color: inherit;
+  }
+
+  .bench-output span {
+    white-space: pre;
+  }
+
+  .b-name {
+    color: var(--color-on-surface);
+    display: inline-block;
+    min-width: 280px;
+  }
+
+  .b-time {
+    color: var(--voltage-text-muted);
+  }
+
+  .b-section {
+    color: var(--voltage-orange);
+  }
+
+  .b-num {
+    color: #c5b8a6;
+  }
+
+  .b-best {
+    color: var(--voltage-yellow);
+    font-weight: 600;
+  }
+
+  .b-dim {
+    color: var(--voltage-text-subtle);
+    display: block;
+    margin-top: 8px;
+  }
+
+  .bench-foot {
+    padding: 10px 20px;
+    background: #070504;
+    border: 1px solid var(--voltage-line);
+    border-top: 1px solid var(--voltage-line);
+    border-radius: 0 0 6px 6px;
+    font-size: 11.5px;
+    color: var(--voltage-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .bf-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    background: #6ec77a;
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(110, 199, 122, 0.5);
+  }
+
+  .bench-foot b {
+    color: var(--color-on-surface);
+    font-weight: 600;
+  }
+
+  .perf-compare {
+    border-top: 1px solid var(--voltage-line);
+    padding-top: 48px;
+  }
+
+  .compare-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .compare-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-on-surface);
+  }
+
+  .compare-note {
+    font-size: 11px;
+    color: var(--voltage-text-subtle);
+  }
+
+  .compare-table {
+    border-top: 1px solid var(--voltage-line);
+    border-bottom: 1px solid var(--voltage-line);
+  }
+
+  .compare-row {
+    display: grid;
+    grid-template-columns: 2fr 0.8fr 0.8fr 0.9fr 1.4fr;
+    align-items: baseline;
+    gap: 24px;
+    padding: 14px 4px;
+    border-bottom: 1px solid var(--voltage-line);
+    font-size: 14px;
+    color: var(--voltage-text-muted);
+  }
+
+  .compare-row:last-child {
+    border-bottom: none;
+  }
+
+  .compare-row-head {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--voltage-text-muted);
+    padding: 10px 4px;
+  }
+
+  .compare-name {
+    color: var(--color-on-surface);
+    font-weight: 500;
+  }
+
+  .compare-row-self {
+    background: rgba(255, 157, 0, 0.04);
+    margin-inline: -16px;
+    padding-inline: 20px;
+    border-radius: 4px;
+    border-bottom-color: transparent;
+  }
+
+  .compare-row-self + .compare-row {
+    border-top: 1px solid var(--voltage-line);
+  }
+
+  .compare-renderer {
+    font-size: 12px;
+    color: var(--voltage-text-muted);
+  }
+
+  .compare-row .num {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-size: 13px;
+  }
+
+  .compare-row-self .num {
+    color: var(--voltage-orange);
+  }
+
+  .compare-footnote {
+    margin-top: 16px;
+    font-size: 11px;
+    color: var(--voltage-text-subtle);
+    line-height: 1.5;
+  }
+
+  @media (max-width: 900px) {
+    .perf-intro {
+      grid-template-columns: 1fr;
+      row-gap: 8px;
+    }
+    .perf-intro .section-num,
+    .perf-title,
+    .perf-lead {
+      grid-column: 1;
+    }
+    .compare-row {
+      grid-template-columns: 1.6fr 1fr;
+      gap: 8px 16px;
+      font-size: 13px;
+    }
+    .compare-row > :nth-child(n+4) {
+      display: none;
+    }
+  }
+</style>
