@@ -33,49 +33,5 @@ const {
   </head>
   <body>
     <slot />
-
-    <script>
-      const tabs = document.querySelectorAll<HTMLButtonElement>(".install-tab");
-      const panes = document.querySelectorAll<HTMLElement>(".install-pane");
-
-      tabs.forEach((tab) => {
-        tab.addEventListener("click", () => {
-          const target = tab.dataset.platform;
-          if (!target) return;
-          tabs.forEach((t) => {
-            const isActive = t.dataset.platform === target;
-            t.dataset.active = isActive ? "true" : undefined;
-            t.setAttribute("aria-selected", isActive ? "true" : "false");
-          });
-          panes.forEach((p) => {
-            const isActive = p.dataset.platform === target;
-            p.dataset.active = isActive ? "true" : undefined;
-            p.hidden = !isActive;
-          });
-        });
-      });
-
-      const copyButtons = document.querySelectorAll<HTMLButtonElement>(".install-copy");
-      copyButtons.forEach((btn) => {
-        btn.addEventListener("click", async () => {
-          const text = btn.dataset.copy;
-          if (!text) return;
-          try {
-            await navigator.clipboard.writeText(text);
-            const label = btn.querySelector("span");
-            if (!label) return;
-            const original = label.textContent;
-            label.textContent = "copied";
-            btn.classList.add("is-copied");
-            window.setTimeout(() => {
-              label.textContent = original;
-              btn.classList.remove("is-copied");
-            }, 1400);
-          } catch {
-            // No clipboard permission — silent fallback
-          }
-        });
-      });
-    </script>
   </body>
 </html>
