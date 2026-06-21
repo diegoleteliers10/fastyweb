@@ -160,22 +160,26 @@ const platforms: Platform[] = [
   copyButtons.forEach((btn) => {
     const label = btn.querySelector<HTMLElement>(".copy-label");
     if (!label) return;
-    const original = label.textContent ?? "copy";
+    const originalText = label.textContent ?? "copy";
+    let resetTimer: number | null = null;
 
-    btn.addEventListener("click", async () => {
+    btn.addEventListener("click", () => {
       const text = btn.dataset.copy;
       if (!text) return;
-      try {
-        await navigator.clipboard.writeText(text);
-        label.textContent = "copied";
-        btn.classList.add("is-copied");
-        window.setTimeout(() => {
-          label.textContent = original;
-          btn.classList.remove("is-copied");
-        }, 1600);
-      } catch {
-        // No clipboard permission — silent fallback
-      }
+
+      label.textContent = "copied";
+      btn.classList.add("is-copied");
+      if (resetTimer !== null) window.clearTimeout(resetTimer);
+      resetTimer = window.setTimeout(() => {
+        label.textContent = originalText;
+        btn.classList.remove("is-copied");
+        resetTimer = null;
+      }, 1600);
+
+      void navigator.clipboard.writeText(text).catch(() => {
+        // Clipboard permission denied or unavailable.
+        // UI feedback already shown above — user knows click was received.
+      });
     });
   });
 </script>
@@ -372,42 +376,43 @@ const platforms: Platform[] = [
     position: relative;
     width: 14px;
     height: 14px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     flex-shrink: 0;
   }
 
   .copy-icon {
     position: absolute;
-    inset: 0;
-    margin: auto;
-    transition: transform 220ms var(--ease-out),
-      opacity 180ms var(--ease-out);
+    top: 0;
+    left: 0;
+    width: 14px;
+    height: 14px;
+    transition: opacity 180ms var(--ease-out),
+      transform 220ms var(--ease-out);
   }
 
   .copy-icon-copy {
-    transform: scale(1) rotate(0deg);
     opacity: 1;
+    transform: scale(1) rotate(0);
   }
 
   .copy-icon-check {
-    transform: scale(0.5) rotate(-30deg);
     opacity: 0;
+    transform: scale(0.4) rotate(-45deg);
   }
 
   .install-copy.is-copied .copy-icon-copy {
-    transform: scale(0.5) rotate(30deg);
     opacity: 0;
+    transform: scale(0.4) rotate(45deg);
   }
 
   .install-copy.is-copied .copy-icon-check {
-    transform: scale(1) rotate(0deg);
     opacity: 1;
+    transform: scale(1) rotate(0);
   }
 
   .copy-label {
     transition: color 180ms var(--ease-out);
+    min-width: 38px;
+    text-align: left;
   }
 
   .install-hint {
