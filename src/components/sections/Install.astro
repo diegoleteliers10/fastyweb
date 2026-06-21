@@ -77,16 +77,18 @@ const platforms: Platform[] = [
           <div class="install-cmd mono">
             <span class="install-prompt">$</span>
             <code class="install-code">{p.command}</code>
-            <button class="install-copy mono" type="button" aria-label="Copy command" data-copy={p.command}>
-              <svg class="copy-icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/>
-                <path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2" stroke="currentColor" stroke-width="1.6"/>
-              </svg>
-              <svg class="copy-icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <span class="copy-label">copy</span>
-            </button>
+              <button class="install-copy mono" type="button" aria-label="Copy command" data-copy={p.command}>
+                <span class="copy-icon-wrap" aria-hidden="true">
+                  <svg class="copy-icon copy-icon-copy" width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/>
+                    <path d="M16 8V6a2 2 0 00-2-2H6a2 2 0 00-2 2v8a2 2 0 002 2h2" stroke="currentColor" stroke-width="1.6"/>
+                  </svg>
+                  <svg class="copy-icon copy-icon-check" width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                <span class="copy-label">copy</span>
+              </button>
           </div>
           <p class="install-hint mono">{p.hint}</p>
         </div>
@@ -156,13 +158,19 @@ const platforms: Platform[] = [
 
   const copyButtons = document.querySelectorAll<HTMLButtonElement>(".install-copy");
   copyButtons.forEach((btn) => {
+    const label = btn.querySelector<HTMLElement>(".copy-label");
+    if (!label) return;
+    const original = label.textContent ?? "copy";
+
     btn.addEventListener("click", async () => {
       const text = btn.dataset.copy;
       if (!text) return;
       try {
         await navigator.clipboard.writeText(text);
+        label.textContent = "copied";
         btn.classList.add("is-copied");
         window.setTimeout(() => {
+          label.textContent = original;
           btn.classList.remove("is-copied");
         }, 1600);
       } catch {
@@ -340,7 +348,9 @@ const platforms: Platform[] = [
       background 180ms var(--ease-out),
       transform 160ms var(--ease-out);
     flex-shrink: 0;
-    overflow: hidden;
+    min-width: 76px;
+    justify-content: center;
+    position: relative;
   }
 
   .install-copy:hover {
@@ -358,23 +368,32 @@ const platforms: Platform[] = [
     background: rgba(110, 199, 122, 0.08);
   }
 
-  .copy-icon-copy,
-  .copy-icon-check {
+  .copy-icon-wrap {
+    position: relative;
+    width: 14px;
+    height: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
+  }
+
+  .copy-icon {
+    position: absolute;
+    inset: 0;
+    margin: auto;
     transition: transform 220ms var(--ease-out),
       opacity 180ms var(--ease-out);
   }
 
-  .copy-icon-check {
-    position: absolute;
-    transform: scale(0.5) rotate(-30deg);
-    opacity: 0;
-  }
-
-  .install-copy .copy-icon-copy {
-    position: relative;
+  .copy-icon-copy {
     transform: scale(1) rotate(0deg);
     opacity: 1;
+  }
+
+  .copy-icon-check {
+    transform: scale(0.5) rotate(-30deg);
+    opacity: 0;
   }
 
   .install-copy.is-copied .copy-icon-copy {
@@ -387,21 +406,8 @@ const platforms: Platform[] = [
     opacity: 1;
   }
 
-  .install-copy .copy-icon-check,
-  .install-copy .copy-icon-copy {
-    margin-left: -20px;
-  }
-
-  .install-copy .copy-label {
+  .copy-label {
     transition: color 180ms var(--ease-out);
-  }
-
-  .install-copy.is-copied .copy-label::after {
-    content: "ied";
-  }
-
-  .install-copy .copy-label::after {
-    content: "";
   }
 
   .install-hint {
