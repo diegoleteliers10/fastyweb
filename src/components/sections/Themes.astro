@@ -131,7 +131,7 @@ const STORAGE_KEY = "fasty-theme";
 <section class="section themes" id="themes">
   <div class="container">
     <header class="themes-intro">
-      <span class="section-num mono">[03 / 04]</span>
+      <span class="section-num mono">[02 / 04]</span>
       <h2 class="themes-title">
         Five built-ins,<br />
         infinite drop-ins.
@@ -145,7 +145,7 @@ const STORAGE_KEY = "fasty-theme";
       </p>
     </header>
 
-    <div class="themes-split">
+    <div class="themes-split" data-reveal>
       <div class="themes-featured">
         <header class="featured-bar">
           <div class="featured-dots" aria-hidden="true">
@@ -493,12 +493,14 @@ const STORAGE_KEY = "fasty-theme";
     border-bottom: none;
   }
 
-  .theme-item:hover {
-    background: var(--voltage-overlay);
+  @media (hover: hover) and (pointer: fine) {
+    .theme-item:hover {
+      background: var(--voltage-overlay);
+    }
   }
 
   .theme-item:active {
-    transform: scale(0.99);
+    transform: scale(0.98);
   }
 
   .theme-item:focus-visible {
@@ -509,7 +511,7 @@ const STORAGE_KEY = "fasty-theme";
     background: rgba(255, 157, 0, 0.05);
   }
 
-  .theme-item[data-active="true"]::before {
+  .theme-item::before {
     content: "";
     position: absolute;
     left: 0;
@@ -517,6 +519,13 @@ const STORAGE_KEY = "fasty-theme";
     bottom: 0;
     width: 2px;
     background: var(--voltage-orange);
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 320ms var(--ease-out);
+  }
+
+  .theme-item[data-active="true"]::before {
+    transform: scaleY(1);
   }
 
   .theme-swatch {

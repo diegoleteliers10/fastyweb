@@ -107,110 +107,12 @@ const numericVersion = stripVersionPrefix(version);
 </section>
 
 <script>
-  const initTerminal = () => {
-    const terminal = document.querySelector("[data-terminal]") as HTMLElement | null;
-    if (!terminal) return;
-
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reduceMotion) return;
-
-    const typed = terminal.querySelectorAll<HTMLElement>("[data-typed]");
-    const outputs = terminal.querySelectorAll<HTMLElement>("[data-output]");
-    const cursors = terminal.querySelectorAll<HTMLElement>("[data-cursor]");
-
-    if (typed.length < 2 || outputs.length < 2 || cursors.length < 3) return;
-
-    const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
-    const rand = (min: number, max: number) => min + Math.random() * (max - min);
-
-    outputs.forEach((o) => (o.hidden = true));
-    cursors.forEach((c, i) => {
-      if (i > 0) (c as HTMLElement).style.display = "none";
-    });
-    typed.forEach((el) => (el.textContent = ""));
-
-    const typeText = async (el: HTMLElement, text: string) => {
-      el.textContent = "";
-      for (const ch of text) {
-        el.textContent += ch;
-        const isPunct = ch === " " || ch === "-" || ch === "/" || ch === ".";
-        await sleep(isPunct ? rand(35, 55) : rand(28, 52));
-      }
-    };
-
-    const revealOutput = async (output: HTMLElement, stagger: number) => {
-      const lines = Array.from(output.children) as HTMLElement[];
-      lines.forEach((line) => {
-        line.style.opacity = "0";
-        line.style.transform = "translateY(3px)";
-      });
-      output.hidden = false;
-      void output.offsetHeight;
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        line.style.transition = `opacity 220ms var(--ease-out), transform 220ms var(--ease-out)`;
-        line.style.opacity = "1";
-        line.style.transform = "none";
-        await sleep(stagger);
-      }
-    };
-
-    const setCursor = (active: number) => {
-      cursors.forEach((c, i) => {
-        (c as HTMLElement).style.display = i === active ? "inline-block" : "none";
-      });
-    };
-
-    const reset = () => {
-      typed.forEach((el) => (el.textContent = ""));
-      outputs.forEach((o) => {
-        o.hidden = true;
-        Array.from(o.children).forEach((line) => {
-          (line as HTMLElement).style.opacity = "";
-          (line as HTMLElement).style.transform = "";
-          (line as HTMLElement).style.transition = "";
-        });
-      });
-      setCursor(0);
-    };
-
-    const cycle = async () => {
-      while (true) {
-        await sleep(1800);
-
-        await typeText(typed[0], typed[0].dataset.typed ?? "");
-        await sleep(300);
-        setCursor(0);
-
-        if (outputs[0]) {
-          await revealOutput(outputs[0], 90);
-          await sleep(600);
-        }
-
-        setCursor(1);
-        await typeText(typed[1], typed[1].dataset.typed ?? "");
-        await sleep(400);
-        setCursor(1);
-
-        if (outputs[1]) {
-          await revealOutput(outputs[1], 60);
-          await sleep(400);
-        }
-
-        setCursor(2);
-        await sleep(5500);
-
-        reset();
-      }
-    };
-
-    cycle();
-  };
+  import { initTerminalCycles } from "../../lib/terminalCycle";
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initTerminal, { once: true });
+    document.addEventListener("DOMContentLoaded", initTerminalCycles, { once: true });
   } else {
-    initTerminal();
+    initTerminalCycles();
   }
 </script>
 

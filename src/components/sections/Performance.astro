@@ -33,14 +33,12 @@ const comparison = [
     ansiErr: "± 0.32s",
   },
 ];
-
-const benchmarkSource = "scripts/benchmark_e2e.py · 3 runs · Acer Aspire 3 · CachyOS";
 ---
 
 <section class="section perf" id="performance">
   <div class="container">
     <header class="perf-intro">
-      <span class="section-num mono">[02 / 04]</span>
+      <span class="section-num mono">[04 / 04]</span>
       <h2 class="perf-title">
         The numbers are<br />
         boring on purpose.
@@ -48,12 +46,10 @@ const benchmarkSource = "scripts/benchmark_e2e.py · 3 runs · Acer Aspire 3 · 
       <p class="perf-lead">
         Measurements on an Acer Aspire 3 with a Ryzen 5 and 8 GB of RAM,
         running CachyOS. Single tab, idle shell prompt, JetBrains Mono 14pt.
-        Methodology and benchmark sources live in the repo under
-        <span class="inline-mono">benches/</span>.
       </p>
     </header>
 
-    <div class="perf-bench">
+    <div class="perf-bench" data-reveal>
       <div class="bench-head mono">
         <span>fasty % cargo bench --release</span>
         <span class="bench-host">cachyos · ryzen 5 · 8gb</span>
@@ -69,50 +65,14 @@ const benchmarkSource = "scripts/benchmark_e2e.py · 3 runs · Acer Aspire 3 · 
 <span class="b-dim">Found 3 benchmarks; finish in 4.21s</span></code></pre>
       <div class="bench-foot mono">
         <span><span class="bf-dot"></span> profile: <b>release</b> · LTO fat · codegen-units=1 · strip · panic=unwind</span>
+        <a class="bench-link mono" href="https://github.com/diegoleteliers10/fasty/blob/main/benches/parser_bench.rs" target="_blank" rel="noreferrer">parser_bench.rs →</a>
       </div>
-
-      <dl class="bench-glossary">
-        <div class="bench-key">
-          <dt><span class="inline-mono">parser_plain_text</span></dt>
-          <dd>
-            Feeds <span class="inline-mono">VtParser::feed_str()</span> a 10 KB buffer of plain text
-            (no escapes). Throughput floor: how fast bytes from the PTY move through the
-            parser when nothing fancy is happening — <span class="inline-mono">cargo build</span> output, <span class="inline-mono">cat</span> a log file, <span class="inline-mono">git log</span>.
-          </dd>
-        </div>
-        <div class="bench-key">
-          <dt><span class="inline-mono">parser_sgr_ansi</span></dt>
-          <dd>
-            10 KB of SGR escape sequences (<span class="inline-mono">\x1b[31m</span>red<span class="inline-mono">\x1b[0m</span>…) — the colour codes every
-            <span class="inline-mono">ls --color</span>, <span class="inline-mono">git diff</span>, and test runner emits.
-            The slower path: each byte can be part of a multi-byte escape or trigger a state
-            transition in the parser state machine.
-          </dd>
-        </div>
-        <div class="bench-key">
-          <dt><span class="inline-mono">parser_complex</span></dt>
-          <dd>
-            Mixed cursor moves, SGR, text, and carriage returns — what a real TUI like
-            <span class="inline-mono">htop</span> or <span class="inline-mono">btop</span> emits at 60 Hz to redraw its dashboard.
-            Tracks whether the parser keeps up with a full-screen redraw cycle.
-          </dd>
-        </div>
-      </dl>
-
-      <p class="bench-summary">
-        Every byte the shell writes passes through <span class="inline-mono">feed_str()</span> before it reaches the
-        cell grid. The median parser cost per 10 KB chunk is under <b>0.7 ms</b> — fast enough
-        to parse the output of a heavy <span class="inline-mono">cargo test --release</span> run in real time
-        without ever stalling the renderer. Run the bench yourself with
-        <span class="inline-mono">cargo bench --bench parser_bench</span> or read the source at
-        <a href="https://github.com/diegoleteliers10/fasty/blob/main/benches/parser_bench.rs" target="_blank" rel="noreferrer">benches/parser_bench.rs</a>.
-      </p>
     </div>
 
-    <div class="perf-compare">
+    <div class="perf-compare" data-reveal data-reveal-index="1">
       <header class="compare-head">
         <span class="compare-title mono">E2E BENCHMARKS · startup + throughput</span>
-        <span class="compare-note mono">{benchmarkSource} · run the script to reproduce</span>
+        <a class="compare-link mono" href="https://github.com/diegoleteliers10/fasty/blob/main/scripts/benchmark_e2e.py" target="_blank" rel="noreferrer">scripts/benchmark_e2e.py →</a>
       </header>
       <div class="compare-table" role="table">
         <div class="compare-row compare-row-head" role="row">
@@ -143,7 +103,6 @@ const benchmarkSource = "scripts/benchmark_e2e.py · 3 runs · Acer Aspire 3 · 
         Startup = <span class="inline-mono">sh -c true</span> round-trip ·
         Plain text = <span class="inline-mono">cat</span> 100k lines ·
         ANSI/SGR = <span class="inline-mono">cat</span> 50k lines of styled output ·
-        Source: <a href="https://github.com/diegoleteliers10/fasty/blob/main/scripts/benchmark_e2e.py" target="_blank" rel="noreferrer">scripts/benchmark_e2e.py</a> ·
         Fasty compiled with <span class="inline-mono">cargo build --release</span>.
       </p>
     </div>
@@ -312,65 +271,17 @@ const benchmarkSource = "scripts/benchmark_e2e.py · 3 runs · Acer Aspire 3 · 
     font-weight: 600;
   }
 
-  .bench-glossary {
-    margin: 28px 0 0;
-    padding: 0;
-    display: grid;
-    gap: 14px;
-  }
-
-  .bench-key {
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    gap: 20px;
-    align-items: baseline;
-    padding: 14px 0;
-    border-top: 1px solid var(--voltage-line);
-  }
-
-  .bench-key:last-child {
-    border-bottom: 1px solid var(--voltage-line);
-  }
-
-  .bench-key dt {
-    margin: 0;
-    font-size: 13px;
-  }
-
-  .bench-key dd {
-    margin: 0;
-    font-size: 13.5px;
-    line-height: 1.55;
+  .bench-link {
+    margin-left: auto;
     color: var(--voltage-text-muted);
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    transition: color 180ms var(--ease-out);
   }
 
-  .bench-key b {
-    color: var(--color-on-surface);
-    font-weight: 600;
-  }
-
-  .bench-summary {
-    margin: 20px 0 0;
-    padding: 0;
-    font-size: 14px;
-    line-height: 1.65;
-    color: var(--voltage-text-muted);
-  }
-
-  .bench-summary b {
-    color: var(--color-on-surface);
-    font-weight: 600;
-  }
-
-  .bench-summary a {
+  .bench-link:hover {
     color: var(--voltage-orange);
-    text-decoration: underline;
-    text-decoration-color: rgba(255, 157, 0, 0.4);
-    text-underline-offset: 3px;
-  }
-
-  .bench-summary a:hover {
-    text-decoration-color: var(--voltage-orange);
   }
 
   .perf-compare {
@@ -395,9 +306,16 @@ const benchmarkSource = "scripts/benchmark_e2e.py · 3 runs · Acer Aspire 3 · 
     color: var(--color-on-surface);
   }
 
-  .compare-note {
+  .compare-link {
+    color: var(--voltage-text-muted);
+    text-decoration: none;
     font-size: 11px;
-    color: var(--voltage-text-subtle);
+    letter-spacing: 0.02em;
+    transition: color 180ms var(--ease-out);
+  }
+
+  .compare-link:hover {
+    color: var(--voltage-orange);
   }
 
   .compare-table {
@@ -415,6 +333,14 @@ const benchmarkSource = "scripts/benchmark_e2e.py · 3 runs · Acer Aspire 3 · 
     font-size: 13.5px;
     color: var(--voltage-text-muted);
   }
+
+  .perf-compare.is-revealed .compare-row {
+    animation: fade-up 500ms var(--ease-out) both;
+  }
+
+  .perf-compare.is-revealed .compare-row:nth-child(2) { animation-delay: 80ms; }
+  .perf-compare.is-revealed .compare-row:nth-child(3) { animation-delay: 160ms; }
+  .perf-compare.is-revealed .compare-row:nth-child(4) { animation-delay: 240ms; }
 
   .compare-row:last-child {
     border-bottom: none;

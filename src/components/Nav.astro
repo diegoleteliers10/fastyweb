@@ -2,10 +2,10 @@
 import { fetchRepo, formatStars } from "../lib/repo";
 
 const links = [
+  { href: "#install", label: "Install" },
+  { href: "#themes", label: "Themes" },
   { href: "#features", label: "Features" },
   { href: "#performance", label: "Performance" },
-  { href: "#themes", label: "Themes" },
-  { href: "#install", label: "Install" },
 ];
 
 const { stars, version, url } = await fetchRepo();
@@ -130,9 +130,11 @@ const starsLabel = stars > 0 ? formatStars(stars) : null;
     transition: color 150ms var(--ease-out), background 150ms var(--ease-out);
   }
 
-  .nav-link:hover {
-    color: var(--color-on-surface);
-    background: var(--voltage-overlay);
+  @media (hover: hover) and (pointer: fine) {
+    .nav-link:hover {
+      color: var(--color-on-surface);
+      background: var(--voltage-overlay);
+    }
   }
 
   .nav-link:active {
@@ -167,10 +169,12 @@ const starsLabel = stars > 0 ? formatStars(stars) : null;
     white-space: nowrap;
   }
 
-  .github-badge:hover {
-    color: var(--voltage-orange);
-    border-color: var(--voltage-orange);
-    background: rgba(255, 157, 0, 0.04);
+  @media (hover: hover) and (pointer: fine) {
+    .github-badge:hover {
+      color: var(--voltage-orange);
+      border-color: var(--voltage-orange);
+      background: rgba(255, 157, 0, 0.04);
+    }
   }
 
   .github-badge:active {

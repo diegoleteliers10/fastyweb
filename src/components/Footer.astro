@@ -87,20 +87,14 @@ const year = new Date().getFullYear();
       transform 160ms var(--ease-out);
   }
 
-  .footer-mark:hover {
-    opacity: 0.8;
-  }
-
-  .footer-mark:active {
-    transform: scale(0.97);
-  }
-
   .footer-mark img {
     display: block;
   }
 
-  .footer-mark:hover {
-    opacity: 0.8;
+  @media (hover: hover) and (pointer: fine) {
+    .footer-mark:hover {
+      opacity: 0.8;
+    }
   }
 
   .footer-mark:active {
@@ -165,13 +159,15 @@ const year = new Date().getFullYear();
     transition: transform 220ms var(--ease-out);
   }
 
-  .footer-col-link:hover {
-    color: var(--voltage-orange);
-  }
+  @media (hover: hover) and (pointer: fine) {
+    .footer-col-link:hover {
+      color: var(--voltage-orange);
+    }
 
-  .footer-col-link:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
+    .footer-col-link:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
   }
 
   .footer-bottom {

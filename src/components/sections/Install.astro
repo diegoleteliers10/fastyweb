@@ -37,7 +37,7 @@ const platforms: Platform[] = [
 <section class="section install" id="install">
   <div class="container">
     <header class="install-intro">
-      <span class="section-num mono">[04 / 04]</span>
+      <span class="section-num mono">[01 / 04]</span>
       <h2 class="install-title">
         One curl.<br />
         You're in.
@@ -49,7 +49,7 @@ const platforms: Platform[] = [
       </p>
     </header>
 
-    <div class="install-card">
+    <div class="install-card" data-reveal>
       <div class="install-tabs" role="tablist">
         {platforms.map((p, i) => (
           <button
@@ -188,7 +188,6 @@ const platforms: Platform[] = [
   .install {
     border-top: 1px solid var(--voltage-line);
     padding-block: 96px;
-    background: var(--voltage-deep);
   }
 
   .install-intro {
@@ -271,9 +270,11 @@ const platforms: Platform[] = [
     white-space: nowrap;
   }
 
-  .install-tab:hover {
-    color: var(--color-on-surface);
-    background: var(--voltage-overlay);
+  @media (hover: hover) and (pointer: fine) {
+    .install-tab:hover {
+      color: var(--color-on-surface);
+      background: var(--voltage-overlay);
+    }
   }
 
   .install-tab:active {
@@ -292,8 +293,8 @@ const platforms: Platform[] = [
     height: 2px;
     width: 0;
     background: var(--voltage-orange);
-    transition: transform 280ms var(--ease-out),
-      width 280ms var(--ease-out);
+    transition: transform 320ms var(--ease-spring),
+      width 320ms var(--ease-spring);
     pointer-events: none;
     will-change: transform, width;
   }
@@ -357,9 +358,11 @@ const platforms: Platform[] = [
     position: relative;
   }
 
-  .install-copy:hover {
-    color: var(--voltage-orange);
-    border-color: var(--voltage-orange);
+  @media (hover: hover) and (pointer: fine) {
+    .install-copy:hover {
+      color: var(--voltage-orange);
+      border-color: var(--voltage-orange);
+    }
   }
 
   .install-copy:active {

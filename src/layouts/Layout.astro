@@ -33,5 +33,13 @@ const {
   </head>
   <body>
     <slot />
+    <script>
+      import { initReveal } from "../lib/reveal";
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initReveal, { once: true });
+      } else {
+        initReveal();
+      }
+    </script>
   </body>
 </html>
