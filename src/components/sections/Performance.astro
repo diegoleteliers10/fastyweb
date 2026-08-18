@@ -44,24 +44,25 @@ const comparison = [
         boring on purpose.
       </h2>
       <p class="perf-lead">
-        Measurements on an Acer Aspire 3 with a Ryzen 5 and 8 GB of RAM,
-        running CachyOS. Single tab, idle shell prompt, JetBrains Mono 14pt.
+        Measurements on a MacBook Air M5 with Apple Silicon and 16 GB of Unified Memory,
+        running macOS. Single tab, idle shell prompt, JetBrains Mono 14pt.
       </p>
     </header>
 
     <div class="perf-bench" data-reveal>
       <div class="bench-head mono">
         <span>fastty % cargo bench --release</span>
+        <span class="bench-host">macos · apple silicon m5 · 16gb</span>
       </div>
       <pre class="bench-output mono"><code>   Compiling fastty {numericVersion} (38 crates)
-    Finished `release` profile [optimized] in 4.21s
+    Finished `release` profile [optimized] in 1.46s
 
    Running benches/parser_bench
-<span class="b-section">   </span><span class="b-name">parser_plain_text   </span><span class="b-time">time:   [<span class="b-num">374.70 µs</span> <span class="b-best">413.21 µs</span> <span class="b-num">451.07 µs</span>]</span>
-<span class="b-section">   </span><span class="b-name">parser_sgr_ansi     </span><span class="b-time">time:   [<span class="b-num">675.72 µs</span> <span class="b-best">692.18 µs</span> <span class="b-num">710.08 µs</span>]</span>
-<span class="b-section">   </span><span class="b-name">parser_complex      </span><span class="b-time">time:   [<span class="b-num">380.68 µs</span> <span class="b-best">389.77 µs</span> <span class="b-num">399.65 µs</span>]</span>
+<span class="b-section">   </span><span class="b-name">parser_plain_text   </span><span class="b-time">time:   [<span class="b-num">23.82 µs</span> <span class="b-best">23.92 µs</span> <span class="b-num">24.05 µs</span>]</span>
+<span class="b-section">   </span><span class="b-name">parser_sgr_ansi     </span><span class="b-time">time:   [<span class="b-num">40.87 µs</span> <span class="b-best">40.95 µs</span> <span class="b-num">41.05 µs</span>]</span>
+<span class="b-section">   </span><span class="b-name">parser_complex      </span><span class="b-time">time:   [<span class="b-num">23.41 µs</span> <span class="b-best">23.48 µs</span> <span class="b-num">23.59 µs</span>]</span>
 
-<span class="b-dim">Found 3 benchmarks; finish in 4.21s</span></code></pre>
+<span class="b-dim">Found 3 benchmarks; finish in 1.46s</span></code></pre>
       <div class="bench-foot mono">
         <span><span class="bf-dot"></span> profile: <b>release</b> · LTO fat · codegen-units=1 · strip · panic=unwind</span>
         <a class="bench-link mono" href="https://github.com/diegoleteliers10/fasty/blob/main/benches/parser_bench.rs" target="_blank" rel="noreferrer">parser_bench.rs →</a>
