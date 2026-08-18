@@ -1,0 +1,341 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+---
+
+<Layout title="Fastty Documentation">
+  <Nav />
+  <main class="docs-main">
+    <div class="container docs-container">
+      <aside class="docs-sidebar">
+        <nav class="toc">
+          <h4 class="mono">Contents</h4>
+          <ul>
+            <li><a href="#introduction">Introduction & Architecture</a></li>
+            <li><a href="#installation">Installation & Setup</a></li>
+            <li><a href="#cli-usage">CLI Usage & AI Integration</a></li>
+            <li><a href="#core-features">Core Features</a></li>
+            <li><a href="#configuration">Configuration Guide</a></li>
+            <li><a href="#keybindings">Keyboard Shortcuts</a></li>
+            <li><a href="#benchmarks">Benchmarks</a></li>
+          </ul>
+        </nav>
+      </aside>
+      
+      <article class="docs-content">
+        <h1 class="section-title">Documentation</h1>
+        
+        <section id="introduction" class="docs-section">
+          <h2>Introduction & Architecture</h2>
+          <p>Built in Rust with GPUI (Zed's UI engine) & Alacritty Terminal parser. Low-level Paint API (<code>paint_quad</code>, <code>shape_line</code> with strict monospace cell advance <code>force_width</code>), zero hairline gaps geometric synthesis for block elements (U+2580..=U+259F) and box-drawing (U+2500..=U+257F).</p>
+        </section>
+
+        <section id="installation" class="docs-section">
+          <h2>Installation & Setup</h2>
+          <p>One-line curl for macOS, Linux, Windows PowerShell, and building from source with Rust/Cargo.</p>
+          <div class="code-block">
+            <pre><code>curl -sS https://fastty.dev/install.sh | sh</code></pre>
+          </div>
+          <h3>Build from source</h3>
+          <div class="code-block">
+            <pre><code>git clone https://github.com/diegoleteliers10/fasty.git
+cd fasty
+cargo build --release</code></pre>
+          </div>
+        </section>
+
+        <section id="cli-usage" class="docs-section">
+          <h2>CLI Usage & AI Agent Integration</h2>
+          <p>Complete CLI reference for <code>fastty [OPTIONS] [-- &lt;CMD&gt;...]</code>:</p>
+          <ul>
+            <li><code>-d, --dir, --working-directory &lt;DIR&gt;</code></li>
+            <li><code>-t, --title &lt;TITLE&gt;</code></li>
+            <li><code>-e, --exec, --command &lt;CMD...&gt;</code></li>
+            <li><code>-- &lt;CMD...&gt;</code></li>
+          </ul>
+          <h3>AI Agent Integration Example</h3>
+          <p>Practical examples for developers and AI coding agents:</p>
+          <div class="code-block">
+            <pre><code>fastty --title "Dev Server" -d ~/api -e bun run dev</code></pre>
+          </div>
+        </section>
+
+        <section id="core-features" class="docs-section">
+          <h2>Core Features</h2>
+          <ul>
+            <li><strong>Command Palette:</strong> (<code>⌘⇧P</code> / <code>Ctrl+Shift+P</code>)</li>
+            <li><strong>Project / Tab Jumper:</strong> (<code>⌘J</code> / <code>Ctrl+Shift+J</code>)</li>
+            <li><strong>Git Worktree Switcher:</strong> (<code>⌘⌥W</code> / <code>Ctrl+Alt+W</code>)</li>
+            <li><strong>SSH Host Manager:</strong> (<code>⌘O</code> / <code>Ctrl+Shift+O</code>)</li>
+            <li><strong>In-buffer search:</strong> (<code>⌘F</code> / <code>Ctrl+F</code>) with instant regex and match navigation</li>
+            <li><strong>Smart Token / Link Classifier:</strong> (URLs, file paths, hex colors with click-to-open)</li>
+            <li><strong>Native Tab Tear-Out & Multi-Window:</strong> with full live state / scrollback preservation</li>
+            <li><strong>Synchronized Output:</strong> (DEC Mode 2026) for flicker-free TUI rendering</li>
+            <li><strong>Full IME support:</strong> (dead keys, Latam, Japanese/Chinese composition)</li>
+            <li><strong>Live Theme Switcher:</strong> with 5 built-in palettes & custom theme JSON drop-in</li>
+          </ul>
+        </section>
+
+        <section id="configuration" class="docs-section">
+          <h2>Configuration Guide</h2>
+          <p><code>~/.config/fastty/config.toml</code> complete schema explanation with code snippets (font family, font size, opacity, padding, scrollback, themes, keybindings).</p>
+          <div class="code-block">
+            <pre><code>[window]
+padding = &#123; x = 12, y = 12 &#125;
+opacity = 0.95
+
+[font]
+family = "JetBrains Mono"
+size = 14
+
+[terminal]
+scrollback = 10000
+
+[theme]
+name = "voltage"</code></pre>
+          </div>
+        </section>
+
+        <section id="keybindings" class="docs-section">
+          <h2>Keyboard Shortcuts Reference Cheat Sheet</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>macOS</th>
+                <th>Linux / Windows</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Command Palette</td>
+                <td><code>⌘⇧P</code></td>
+                <td><code>Ctrl+Shift+P</code></td>
+              </tr>
+              <tr>
+                <td>Project / Tab Jumper</td>
+                <td><code>⌘J</code></td>
+                <td><code>Ctrl+Shift+J</code></td>
+              </tr>
+              <tr>
+                <td>Git Worktree Switcher</td>
+                <td><code>⌘⌥W</code></td>
+                <td><code>Ctrl+Alt+W</code></td>
+              </tr>
+              <tr>
+                <td>SSH Host Manager</td>
+                <td><code>⌘O</code></td>
+                <td><code>Ctrl+Shift+O</code></td>
+              </tr>
+              <tr>
+                <td>In-buffer search</td>
+                <td><code>⌘F</code></td>
+                <td><code>Ctrl+F</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="benchmarks" class="docs-section">
+          <h2>Benchmarks</h2>
+          <p>Criterion parser bench numbers on Apple Silicon M5:</p>
+          <ul>
+            <li>Plain text: <strong>23.9 µs</strong></li>
+            <li>SGR ANSI: <strong>40.9 µs</strong></li>
+            <li>Complex: <strong>23.5 µs</strong></li>
+            <li>Idle CPU: <strong>&lt;0.7%</strong></li>
+          </ul>
+        </section>
+      </article>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .docs-main {
+    padding-top: var(--space-xl);
+    padding-bottom: var(--space-4xl);
+  }
+  
+  .docs-container {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: var(--space-xl);
+    align-items: start;
+  }
+  
+  .docs-sidebar {
+    position: sticky;
+    top: 100px;
+    padding-right: var(--space-lg);
+  }
+
+  .toc h4 {
+    color: var(--voltage-orange);
+    margin-bottom: var(--space-md);
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .toc ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .toc a {
+    color: var(--voltage-text-muted);
+    font-size: 14px;
+    transition: color 150ms var(--ease-out);
+  }
+
+  .toc a:hover {
+    color: var(--voltage-orange);
+  }
+
+  .docs-content {
+    max-width: 800px;
+    color: var(--color-on-surface);
+  }
+
+  .docs-content h1 {
+    font-family: var(--font-sans);
+    font-size: 40px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .docs-section {
+    margin-bottom: var(--space-3xl);
+  }
+
+  .docs-section h2 {
+    font-family: var(--font-sans);
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: var(--space-md);
+    color: var(--color-on-surface);
+    letter-spacing: -0.01em;
+  }
+
+  .docs-section h3 {
+    font-family: var(--font-sans);
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: var(--space-lg);
+    margin-bottom: var(--space-sm);
+    color: var(--color-on-surface-variant);
+  }
+
+  .docs-section p {
+    margin-bottom: var(--space-md);
+    line-height: 1.7;
+    color: var(--voltage-text-subtle);
+  }
+
+  .docs-section ul {
+    margin-bottom: var(--space-md);
+    padding-left: var(--space-lg);
+    color: var(--voltage-text-subtle);
+    line-height: 1.7;
+  }
+
+  .docs-section li {
+    margin-bottom: var(--space-xs);
+  }
+
+  .docs-section strong {
+    color: var(--color-on-surface);
+  }
+
+  .docs-section code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: var(--voltage-overlay);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--voltage-line);
+    color: var(--voltage-orange);
+  }
+
+  .code-block {
+    background: var(--voltage-panel);
+    border: 1px solid var(--voltage-line);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+    overflow-x: auto;
+  }
+
+  .code-block pre {
+    margin: 0;
+  }
+
+  .code-block code {
+    background: transparent;
+    border: none;
+    padding: 0;
+    color: var(--color-on-surface);
+    font-size: 13px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: var(--space-md);
+    background: var(--voltage-panel);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+  }
+
+  th, td {
+    text-align: left;
+    padding: var(--space-sm) var(--space-md);
+    border-bottom: 1px solid var(--voltage-line);
+  }
+
+  th {
+    color: var(--voltage-text-muted);
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background: var(--voltage-overlay);
+  }
+
+  td {
+    color: var(--color-on-surface);
+    font-size: 15px;
+  }
+  
+  td code {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+    background: transparent;
+    border: 1px solid var(--voltage-line);
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    color: var(--voltage-orange);
+  }
+
+  @media (max-width: 768px) {
+    .docs-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .docs-sidebar {
+      position: static;
+      margin-bottom: var(--space-xl);
+      padding-bottom: var(--space-lg);
+      border-bottom: 1px solid var(--voltage-line);
+      padding-right: 0;
+    }
+  }
+</style>

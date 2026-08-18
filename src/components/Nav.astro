@@ -2,10 +2,11 @@
 import { fetchRepo, formatStars } from "../lib/repo";
 
 const links = [
-  { href: "#install", label: "Install" },
-  { href: "#themes", label: "Themes" },
-  { href: "#features", label: "Features" },
-  { href: "#performance", label: "Performance" },
+  { href: "/docs", label: "Docs" },
+  { href: "/#install", label: "Install" },
+  { href: "/#themes", label: "Themes" },
+  { href: "/#features", label: "Features" },
+  { href: "/#performance", label: "Performance" },
 ];
 
 const { stars, version, url } = await fetchRepo();
@@ -45,7 +46,7 @@ const starsLabel = stars > 0 ? formatStars(stars) : null;
           <path d="M12 2.5l2.95 6.34 6.55.81-4.86 4.63 1.27 6.72L12 17.77l-5.91 3.23 1.27-6.72L2.5 9.65l6.55-.81L12 2.5z"/>
         </svg>
       </a>
-      <a class="btn btn-primary nav-cta" href="#install">
+      <a class="btn btn-primary nav-cta" href="/#install">
         <span>Install</span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/>
