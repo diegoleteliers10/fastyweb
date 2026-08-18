@@ -6,7 +6,7 @@ const numericVersion = stripVersionPrefix(version);
 
 const comparison = [
   {
-    name: `Fasty ${numericVersion}`,
+    name: `Fastty ${numericVersion}`,
     startup: "1.05s",
     startupErr: "± 0.28s",
     plain: "1.99s",
@@ -51,10 +51,9 @@ const comparison = [
 
     <div class="perf-bench" data-reveal>
       <div class="bench-head mono">
-        <span>fasty % cargo bench --release</span>
-        <span class="bench-host">cachyos · ryzen 5 · 8gb</span>
+        <span>fastty % cargo bench --release</span>
       </div>
-      <pre class="bench-output mono"><code>   Compiling fasty {numericVersion} (38 crates)
+      <pre class="bench-output mono"><code>   Compiling fastty {numericVersion} (38 crates)
     Finished `release` profile [optimized] in 4.21s
 
    Running benches/parser_bench
@@ -82,7 +81,7 @@ const comparison = [
           <span role="columnheader" class="num">ANSI/SGR<br /><span class="sub">50k lines</span></span>
         </div>
         {comparison.map((row) => (
-          <div class={`compare-row ${row.name.startsWith("Fasty") ? "compare-row-self" : ""}`} role="row">
+          <div class={`compare-row ${row.name.startsWith("Fastty") ? "compare-row-self" : ""}`} role="row">
             <span role="cell" class="compare-name">{row.name}</span>
             <span role="cell" class="num">
               <span class="compare-val">{row.startup}</span>
@@ -103,7 +102,7 @@ const comparison = [
         Startup = <span class="inline-mono">sh -c true</span> round-trip ·
         Plain text = <span class="inline-mono">cat</span> 100k lines ·
         ANSI/SGR = <span class="inline-mono">cat</span> 50k lines of styled output ·
-        Fasty compiled with <span class="inline-mono">cargo build --release</span>.
+        Fastty compiled with <span class="inline-mono">cargo build --release</span>.
       </p>
     </div>
   </div>

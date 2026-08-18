@@ -24,8 +24,8 @@ type Theme = {
 
 const themes: Theme[] = [
   {
-    id: "fasty",
-    name: "Fasty",
+    id: "fastty",
+    name: "Fastty",
     file: "default",
     note: "Tomorrow Night palette · bundled",
     badge: "DEFAULT",
@@ -125,7 +125,7 @@ const themes: Theme[] = [
   },
 ];
 
-const STORAGE_KEY = "fasty-theme";
+const STORAGE_KEY = "fastty-theme";
 ---
 
 <section class="section themes" id="themes">
@@ -137,8 +137,8 @@ const STORAGE_KEY = "fasty-theme";
         infinite drop-ins.
       </h2>
       <p class="themes-lead">
-        Fasty ships with five tuned palettes and reads custom JSON themes
-        from <span class="inline-mono">~/.config/fasty/themes/</span>. Drop a
+        Fastty ships with five tuned palettes and reads custom JSON themes
+        from <span class="inline-mono">~/.config/fastty/themes/</span>. Drop a
         file in, name it after the theme, switch from the command palette.
         Theme changes re-render every surface live: scrollback, topbar,
         tabs, settings, context menu.
@@ -151,13 +151,13 @@ const STORAGE_KEY = "fasty-theme";
           <div class="featured-dots" aria-hidden="true">
             <span></span><span></span><span></span>
           </div>
-          <span class="featured-name mono" data-theme-label>fasty.toml · theme = "fasty"</span>
+          <span class="featured-name mono" data-theme-label>config.toml · theme = "fastty"</span>
           <span class="featured-tag mono">Live preview</span>
         </header>
         <div class="featured-body mono">
           <div class="featured-line">
             <span class="line-num">1</span>
-            <span><span class="tk-kw">use</span> <span class="tk-fn">fasty</span><span>:</span><span class="tk-type">:</span><span class="tk-fn">config</span><span>:</span><span class="tk-type">:</span><span class="tk-fn">Profile</span>;</span>
+            <span><span class="tk-kw">use</span> <span class="tk-fn">fastty</span><span>:</span><span class="tk-type">:</span><span class="tk-fn">config</span><span>:</span><span class="tk-type">:</span><span class="tk-fn">Profile</span>;</span>
           </div>
           <div class="featured-line">
             <span class="line-num">2</span>
@@ -165,7 +165,7 @@ const STORAGE_KEY = "fasty-theme";
           </div>
           <div class="featured-line">
             <span class="line-num">3</span>
-            <span><span class="tk-kw">fn</span> <span class="tk-fn">load_user_themes</span><span>() -&gt; </span><span class="tk-type">Vec</span><span>&lt;</span><span class="tk-type">Profile</span><span>&gt; {</span>
+            <span><span class="tk-kw">fn</span> <span class="tk-fn">load_user_themes</span>() -&gt; <span class="tk-type">Vec&lt;Profile&gt;</span> &#123;</span>
           </div>
           <div class="featured-line">
             <span class="line-num">4</span>
@@ -173,7 +173,7 @@ const STORAGE_KEY = "fasty-theme";
           </div>
           <div class="featured-line">
             <span class="line-num">5</span>
-            <span>}</span>
+            <span>&#125;</span>
           </div>
           <div class="featured-line">
             <span class="line-num">&nbsp;</span>
@@ -190,7 +190,7 @@ const STORAGE_KEY = "fasty-theme";
       <div class="themes-list">
         <header class="list-head mono">
           <span>REGISTRY · 5 bundled + custom</span>
-          <span class="list-head-meta">~/.config/fasty/themes/</span>
+          <span class="list-head-meta">~/.config/fastty/themes/</span>
         </header>
         <ul class="theme-list" role="list">
           {themes.map((t) => (
@@ -258,7 +258,7 @@ const STORAGE_KEY = "fasty-theme";
     });
 
     document.querySelectorAll("[data-theme-label]").forEach((el) => {
-      el.textContent = `fasty.toml · theme = "${theme.id}"`;
+      el.textContent = `config.toml · theme = "${theme.id}"`;
     });
 
     try {
@@ -271,7 +271,7 @@ const STORAGE_KEY = "fasty-theme";
       const saved = window.localStorage.getItem(STORAGE_KEY);
       if (saved && themesMap[saved]) return saved;
     } catch {}
-    return "fasty";
+    return "fastty";
   })();
 
   applyTheme(initial);
