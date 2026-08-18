@@ -7,26 +7,26 @@ const numericVersion = stripVersionPrefix(version);
 const features = [
   {
     eyebrow: "01",
-    title: "Cell rendering in WGSL",
-    body: "Every glyph, every cursor blink, every scroll update passes through a single wgpu pipeline. WGSL shaders handle the cell grid across Vulkan, Metal, DX12 and GLES with one shader set.",
+    title: "Low-level Paint API & Pixel-Perfect Grid",
+    body: "Direct GPU hardware quad rendering with per-cell advance control. Box-drawing characters and block elements are synthesized at exact pixel boundaries with zero hairline gaps for seamless TUI banners and logos.",
     visual: "wgsl",
   },
   {
     eyebrow: "02",
-    title: "Sub-1% CPU at idle",
-    body: "The event loop rests in Wait. The PTY reader blocks at the kernel. The cursor blinks through a 48-byte fast-path that skips cell iteration, atlas dirty checks, and font rasterization.",
+    title: "Sub-1% CPU at idle & Synchronized Output",
+    body: "The event loop rests when inactive. DEC mode 2026 synchronized output guarantees zero tearing or flicker during intensive CLI and TUI rendering.",
     visual: "idle",
   },
   {
     eyebrow: "03",
-    title: "Tab tear-out, sub-millisecond",
-    body: "Drag a tab outside the window. The GPU atlases are shared via Arc, so the new window spawns without recompiling glyph caches. The OS drag gesture takes it from there.",
+    title: "Command Palette & Project Jumper",
+    body: "Fuzzy-search any action via ⌘⇧P or jump between tabs, git worktrees, and projects with ⌘J. Live git branch indicators and high-contrast navigation keep you in the flow.",
     visual: "tabs",
   },
   {
     eyebrow: "04",
-    title: "Bottombar widgets",
-    body: "A 20px strip above the scrollback for what you actually want to see. Git status, clock, kubectl context, AWS profile, or anything you can run as a shell command. Click actions: copy, run, open.",
+    title: "Smart Token Detection & In-Buffer Search",
+    body: "Automatic classifier underlines clickable URLs, local file paths, and hex colors. Built-in buffer search (⌘F) provides instantaneous match navigation and scrollback jumping.",
     visual: "bottombar",
   },
 ];
