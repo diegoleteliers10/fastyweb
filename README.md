@@ -1,6 +1,6 @@
 # fastyweb
 
-Marketing site for [Fasty](https://github.com/diegoleteliers10/fasty), a GPU-accelerated terminal emulator written in Rust on `wgpu` and `winit`.
+Marketing site for [Fastty](https://github.com/diegoleteliers10/fasty), a GPU-accelerated terminal emulator written in Rust on GPUI and Alacritty Terminal.
 
 ## Stack
 

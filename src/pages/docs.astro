@@ -12,12 +12,16 @@ import Footer from "../components/Footer.astro";
         <nav class="toc">
           <h4 class="mono">Contents</h4>
           <ul>
-            <li><a href="#introduction">Introduction & Architecture</a></li>
-            <li><a href="#installation">Installation & Setup</a></li>
-            <li><a href="#cli-usage">CLI Usage & AI Integration</a></li>
+            <li><a href="#introduction">Architecture</a></li>
+            <li><a href="#installation">Installation</a></li>
+            <li><a href="#cli-usage">CLI & AI Agents</a></li>
             <li><a href="#core-features">Core Features</a></li>
-            <li><a href="#configuration">Configuration Guide</a></li>
-            <li><a href="#keybindings">Keyboard Shortcuts</a></li>
+            <li><a href="#split-panes">Split Panes</a></li>
+            <li><a href="#widgets">Bottombar Widgets</a></li>
+            <li><a href="#snippets">Snippets System</a></li>
+            <li><a href="#configuration">Configuration</a></li>
+            <li><a href="#custom-themes">Custom Themes</a></li>
+            <li><a href="#keybindings">Keybindings</a></li>
             <li><a href="#benchmarks">Benchmarks</a></li>
           </ul>
         </nav>
@@ -27,16 +31,24 @@ import Footer from "../components/Footer.astro";
         <h1 class="section-title">Documentation</h1>
         
         <section id="introduction" class="docs-section">
-          <h2>Introduction & Architecture</h2>
-          <p>Built in Rust with GPUI (Zed's UI engine) & Alacritty Terminal parser. Low-level Paint API (<code>paint_quad</code>, <code>shape_line</code> with strict monospace cell advance <code>force_width</code>), zero hairline gaps geometric synthesis for block elements (U+2580..=U+259F) and box-drawing (U+2500..=U+257F).</p>
+          <h2>Architecture</h2>
+          <p>Fastty is written in Rust using GPUI and the Alacritty terminal parser. It uses a low-level Paint API with strict monospace cell advance (<code>force_width</code>). Block characters (<code>U+2580..=U+259F</code>) and box-drawing lines (<code>U+2500..=U+257F</code>) use geometric synthesis to prevent hairline gaps.</p>
         </section>
 
         <section id="installation" class="docs-section">
-          <h2>Installation & Setup</h2>
-          <p>One-line curl for macOS, Linux, Windows PowerShell, and building from source with Rust/Cargo.</p>
+          <h2>Installation</h2>
+          <p>Install pre-built release binaries for your operating system:</p>
+          
+          <h3>macOS & Linux</h3>
           <div class="code-block">
-            <pre><code>curl -sS https://fastty.dev/install.sh | sh</code></pre>
+            <pre><code>curl -fsSL https://raw.githubusercontent.com/diegoleteliers10/fasty/main/instalar.sh | bash</code></pre>
           </div>
+
+          <h3>Windows (PowerShell)</h3>
+          <div class="code-block">
+            <pre><code>irm https://raw.githubusercontent.com/diegoleteliers10/fasty/main/instalar.ps1 | iex</code></pre>
+          </div>
+
           <h3>Build from source</h3>
           <div class="code-block">
             <pre><code>git clone https://github.com/diegoleteliers10/fasty.git
@@ -47,15 +59,19 @@ cargo build --release</code></pre>
 
         <section id="cli-usage" class="docs-section">
           <h2>CLI Usage & AI Agent Integration</h2>
-          <p>Complete CLI reference for <code>fastty [OPTIONS] [-- &lt;CMD&gt;...]</code>:</p>
+          <p>Launch Fastty and automate sessions from scripts or AI coding agents:</p>
+          <div class="code-block">
+            <pre><code>fastty [OPTIONS] [-- &lt;CMD&gt;...]</code></pre>
+          </div>
           <ul>
-            <li><code>-d, --dir, --working-directory &lt;DIR&gt;</code></li>
-            <li><code>-t, --title &lt;TITLE&gt;</code></li>
-            <li><code>-e, --exec, --command &lt;CMD...&gt;</code></li>
-            <li><code>-- &lt;CMD...&gt;</code></li>
+            <li><code>-d, --dir, --working-directory &lt;DIR&gt;</code>: Set starting directory.</li>
+            <li><code>-t, --title &lt;TITLE&gt;</code>: Set initial tab and window title.</li>
+            <li><code>-e, --exec, --command &lt;CMD...&gt;</code>: Execute command with arguments.</li>
+            <li><code>-- &lt;CMD...&gt;</code>: Pass trailing command directly.</li>
+            <li><code>-v, --version</code>: Print version information.</li>
+            <li><code>-h, --help</code>: Print help options.</li>
           </ul>
-          <h3>AI Agent Integration Example</h3>
-          <p>Practical examples for developers and AI coding agents:</p>
+          <h3>AI Agent Example</h3>
           <div class="code-block">
             <pre><code>fastty --title "Dev Server" -d ~/api -e bun run dev</code></pre>
           </div>
@@ -64,41 +80,136 @@ cargo build --release</code></pre>
         <section id="core-features" class="docs-section">
           <h2>Core Features</h2>
           <ul>
-            <li><strong>Command Palette:</strong> (<code>⌘⇧P</code> / <code>Ctrl+Shift+P</code>)</li>
-            <li><strong>Project / Tab Jumper:</strong> (<code>⌘J</code> / <code>Ctrl+Shift+J</code>)</li>
-            <li><strong>Git Worktree Switcher:</strong> (<code>⌘⌥W</code> / <code>Ctrl+Alt+W</code>)</li>
-            <li><strong>SSH Host Manager:</strong> (<code>⌘O</code> / <code>Ctrl+Shift+O</code>)</li>
-            <li><strong>In-buffer search:</strong> (<code>⌘F</code> / <code>Ctrl+F</code>) with instant regex and match navigation</li>
-            <li><strong>Smart Token / Link Classifier:</strong> (URLs, file paths, hex colors with click-to-open)</li>
-            <li><strong>Native Tab Tear-Out & Multi-Window:</strong> with full live state / scrollback preservation</li>
-            <li><strong>Synchronized Output:</strong> (DEC Mode 2026) for flicker-free TUI rendering</li>
-            <li><strong>Full IME support:</strong> (dead keys, Latam, Japanese/Chinese composition)</li>
-            <li><strong>Live Theme Switcher:</strong> with 5 built-in palettes & custom theme JSON drop-in</li>
+            <li><strong>Command Palette:</strong> <code>⌘P</code> / <code>Ctrl+Shift+P</code> for searchable actions.</li>
+            <li><strong>Project Jumper:</strong> <code>⌘J</code> / <code>Ctrl+Shift+J</code> for quick directory navigation.</li>
+            <li><strong>Git Worktree Switcher:</strong> <code>⌘⌥W</code> / <code>Ctrl+Alt+W</code> to switch worktrees instantly.</li>
+            <li><strong>SSH Host Manager:</strong> <code>⌘O</code> / <code>Ctrl+Shift+O</code> to connect to known SSH hosts.</li>
+            <li><strong>In-Buffer Search:</strong> <code>⌘F</code> / <code>Ctrl+F</code> with regex match navigation.</li>
+            <li><strong>Smart Token Detection:</strong> Automatic underline and click actions for URLs, file paths, and hex colors.</li>
+            <li><strong>Tab Management:</strong> Horizontal tabs or vertical tab sidebar (<code>⌘B</code>), drag tear-out into standalone windows.</li>
+            <li><strong>Prompt Navigation:</strong> Jump between commands with <code>⌘⇧↑</code> and <code>⌘⇧↓</code> via semantic shell integration.</li>
+            <li><strong>Synchronized Output:</strong> DEC Mode 2026 support for flicker-free TUI rendering.</li>
+            <li><strong>Full IME & Latin Dead Keys:</strong> Native composition for international inputs.</li>
           </ul>
+        </section>
+
+        <section id="split-panes" class="docs-section">
+          <h2>Split Panes</h2>
+          <p>Divide any tab into multiple terminal panes:</p>
+          <ul>
+            <li><strong>Split Right:</strong> <code>⌘D</code> (macOS) / <code>Ctrl+Shift+E</code> (Linux/Windows)</li>
+            <li><strong>Split Down:</strong> <code>⌘⇧D</code> (macOS) / <code>Ctrl+Shift+D</code> (Linux/Windows)</li>
+            <li><strong>Navigate Panes:</strong> <code>⌘⌥Left / Right / Up / Down</code> (macOS) / <code>Alt+Left / Right / Up / Down</code> (Linux/Windows)</li>
+            <li><strong>Close Active Pane:</strong> <code>⌘W</code> (macOS) / <code>Ctrl+Shift+W</code> (Linux/Windows)</li>
+            <li><strong>Close Entire Tab:</strong> <code>⌘⇧W</code> (macOS) / <code>Ctrl+Shift+Q</code> (Linux/Windows)</li>
+          </ul>
+        </section>
+
+        <section id="widgets" class="docs-section">
+          <h2>Bottombar Widgets</h2>
+          <p>Fastty includes an extensible status bar with live widgets:</p>
+          <ul>
+            <li><code>git</code>: Active git branch and dirty status.</li>
+            <li><code>git-actions</code>: Status of GitHub Actions runs.</li>
+            <li><code>git-prs</code>: Active open Pull Requests count.</li>
+            <li><code>git-sync</code>: Ahead and behind commit counter.</li>
+            <li><code>kube</code>: Active Kubernetes context and namespace.</li>
+            <li><code>aws</code>: Current AWS profile and region.</li>
+            <li><code>time</code>: Clock with configurable format and timezone.</li>
+            <li><code>command</code>: Custom shell command output with optional <code>on_click</code> handler.</li>
+          </ul>
+        </section>
+
+        <section id="snippets" class="docs-section">
+          <h2>Snippets System</h2>
+          <p>Fastty expands snippets in place when you press <code>Tab</code> at the prompt. Snippets are stored in <code>~/.config/fastty/snippets.toml</code> and reload automatically on save.</p>
+          <p>Placeholders support jump indices and default values:</p>
+          <ul>
+            <li><code>$1, $2, ...</code>: Jump markers.</li>
+            <li><code>$&#123;1:default&#125;</code>: Placeholder with default text.</li>
+            <li><code>$0</code>: Final cursor destination.</li>
+          </ul>
+          <div class="code-block">
+            <pre><code>[snippet]
+gst = "git status -sb"
+gco = "git checkout $1"
+gcm = "git commit -m \"$&#123;1:commit message&#125;\""
+pr = "gh pr create --title \"$&#123;1:title&#125;\" --body \"$&#123;2:body&#125;\""</code></pre>
+          </div>
         </section>
 
         <section id="configuration" class="docs-section">
           <h2>Configuration Guide</h2>
-          <p><code>~/.config/fastty/config.toml</code> complete schema explanation with code snippets (font family, font size, opacity, padding, scrollback, themes, keybindings).</p>
+          <p>Fastty searches for configuration in this order:</p>
+          <ol>
+            <li><code>./fastty.toml</code> (Current directory, portable mode)</li>
+            <li><code>/etc/fastty/fastty.toml</code> (System-wide)</li>
+            <li><code>~/.config/fastty/fastty.toml</code> (macOS/Linux user config) or <code>%APPDATA%\fastty\config\fastty.toml</code> (Windows)</li>
+          </ol>
           <div class="code-block">
-            <pre><code>[window]
-padding = &#123; x = 12, y = 12 &#125;
-opacity = 0.95
+            <pre><code>theme = "default"
+opacity = 1.0
+scrollback = 10000
+session_restore = true
+copy_on_select = false
+notify_on_command_finish = true
+tab_layout = "horizontal" # or "vertical"
+option_as_meta = false    # true treats Option key as Alt (macOS)
 
 [font]
-family = "JetBrains Mono"
-size = 14
+family = "monospace"
+size = 14.0
+weight = 400.0
+ligatures = true
 
-[terminal]
-scrollback = 10000
+[cursor]
+shape = "beam" # "beam", "block", "underline", or "hollow_block"
+blink = true
 
-[theme]
-name = "voltage"</code></pre>
+[bottombar]
+widgets = [
+  &#123; type = "git", align = "left", interval_ms = 1000 &#125;,
+  &#123; type = "kube", align = "left" &#125;,
+  &#123; type = "aws", align = "left" &#125;,
+  &#123; type = "command", name = "node", command = "node -v", align = "right" &#125;,
+  &#123; type = "time", align = "right", format = "%H:%M:%S" &#125;
+]
+
+[keybindings]
+"super+d" = "SplitRight"
+"super+shift+d" = "SplitDown"</code></pre>
+          </div>
+        </section>
+
+        <section id="custom-themes" class="docs-section">
+          <h2>Custom Themes</h2>
+          <p>Add custom themes as JSON files into <code>~/.config/fastty/themes/&lt;name&gt;.json</code>. Each theme defines 18 hex color slots:</p>
+          <div class="code-block">
+            <pre><code>&#123;
+  "background": "#080808",
+  "foreground": "#e5e2e1",
+  "black": "#1c1b1b",
+  "red": "#ff5555",
+  "green": "#50fa7b",
+  "yellow": "#f1fa8c",
+  "blue": "#bd93f9",
+  "magenta": "#ff79c6",
+  "cyan": "#8be9fd",
+  "white": "#bfbfbf",
+  "bright_black": "#4d4d4d",
+  "bright_red": "#ff6e6e",
+  "bright_green": "#69ff94",
+  "bright_yellow": "#ffffa5",
+  "bright_blue": "#d6acff",
+  "bright_magenta": "#ff92df",
+  "bright_cyan": "#a4ffff",
+  "bright_white": "#ffffff"
+&#125;</code></pre>
           </div>
         </section>
 
         <section id="keybindings" class="docs-section">
-          <h2>Keyboard Shortcuts Reference Cheat Sheet</h2>
+          <h2>Keyboard Shortcuts Reference</h2>
           <table>
             <thead>
               <tr>
@@ -109,29 +220,99 @@ name = "voltage"</code></pre>
             </thead>
             <tbody>
               <tr>
+                <td>New Tab</td>
+                <td><code>⌘T</code></td>
+                <td><code>Ctrl+Shift+T</code></td>
+              </tr>
+              <tr>
+                <td>Close Pane</td>
+                <td><code>⌘W</code></td>
+                <td><code>Ctrl+Shift+W</code></td>
+              </tr>
+              <tr>
+                <td>Close Tab</td>
+                <td><code>⌘⇧W</code></td>
+                <td><code>Ctrl+Shift+Q</code></td>
+              </tr>
+              <tr>
+                <td>Split Right</td>
+                <td><code>⌘D</code></td>
+                <td><code>Ctrl+Shift+E</code></td>
+              </tr>
+              <tr>
+                <td>Split Down</td>
+                <td><code>⌘⇧D</code></td>
+                <td><code>Ctrl+Shift+D</code></td>
+              </tr>
+              <tr>
+                <td>Navigate Panes</td>
+                <td><code>⌘⌥Left / Right / Up / Down</code></td>
+                <td><code>Alt+Left / Right / Up / Down</code></td>
+              </tr>
+              <tr>
+                <td>Next / Prev Tab</td>
+                <td><code>⌘⇧]</code> / <code>⌘⇧[</code> or <code>Ctrl+Tab</code></td>
+                <td><code>Ctrl+Tab</code> / <code>Ctrl+Shift+Tab</code></td>
+              </tr>
+              <tr>
+                <td>Select Tab 1-9</td>
+                <td><code>⌘1</code> .. <code>⌘9</code></td>
+                <td><code>Alt+1</code> .. <code>Alt+9</code></td>
+              </tr>
+              <tr>
+                <td>Toggle Tab Sidebar</td>
+                <td><code>⌘B</code></td>
+                <td><code>Ctrl+Shift+B</code></td>
+              </tr>
+              <tr>
                 <td>Command Palette</td>
-                <td><code>⌘⇧P</code></td>
+                <td><code>⌘P</code></td>
                 <td><code>Ctrl+Shift+P</code></td>
               </tr>
               <tr>
-                <td>Project / Tab Jumper</td>
-                <td><code>⌘J</code></td>
-                <td><code>Ctrl+Shift+J</code></td>
-              </tr>
-              <tr>
-                <td>Git Worktree Switcher</td>
-                <td><code>⌘⌥W</code></td>
-                <td><code>Ctrl+Alt+W</code></td>
-              </tr>
-              <tr>
-                <td>SSH Host Manager</td>
+                <td>SSH Manager</td>
                 <td><code>⌘O</code></td>
                 <td><code>Ctrl+Shift+O</code></td>
               </tr>
               <tr>
-                <td>In-buffer search</td>
+                <td>Project Jumper</td>
+                <td><code>⌘J</code></td>
+                <td><code>Ctrl+Shift+J</code></td>
+              </tr>
+              <tr>
+                <td>Git Worktrees</td>
+                <td><code>⌘⌥W</code></td>
+                <td><code>Ctrl+Alt+W</code></td>
+              </tr>
+              <tr>
+                <td>Jump to Prev / Next Prompt</td>
+                <td><code>⌘⇧↑</code> / <code>⌘⇧↓</code></td>
+                <td><code>Ctrl+Shift+Up</code> / <code>Ctrl+Shift+Down</code></td>
+              </tr>
+              <tr>
+                <td>In-Buffer Search</td>
                 <td><code>⌘F</code></td>
                 <td><code>Ctrl+F</code></td>
+              </tr>
+              <tr>
+                <td>Settings</td>
+                <td><code>⌘,</code> / <code>⌘S</code></td>
+                <td><code>Ctrl+,</code> / <code>Ctrl+Shift+S</code></td>
+              </tr>
+              <tr>
+                <td>Reload Config</td>
+                <td><code>⌘R</code></td>
+                <td><code>Ctrl+Shift+R</code> / <code>F5</code></td>
+              </tr>
+              <tr>
+                <td>Clear Scrollback</td>
+                <td><code>⌘K</code></td>
+                <td><code>Ctrl+Shift+K</code></td>
+              </tr>
+              <tr>
+                <td>Zoom In / Out / Reset</td>
+                <td><code>⌘+</code> / <code>⌘-</code> / <code>⌘0</code></td>
+                <td><code>Ctrl++</code> / <code>Ctrl+-</code> / <code>Ctrl+0</code></td>
               </tr>
             </tbody>
           </table>
@@ -139,12 +320,12 @@ name = "voltage"</code></pre>
 
         <section id="benchmarks" class="docs-section">
           <h2>Benchmarks</h2>
-          <p>Criterion parser bench numbers on Apple Silicon M5:</p>
+          <p>Criterion parser benchmark results on Apple Silicon M-series:</p>
           <ul>
-            <li>Plain text: <strong>23.9 µs</strong></li>
-            <li>SGR ANSI: <strong>40.9 µs</strong></li>
-            <li>Complex: <strong>23.5 µs</strong></li>
-            <li>Idle CPU: <strong>&lt;0.7%</strong></li>
+            <li>Plain text parsing: <strong>23.82 µs</strong></li>
+            <li>SGR ANSI sequences: <strong>40.87 µs</strong></li>
+            <li>Complex mixed output: <strong>23.41 µs</strong></li>
+            <li>Idle CPU consumption: <strong>&lt;0.7%</strong></li>
           </ul>
         </section>
       </article>
@@ -152,6 +333,42 @@ name = "voltage"</code></pre>
   </main>
   <Footer />
 </Layout>
+
+<script>
+  function setupTocScrollSpy() {
+    const links = document.querySelectorAll(".toc a");
+    const sections = Array.from(document.querySelectorAll(".docs-section[id]"));
+    if (!links.length || !sections.length) return;
+
+    function updateActive() {
+      const scrollY = window.scrollY;
+      const offset = 140;
+      let currentSectionId = sections[0]?.id;
+
+      for (const section of sections) {
+        const el = section as HTMLElement;
+        if (scrollY >= el.offsetTop - offset) {
+          currentSectionId = el.id;
+        }
+      }
+
+      links.forEach((link) => {
+        const href = link.getAttribute("href");
+        if (href === `#${currentSectionId}`) {
+          link.setAttribute("data-active", "true");
+        } else {
+          link.removeAttribute("data-active");
+        }
+      });
+    }
+
+    window.addEventListener("scroll", updateActive, { passive: true });
+    updateActive();
+  }
+
+  setupTocScrollSpy();
+  document.addEventListener("astro:page-load", setupTocScrollSpy);
+</script>
 
 <style>
   .docs-main {
@@ -192,11 +409,14 @@ name = "voltage"</code></pre>
   .toc a {
     color: var(--voltage-text-muted);
     font-size: 14px;
-    transition: color 150ms var(--ease-out);
+    display: inline-block;
+    transition: color 150ms var(--ease-out), transform 150ms var(--ease-out);
   }
 
-  .toc a:hover {
+  .toc a:hover,
+  .toc a[data-active="true"] {
     color: var(--voltage-orange);
+    font-weight: 500;
   }
 
   .docs-content {
@@ -240,7 +460,8 @@ name = "voltage"</code></pre>
     color: var(--voltage-text-subtle);
   }
 
-  .docs-section ul {
+  .docs-section ul,
+  .docs-section ol {
     margin-bottom: var(--space-md);
     padding-left: var(--space-lg);
     color: var(--voltage-text-subtle);

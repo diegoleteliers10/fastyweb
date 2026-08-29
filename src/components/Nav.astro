@@ -3,10 +3,11 @@ import { fetchRepo, formatStars } from "../lib/repo";
 
 const links = [
   { href: "/docs", label: "Docs" },
+  { href: "/releases", label: "Releases" },
+  { href: "/changelog", label: "Changelog" },
   { href: "/#install", label: "Install" },
   { href: "/#themes", label: "Themes" },
   { href: "/#features", label: "Features" },
-  { href: "/#performance", label: "Performance" },
 ];
 
 const { stars, version, url } = await fetchRepo();

@@ -6,7 +6,7 @@ export type RepoData = {
 
 const GITHUB_REPO = "diegoleteliers10/fasty";
 const GITHUB_URL = `https://github.com/${GITHUB_REPO}`;
-const FALLBACK_VERSION = "v0.6.6";
+const FALLBACK_VERSION = "v0.7.1";
 
 let cache: Promise<RepoData> | null = null;
 

@@ -1,0 +1,461 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import { fetchReleases } from "../data/releases";
+
+const releases = await fetchReleases();
+const latestRelease = releases[0];
+const previousReleases = releases.slice(1);
+---
+
+<Layout title="Fastty Releases & Downloads">
+  <Nav />
+  <main class="releases-main">
+    <div class="container">
+      <header class="releases-header">
+        <span class="eyebrow mono">[RELEASES]</span>
+        <h1 class="releases-title">Official Releases & Direct Downloads</h1>
+        <p class="releases-subtitle">
+          Download pre-compiled native binaries directly. No build tools or package managers required.
+        </p>
+      </header>
+
+      <!-- Featured Latest Release -->
+      <section class="latest-card">
+        <div class="latest-badge-row">
+          <span class="pill-latest mono">LATEST RELEASE</span>
+          <span class="latest-tag mono">{latestRelease.tag}</span>
+          <span class="latest-date mono">{latestRelease.date}</span>
+        </div>
+
+        <h2 class="latest-title">{latestRelease.title}</h2>
+
+        <ul class="latest-highlights">
+          {latestRelease.highlights.map((h) => (
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="check-icon" aria-hidden="true">
+                <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>{h}</span>
+            </li>
+          ))}
+        </ul>
+
+        <h3 class="downloads-heading mono">Direct Downloads for {latestRelease.tag}</h3>
+        
+        <div class="download-grid">
+          {latestRelease.downloads.map((d) => (
+            <a href={d.url} class="download-card" download>
+              <div class="download-os-row">
+                <span class="download-os mono">{d.platform}</span>
+                <span class="download-arch mono">{d.arch}</span>
+              </div>
+              <div class="download-file mono">{d.filename}</div>
+              <div class="download-action">
+                <span class="download-btn mono">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  Download
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+
+        <div class="latest-footer">
+          <a href={`/changelog#${latestRelease.tag}`} class="view-changelog-link mono">
+            Read full release notes in Changelog →
+          </a>
+        </div>
+      </section>
+
+      <!-- Previous Releases -->
+      <section class="previous-section">
+        <div class="previous-header">
+          <h2 class="previous-title">Previous Versions</h2>
+          <a href="/changelog" class="all-changelog-link mono">View full Changelog →</a>
+        </div>
+
+        <div class="previous-list">
+          {previousReleases.map((rel) => (
+            <article class="prev-release-item" id={rel.tag}>
+              <div class="prev-meta-col">
+                <span class="prev-tag mono">{rel.tag}</span>
+                <span class="prev-date mono">{rel.date}</span>
+                <a href={`/changelog#${rel.tag}`} class="prev-notes-link mono">Changelog →</a>
+              </div>
+
+              <div class="prev-content-col">
+                <h3 class="prev-title">{rel.title}</h3>
+                
+                <ul class="prev-highlights">
+                  {rel.highlights.map((h) => (
+                    <li>{h}</li>
+                  ))}
+                </ul>
+
+                <div class="prev-downloads-row">
+                  <span class="prev-dl-label mono">Direct Downloads:</span>
+                  <div class="prev-dl-chips">
+                    {rel.downloads.map((d) => (
+                      <a href={d.url} class="prev-dl-chip mono" title={d.filename} download>
+                        <span>{d.platform} ({d.os === "macos" ? (d.arch.includes("Apple") ? "ARM" : "Intel") : d.os})</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </div>
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .releases-main {
+    padding-top: var(--space-xl);
+    padding-bottom: var(--space-4xl);
+  }
+
+  .releases-header {
+    max-width: 760px;
+    margin-bottom: var(--space-2xl);
+  }
+
+  .eyebrow {
+    color: var(--voltage-orange);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    display: inline-block;
+    margin-bottom: var(--space-xs);
+  }
+
+  .releases-title {
+    font-family: var(--font-sans);
+    font-size: 40px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--space-sm);
+    color: var(--color-on-surface);
+  }
+
+  .releases-subtitle {
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--voltage-text-subtle);
+  }
+
+  .latest-card {
+    background: var(--voltage-panel);
+    border: 1px solid var(--voltage-line);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    margin-bottom: var(--space-3xl);
+    position: relative;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  }
+
+  .latest-badge-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .pill-latest {
+    background: rgba(255, 157, 0, 0.15);
+    color: var(--voltage-orange);
+    border: 1px solid rgba(255, 157, 0, 0.3);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm);
+    letter-spacing: 0.05em;
+  }
+
+  .latest-tag {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-on-surface);
+  }
+
+  .latest-date {
+    font-size: 13px;
+    color: var(--voltage-text-muted);
+  }
+
+  .latest-title {
+    font-family: var(--font-sans);
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-on-surface);
+    margin-bottom: var(--space-md);
+  }
+
+  .latest-highlights {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-xl) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .latest-highlights li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    color: var(--voltage-text-subtle);
+    font-size: 15px;
+  }
+
+  .check-icon {
+    color: var(--voltage-orange);
+    flex-shrink: 0;
+  }
+
+  .downloads-heading {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--voltage-text-muted);
+    margin-bottom: var(--space-md);
+  }
+
+  .download-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+  }
+
+  .download-card {
+    background: var(--voltage-overlay);
+    border: 1px solid var(--voltage-line);
+    border-radius: var(--radius-md);
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-decoration: none;
+    transition: transform 150ms var(--ease-out), border-color 150ms var(--ease-out);
+  }
+
+  .download-card:hover {
+    border-color: var(--voltage-orange);
+    transform: translateY(-2px);
+  }
+
+  .download-os-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-xs);
+  }
+
+  .download-os {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--color-on-surface);
+  }
+
+  .download-arch {
+    font-size: 11px;
+    color: var(--voltage-text-muted);
+  }
+
+  .download-file {
+    font-size: 12px;
+    color: var(--voltage-text-muted);
+    margin-bottom: var(--space-md);
+    word-break: break-all;
+  }
+
+  .download-action {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--voltage-orange);
+    padding: 6px 12px;
+    background: rgba(255, 157, 0, 0.08);
+    border: 1px solid rgba(255, 157, 0, 0.25);
+    border-radius: var(--radius-sm);
+    transition: background 150ms var(--ease-out);
+  }
+
+  .download-card:hover .download-btn {
+    background: var(--voltage-orange);
+    color: #000;
+  }
+
+  .latest-footer {
+    border-top: 1px solid var(--voltage-line);
+    padding-top: var(--space-md);
+  }
+
+  .view-changelog-link {
+    font-size: 13px;
+    color: var(--voltage-orange);
+    text-decoration: none;
+  }
+
+  .view-changelog-link:hover {
+    text-decoration: underline;
+  }
+
+  /* Previous section */
+  .previous-section {
+    margin-top: var(--space-3xl);
+  }
+
+  .previous-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--space-xl);
+    border-bottom: 1px solid var(--voltage-line);
+    padding-bottom: var(--space-sm);
+  }
+
+  .previous-title {
+    font-family: var(--font-sans);
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-on-surface);
+  }
+
+  .all-changelog-link {
+    font-size: 13px;
+    color: var(--voltage-text-muted);
+    transition: color 150ms var(--ease-out);
+  }
+
+  .all-changelog-link:hover {
+    color: var(--voltage-orange);
+  }
+
+  .previous-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+
+  .prev-release-item {
+    background: var(--voltage-panel);
+    border: 1px solid var(--voltage-line);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: var(--space-lg);
+  }
+
+  .prev-meta-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .prev-tag {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-on-surface);
+  }
+
+  .prev-date {
+    font-size: 13px;
+    color: var(--voltage-text-muted);
+  }
+
+  .prev-notes-link {
+    font-size: 12px;
+    color: var(--voltage-orange);
+    margin-top: var(--space-xs);
+    text-decoration: none;
+  }
+
+  .prev-notes-link:hover {
+    text-decoration: underline;
+  }
+
+  .prev-title {
+    font-family: var(--font-sans);
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: var(--space-xs);
+    color: var(--color-on-surface);
+  }
+
+  .prev-highlights {
+    list-style: disc;
+    padding-left: var(--space-md);
+    margin: 0 0 var(--space-md) 0;
+    color: var(--voltage-text-subtle);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .prev-downloads-row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+    border-top: 1px dashed var(--voltage-line);
+    padding-top: var(--space-sm);
+  }
+
+  .prev-dl-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--voltage-text-muted);
+  }
+
+  .prev-dl-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .prev-dl-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--voltage-text-muted);
+    background: var(--voltage-overlay);
+    border: 1px solid var(--voltage-line);
+    border-radius: var(--radius-sm);
+    padding: 3px 8px;
+    text-decoration: none;
+    transition: color 150ms var(--ease-out), border-color 150ms var(--ease-out);
+  }
+
+  .prev-dl-chip:hover {
+    color: var(--voltage-orange);
+    border-color: var(--voltage-orange);
+  }
+
+  @media (max-width: 768px) {
+    .prev-release-item {
+      grid-template-columns: 1fr;
+      gap: var(--space-sm);
+    }
+  }
+</style>
