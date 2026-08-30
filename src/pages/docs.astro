@@ -16,7 +16,13 @@ import Footer from "../components/Footer.astro";
             <li><a href="#installation">Installation</a></li>
             <li><a href="#cli-usage">CLI & AI Agents</a></li>
             <li><a href="#core-features">Core Features</a></li>
+            <li><a href="#mission-control">Mission Control (⌘⇧O)</a></li>
+            <li><a href="#multi-tab-search">Global Search (⌘⇧F)</a></li>
+            <li><a href="#session-persistence">Workspace Persistence</a></li>
+            <li><a href="#ssh-manager">SSH Manager & Mux</a></li>
             <li><a href="#split-panes">Split Panes</a></li>
+            <li><a href="#config-importer">Config Importer & Presets</a></li>
+            <li><a href="#kitty-graphics">Kitty Graphics Protocol</a></li>
             <li><a href="#widgets">Bottombar Widgets</a></li>
             <li><a href="#snippets">Snippets System</a></li>
             <li><a href="#configuration">Configuration</a></li>
@@ -98,6 +104,47 @@ cargo build --release</code></pre>
           </ul>
         </section>
 
+        <section id="mission-control" class="docs-section">
+          <h2>Mission Control & Tab Peek (⌘⇧O)</h2>
+          <p>Press <code>⌘⇧O</code> (macOS) or <code>Ctrl+Shift+M</code> (Linux/Windows) to open the Mission Control grid view. Fastty renders live miniature visual snapshots of every open tab and directional split pane:</p>
+          <ul>
+            <li><strong>Live Buffer Snapshots:</strong> Preview active code, build output, or TUI sessions in real time.</li>
+            <li><strong>Deck Process Icons:</strong> Automatically identifies foreground tools like <code>nvim</code>, <code>cargo</code>, <code>node</code>, <code>docker</code>, <code>git</code>, and <code>ssh</code>.</li>
+            <li><strong>Keyboard Navigation:</strong> Use arrow keys (<code>←</code>, <code>→</code>, <code>↑</code>, <code>↓</code>) or <code>H/J/K/L</code> to navigate between tab cards.</li>
+            <li><strong>Instant Actions:</strong> Press <code>Enter</code> to jump to any tab, <code>D</code> or <code>X</code> to close it, and <code>T</code> or <code>N</code> to open a new tab.</li>
+          </ul>
+        </section>
+
+        <section id="multi-tab-search" class="docs-section">
+          <h2>Unified Multi-Tab Global Search (⌘⇧F)</h2>
+          <p>Press <code>⌘⇧F</code> (macOS) or <code>Ctrl+Shift+F</code> (Linux/Windows) to search across the scrollback buffers of all active tabs and split panes concurrently:</p>
+          <ul>
+            <li><strong>Powered by fff-search:</strong> High-performance fuzzy and exact token search matching.</li>
+            <li><strong>Grouped Tab Cards:</strong> Results are clustered by tab, showing process badges, tab titles, exact line numbers, and matching snippets.</li>
+            <li><strong>Instant Jump:</strong> Selecting any search result with <code>Enter</code> immediately switches to that tab, activates the corresponding split pane, and scrolls directly to the matched line.</li>
+          </ul>
+        </section>
+
+        <section id="session-persistence" class="docs-section">
+          <h2>Session & Workspace Persistence</h2>
+          <p>Fastty supports lightweight, zombie-proof workspace persistence stored in <code>~/.config/fastty/sessions/</code>:</p>
+          <ul>
+            <li><strong>Save Snapshot:</strong> Open Command Palette (<code>⌘P</code>) and select <em>"Session: Save Current Workspace Snapshot"</em> to serialize the layout, working directories, and recursive split pane trees.</li>
+            <li><strong>Attach & Restore:</strong> Select <em>"Session: Attach / Restore Last Workspace"</em> to reconstruct all tabs and panes in one click.</li>
+          </ul>
+        </section>
+
+        <section id="ssh-manager" class="docs-section">
+          <h2>SSH Host Manager with Mux Semantics (⌘O)</h2>
+          <p>Press <code>⌘O</code> (macOS) or <code>Ctrl+Shift+O</code> (Linux/Windows) to browse and connect to remote hosts defined in <code>~/.ssh/config</code>:</p>
+          <ul>
+            <li><strong>Environment Tags:</strong> Automatically tags hosts (<code>#prod</code>, <code>#dev</code>, <code>#aws</code>, <code>#vps</code>, <code>#homelab</code>) or reads custom comments like <code># tag: staging</code>.</li>
+            <li><strong>Active Session Badges:</strong> Displays a green <code>● Active</code> badge for hosts currently connected in an open tab.</li>
+            <li><strong>Resilient Keepalive:</strong> Built-in TCP keepalive (<code>ServerAliveInterval=15</code>, <code>ServerAliveCountMax=3</code>).</li>
+            <li><strong>1-Key Reconnection:</strong> If the connection drops or the network changes, Fastty preserves the buffer and displays an interactive prompt to reconnect instantly with <kbd>r</kbd>.</li>
+          </ul>
+        </section>
+
         <section id="split-panes" class="docs-section">
           <h2>Split Panes</h2>
           <p>Divide any tab into multiple terminal panes:</p>
@@ -107,6 +154,24 @@ cargo build --release</code></pre>
             <li><strong>Navigate Panes:</strong> <code>⌘⌥Left / Right / Up / Down</code> (macOS) / <code>Alt+Left / Right / Up / Down</code> (Linux/Windows)</li>
             <li><strong>Close Active Pane:</strong> <code>⌘W</code> (macOS) / <code>Ctrl+Shift+W</code> (Linux/Windows)</li>
             <li><strong>Close Entire Tab:</strong> <code>⌘⇧W</code> (macOS) / <code>Ctrl+Shift+Q</code> (Linux/Windows)</li>
+          </ul>
+        </section>
+
+        <section id="config-importer" class="docs-section">
+          <h2>Config Importer & Keybinding Presets</h2>
+          <p>In the Settings Window (<code>⌘,</code>), Fastty detects existing configurations and offers 1-click adoption:</p>
+          <ul>
+            <li><strong>Supported Sources:</strong> Ghostty, Alacritty, Kitty, tmux (<code>~/.tmux.conf</code>), and WezTerm.</li>
+            <li><strong>Keybinding Presets:</strong> Switch dynamically between <code>Default</code>, <code>Ghostty</code>, <code>tmux</code>, and <code>iTerm2</code> shortcut profiles.</li>
+          </ul>
+        </section>
+
+        <section id="kitty-graphics" class="docs-section">
+          <h2>Kitty Graphics Protocol</h2>
+          <p>Fastty natively supports the Kitty Graphics protocol (<code>\x1b_G...</code>):</p>
+          <ul>
+            <li><strong>GPU-Accelerated Rendering:</strong> Decodes and displays PNG, RGBA32, and RGB24 graphics directly in the terminal cell grid via GPUI and Metal/Vulkan.</li>
+            <li><strong>Scroll & Viewport Aware:</strong> Inline images anchor to terminal rows and scroll smoothly with terminal history.</li>
           </ul>
         </section>
 
@@ -270,6 +335,16 @@ widgets = [
                 <td><code>Ctrl+Shift+B</code></td>
               </tr>
               <tr>
+                <td>Mission Control / Tab Peek</td>
+                <td><code>⌘⇧O</code></td>
+                <td><code>Ctrl+Shift+M</code></td>
+              </tr>
+              <tr>
+                <td>Global Multi-Tab Search</td>
+                <td><code>⌘⇧F</code></td>
+                <td><code>Ctrl+Shift+F</code></td>
+              </tr>
+              <tr>
                 <td>Command Palette</td>
                 <td><code>⌘P</code></td>
                 <td><code>Ctrl+Shift+P</code></td>
@@ -278,6 +353,11 @@ widgets = [
                 <td>SSH Manager</td>
                 <td><code>⌘O</code></td>
                 <td><code>Ctrl+Shift+O</code></td>
+              </tr>
+              <tr>
+                <td>Rename Tab</td>
+                <td><code>⌘⇧R</code></td>
+                <td><code>Ctrl+Shift+R</code></td>
               </tr>
               <tr>
                 <td>Project Jumper</td>
@@ -300,7 +380,7 @@ widgets = [
                 <td><code>Ctrl+F</code></td>
               </tr>
               <tr>
-                <td>Settings</td>
+                <td>Settings Window</td>
                 <td><code>⌘,</code> / <code>⌘S</code></td>
                 <td><code>Ctrl+,</code> / <code>Ctrl+Shift+S</code></td>
               </tr>
