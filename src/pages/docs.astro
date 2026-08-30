@@ -80,11 +80,16 @@ cargo build --release</code></pre>
         <section id="core-features" class="docs-section">
           <h2>Core Features</h2>
           <ul>
-            <li><strong>Command Palette:</strong> <code>⌘P</code> / <code>Ctrl+Shift+P</code> for searchable actions.</li>
+            <li><strong>Mission Control / Tab Peek:</strong> <code>⌘⇧O</code> / <code>Ctrl+Shift+M</code> for interactive visual grid overlay of all tabs, split panes, process icons, and live buffer previews.</li>
+            <li><strong>Global Multi-Tab Search:</strong> <code>⌘⇧F</code> / <code>Ctrl+Shift+F</code> powered by <code>fff-search</code> to search scrollback buffers across all active tabs simultaneously.</li>
+            <li><strong>Session & Workspace Persistence:</strong> Save and restore multi-tab and split pane trees from Command Palette (<code>⌘P</code>).</li>
+            <li><strong>SSH Host Manager with Mux Semantics:</strong> <code>⌘O</code> / <code>Ctrl+Shift+O</code> with environment tags (<code>#prod</code>, <code>#dev</code>, <code>#aws</code>), active connection badges, and 1-key reconnect (<code>r</code>).</li>
+            <li><strong>Deck Process Icons:</strong> Dynamic foreground process icons (<code>nvim</code>, <code>cargo</code>, <code>node</code>, <code>git</code>, <code>docker</code>, <code>ssh</code>) on tabs and sidebar.</li>
+            <li><strong>Config Importer & Keybinding Presets:</strong> 1-click import from Ghostty, Alacritty, Kitty, tmux, and WezTerm, plus presets (<code>Default</code>, <code>Ghostty</code>, <code>tmux</code>, <code>iTerm2</code>).</li>
+            <li><strong>Hardware-accelerated Kitty Graphics:</strong> Full protocol support (PNG/RGBA/RGB) rendered directly via GPUI on GPU.</li>
+            <li><strong>Command Palette:</strong> <code>⌘P</code> / <code>Ctrl+Shift+P</code> with fuzzy search.</li>
             <li><strong>Project Jumper:</strong> <code>⌘J</code> / <code>Ctrl+Shift+J</code> for quick directory navigation.</li>
             <li><strong>Git Worktree Switcher:</strong> <code>⌘⌥W</code> / <code>Ctrl+Alt+W</code> to switch worktrees instantly.</li>
-            <li><strong>SSH Host Manager:</strong> <code>⌘O</code> / <code>Ctrl+Shift+O</code> to connect to known SSH hosts.</li>
-            <li><strong>In-Buffer Search:</strong> <code>⌘F</code> / <code>Ctrl+F</code> with regex match navigation.</li>
             <li><strong>Smart Token Detection:</strong> Automatic underline and click actions for URLs, file paths, and hex colors.</li>
             <li><strong>Tab Management:</strong> Horizontal tabs or vertical tab sidebar (<code>⌘B</code>), drag tear-out into standalone windows.</li>
             <li><strong>Prompt Navigation:</strong> Jump between commands with <code>⌘⇧↑</code> and <code>⌘⇧↓</code> via semantic shell integration.</li>

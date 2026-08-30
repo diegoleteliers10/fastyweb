@@ -58,11 +58,45 @@ export const createDownloads = (tag: string): ReleaseDownload[] => [
 
 export const FALLBACK_RELEASES: ReleaseItem[] = [
   {
+    version: "0.7.3",
+    tag: "v0.7.3",
+    date: "2026-08-30",
+    title: "Mission Control, Multi-Tab Search, Mux Semantics, Workspace Persistence & Kitty Graphics",
+    isLatest: true,
+    highlights: [
+      "Mission Control / Tab Peek Grid View (⌘⇧O / Ctrl+Shift+M)",
+      "Global Multi-Tab Search (⌘⇧F / Ctrl+Shift+F) powered by fff-search",
+      "Lightweight Workspace & Split Persistence (~/.config/fastty/sessions/)",
+      "SSH Manager with Mux Semantics, Environment Tags & 1-Key Reconnect",
+      "Dynamic Deck process icons (nvim, cargo, node, git, ssh, docker)",
+      "Config Importer for Ghostty, Alacritty, Kitty, tmux, and WezTerm",
+      "Keybinding Presets (Default, Ghostty, tmux, iTerm2)",
+      "Hardware-accelerated Kitty Graphics Protocol inline rendering",
+    ],
+    downloads: createDownloads("v0.7.3"),
+    changes: {
+      features: [
+        "Added Mission Control / Tab Peek grid view overlay (⌘⇧O) with live buffer snapshots.",
+        "Added Unified Multi-Tab Search (⌘⇧F) searching across all tab scrollbacks concurrently.",
+        "Added Workspace Snapshot saving and recursive split tree restoring from Command Palette.",
+        "Added SSH host tag detection (#prod, #dev, #aws), active indicators and resilient keepalive reconnect loop.",
+        "Added 1-click config importer for Ghostty, Alacritty, Kitty, tmux, and WezTerm in Settings.",
+        "Added keybinding preset switcher (Default, Ghostty, tmux, iTerm2).",
+        "Added Kitty Graphics protocol decoding and GPU rendering in cell grid.",
+        "Increased default scrollback buffer to 10,000 lines (up to 100,000) with memory estimator.",
+      ],
+      fixes: [
+        "Fixed mouse tracking state deactivation when exiting interactive TUIs.",
+        "Fixed scrollback clamping and live resize synchronization.",
+        "Fixed Settings window initial width and Mission Control traffic lights clearance.",
+      ],
+    },
+  },
+  {
     version: "0.7.1",
     tag: "v0.7.1",
     date: "2026-08-28",
     title: "Vertical Sidebar Tabs, Resizable Pane Splits & Image Paste",
-    isLatest: true,
     highlights: [
       "Vertical Tab Sidebar mode (⌘B / tab_layout = 'vertical')",
       "Full clipboard image paste support and file URI decoding",
