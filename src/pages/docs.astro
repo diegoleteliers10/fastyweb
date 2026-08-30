@@ -280,6 +280,9 @@ widgets = [
 
         <section id="keybindings" class="docs-section">
           <h2>Keyboard Shortcuts Reference</h2>
+          <p>Fastty includes an exhaustive set of keyboard shortcuts configured for maximum productivity:</p>
+          
+          <h3>Default Keybindings</h3>
           <table>
             <thead>
               <tr>
@@ -295,12 +298,17 @@ widgets = [
                 <td><code>Ctrl+Shift+T</code></td>
               </tr>
               <tr>
-                <td>Close Pane</td>
+                <td>New Window</td>
+                <td><code>⌘⇧N</code></td>
+                <td><code>Ctrl+Shift+N</code></td>
+              </tr>
+              <tr>
+                <td>Close Active Pane</td>
                 <td><code>⌘W</code></td>
                 <td><code>Ctrl+Shift+W</code></td>
               </tr>
               <tr>
-                <td>Close Tab</td>
+                <td>Close Entire Tab</td>
                 <td><code>⌘⇧W</code></td>
                 <td><code>Ctrl+Shift+Q</code></td>
               </tr>
@@ -315,7 +323,7 @@ widgets = [
                 <td><code>Ctrl+Shift+D</code></td>
               </tr>
               <tr>
-                <td>Navigate Panes</td>
+                <td>Navigate Panes (Focus)</td>
                 <td><code>⌘⌥Left / Right / Up / Down</code></td>
                 <td><code>Alt+Left / Right / Up / Down</code></td>
               </tr>
@@ -332,7 +340,7 @@ widgets = [
               <tr>
                 <td>Toggle Tab Sidebar</td>
                 <td><code>⌘B</code></td>
-                <td><code>Ctrl+Shift+B</code></td>
+                <td><code>Ctrl+Shift+B</code> / <code>Ctrl+B</code></td>
               </tr>
               <tr>
                 <td>Mission Control / Tab Peek</td>
@@ -350,7 +358,7 @@ widgets = [
                 <td><code>Ctrl+Shift+P</code></td>
               </tr>
               <tr>
-                <td>SSH Manager</td>
+                <td>SSH Host Manager</td>
                 <td><code>⌘O</code></td>
                 <td><code>Ctrl+Shift+O</code></td>
               </tr>
@@ -365,7 +373,7 @@ widgets = [
                 <td><code>Ctrl+Shift+J</code></td>
               </tr>
               <tr>
-                <td>Git Worktrees</td>
+                <td>Git Worktree Switcher</td>
                 <td><code>⌘⌥W</code></td>
                 <td><code>Ctrl+Alt+W</code></td>
               </tr>
@@ -385,6 +393,11 @@ widgets = [
                 <td><code>Ctrl+,</code> / <code>Ctrl+Shift+S</code></td>
               </tr>
               <tr>
+                <td>Toggle Fullscreen</td>
+                <td><code>^⌘F</code> / <code>F11</code></td>
+                <td><code>F11</code></td>
+              </tr>
+              <tr>
                 <td>Reload Config</td>
                 <td><code>⌘R</code></td>
                 <td><code>Ctrl+Shift+R</code> / <code>F5</code></td>
@@ -395,9 +408,113 @@ widgets = [
                 <td><code>Ctrl+Shift+K</code></td>
               </tr>
               <tr>
+                <td>Copy to Clipboard</td>
+                <td><code>⌘C</code></td>
+                <td><code>Ctrl+Shift+C</code></td>
+              </tr>
+              <tr>
+                <td>Paste from Clipboard</td>
+                <td><code>⌘V</code> / <code>Shift+Insert</code></td>
+                <td><code>Ctrl+Shift+V</code> / <code>Shift+Insert</code></td>
+              </tr>
+              <tr>
                 <td>Zoom In / Out / Reset</td>
                 <td><code>⌘+</code> / <code>⌘-</code> / <code>⌘0</code></td>
                 <td><code>Ctrl++</code> / <code>Ctrl+-</code> / <code>Ctrl+0</code></td>
+              </tr>
+              <tr>
+                <td>Save Workspace Snapshot</td>
+                <td><code>⌘P</code> → <em>Save Snapshot</em></td>
+                <td><code>Ctrl+Shift+P</code> → <em>Save Snapshot</em></td>
+              </tr>
+              <tr>
+                <td>Attach / Restore Workspace</td>
+                <td><code>⌘P</code> → <em>Restore Workspace</em></td>
+                <td><code>Ctrl+Shift+P</code> → <em>Restore Workspace</em></td>
+              </tr>
+              <tr>
+                <td>Reconnect Dropped SSH</td>
+                <td><kbd>r</kbd> (prompt)</td>
+                <td><kbd>r</kbd> (prompt)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Preset Profiles Matrix</h3>
+          <p>Switch between keybinding presets instantly in Settings (<code>⌘,</code>) or via <code>fastty.toml</code> with <code>preset = "ghostty" | "tmux" | "iterm2" | "default"</code>:</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Action</th>
+                <th>Default (Fastty)</th>
+                <th>Ghostty</th>
+                <th>tmux</th>
+                <th>iTerm2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>New Tab</td>
+                <td><code>⌘T</code> / <code>Ctrl+Shift+T</code></td>
+                <td><code>⌘T</code> / <code>Ctrl+Shift+T</code></td>
+                <td><code>Ctrl+T</code></td>
+                <td><code>⌘T</code></td>
+              </tr>
+              <tr>
+                <td>Split Right</td>
+                <td><code>⌘D</code> / <code>Ctrl+Shift+E</code></td>
+                <td><code>⌘D</code> / <code>Ctrl+Shift+O</code></td>
+                <td><code>Ctrl+D</code></td>
+                <td><code>⌘D</code></td>
+              </tr>
+              <tr>
+                <td>Split Down</td>
+                <td><code>⌘⇧D</code> / <code>Ctrl+Shift+D</code></td>
+                <td><code>⌘⇧D</code> / <code>Ctrl+Shift+E</code></td>
+                <td><code>Ctrl+Shift+D</code></td>
+                <td><code>⌘⇧D</code></td>
+              </tr>
+              <tr>
+                <td>Navigate Panes</td>
+                <td><code>⌘⌥Arrows</code></td>
+                <td><code>⌘⌥Arrows</code> / <code>⌘⇧J/K</code></td>
+                <td><code>Alt+Arrows</code> / <code>Alt+H/J/K/L</code></td>
+                <td><code>⌘⌥Arrows</code></td>
+              </tr>
+              <tr>
+                <td>Mission Control</td>
+                <td><code>⌘⇧O</code> / <code>Ctrl+Shift+M</code></td>
+                <td><code>⌘⇧O</code> / <code>Ctrl+Shift+M</code></td>
+                <td><code>Ctrl+W</code></td>
+                <td><code>⌘⌥O</code></td>
+              </tr>
+              <tr>
+                <td>Global Search</td>
+                <td><code>⌘⇧F</code> / <code>Ctrl+Shift+F</code></td>
+                <td><code>⌘⇧F</code> / <code>Ctrl+Shift+F</code></td>
+                <td><code>Ctrl+Shift+F</code></td>
+                <td><code>⌘⇧F</code></td>
+              </tr>
+              <tr>
+                <td>Command Palette</td>
+                <td><code>⌘P</code> / <code>Ctrl+Shift+P</code></td>
+                <td><code>⌘⇧P</code> / <code>Ctrl+Shift+P</code></td>
+                <td><code>Ctrl+P</code></td>
+                <td><code>⌘P</code></td>
+              </tr>
+              <tr>
+                <td>SSH Manager</td>
+                <td><code>⌘O</code> / <code>Ctrl+Shift+O</code></td>
+                <td><code>⌘O</code> / <code>Ctrl+Shift+O</code></td>
+                <td><code>Ctrl+O</code></td>
+                <td><code>⌘⇧O</code></td>
+              </tr>
+              <tr>
+                <td>Clear Scrollback</td>
+                <td><code>⌘K</code> / <code>Ctrl+Shift+K</code></td>
+                <td><code>⌘K</code> / <code>Ctrl+Shift+K</code></td>
+                <td><code>Ctrl+K</code></td>
+                <td><code>⌘K</code></td>
               </tr>
             </tbody>
           </table>
