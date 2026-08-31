@@ -58,11 +58,34 @@ export const createDownloads = (tag: string): ReleaseDownload[] => [
 
 export const FALLBACK_RELEASES: ReleaseItem[] = [
   {
+    version: "0.7.4",
+    tag: "v0.7.4",
+    date: "2026-08-30",
+    title: "In-Place Self-Updater Fixes, Permission Blocks & Clean Restart",
+    isLatest: true,
+    highlights: [
+      "In-place self-updater download trigger and unarchiving fixes",
+      "Permission checks preventing accidental overwrite of package-manager installs (Homebrew, dpkg, AppImage)",
+      "Reliable post-update application restart sequence with restored state",
+      "Updated Homebrew Cask automation",
+    ],
+    downloads: createDownloads("v0.7.4"),
+    changes: {
+      fixes: [
+        "Fixed updater download trigger from root view and tab bar.",
+        "Prevented self-update overwrite on package-manager managed installations.",
+        "Fixed post-install application restart sequence.",
+      ],
+      chores: [
+        "Updated Homebrew cask to v0.7.4.",
+      ],
+    },
+  },
+  {
     version: "0.7.3",
     tag: "v0.7.3",
     date: "2026-08-30",
     title: "Mission Control, Multi-Tab Search, Mux Semantics, Workspace Persistence & Kitty Graphics",
-    isLatest: true,
     highlights: [
       "Mission Control / Tab Peek Grid View (⌘⇧O / Ctrl+Shift+M)",
       "Global Multi-Tab Search (⌘⇧F / Ctrl+Shift+F) powered by fff-search",
@@ -89,6 +112,31 @@ export const FALLBACK_RELEASES: ReleaseItem[] = [
         "Fixed mouse tracking state deactivation when exiting interactive TUIs.",
         "Fixed scrollback clamping and live resize synchronization.",
         "Fixed Settings window initial width and Mission Control traffic lights clearance.",
+      ],
+    },
+  },
+  {
+    version: "0.7.2",
+    tag: "v0.7.2",
+    date: "2026-08-30",
+    title: "Native Installers (DMG, MSI, DEB, AppImage) & Homebrew Cask",
+    highlights: [
+      "macOS DMG drag-to-install with automatic quarantine clearing",
+      "Windows per-user MSI installer with clean uninstall and non-admin updates",
+      "Debian/Ubuntu .deb package and universal Linux .AppImage",
+      "Official Homebrew Cask (brew install --cask fastty)",
+      "Package-manager aware self-update guards",
+    ],
+    downloads: createDownloads("v0.7.2"),
+    changes: {
+      features: [
+        "Added macOS DMG, Windows MSI, Linux DEB and AppImage build pipelines.",
+        "Added official Homebrew Cask distribution tap.",
+        "Added package manager ownership detection to avoid desyncing system updates.",
+      ],
+      fixes: [
+        "Fixed WiX installer registry keys and component GUIDs for per-user MSI.",
+        "Fixed Linux desktop icon sizing for AppImage compatibility.",
       ],
     },
   },
