@@ -28,7 +28,8 @@ import Footer from "../components/Footer.astro";
             <li><a href="#configuration">Configuration</a></li>
             <li><a href="#custom-themes">Custom Themes</a></li>
             <li><a href="#keybindings">Keybindings</a></li>
-            <li><a href="#benchmarks">Benchmarks</a></li>
+            <li><a href="#daemon-protocol">Daemon Protocol & IPC</a></li>
+            <li><a href="#web-gateway">Web Gateway & Wasm</a></li>
           </ul>
         </nav>
       </aside>
@@ -520,14 +521,58 @@ widgets = [
           </table>
         </section>
 
-        <section id="benchmarks" class="docs-section">
-          <h2>Benchmarks</h2>
-          <p>Criterion parser benchmark results on Apple Silicon M-series:</p>
+        <section id="daemon-protocol" class="docs-section">
+          <h2>Daemon Protocol & IPC Multiplexing</h2>
+          <p>Fastty includes an integrated, zero-overhead Unix domain socket IPC daemon (<code>~/.local/state/fastty/fasttyd.sock</code> with <code>0600</code> permissions). It enables external tools, scripts, and plugins (Neovim, Zed, VS Code) to interact with running terminal sessions without stealing window focus.</p>
+
+          <h3>Listing Active Sessions</h3>
+          <div class="code-block">
+            <pre><code># List all active tabs and split panes
+fastty sessions
+
+# Watch session changes in real time (reactive stream)
+fastty sessions --watch</code></pre>
+          </div>
+
+          <h3>Attaching Interactively</h3>
+          <div class="code-block">
+            <pre><code># Interactive attachment (raw PTY streaming, Ctrl+\ to detach)
+fastty attach 1
+
+# Read-only preview (monitor builds/servers without sending keystrokes)
+fastty attach 1 --read-only
+
+# Wait for a session to appear before attaching
+fastty attach 1 --wait=30</code></pre>
+          </div>
+
+          <h3>JSON Wire Protocol</h3>
+          <p>All communication uses newline-delimited JSON (NDJSON) over the Unix socket. Key commands include <code>hello</code>, <code>list</code>, <code>subscribe_sessions</code>, <code>attach</code>, <code>detach</code>, <code>write</code>, and <code>resize</code>.</p>
+        </section>
+
+        <section id="web-gateway" class="docs-section">
+          <h2>Web Gateway & Fastty-Wasm</h2>
+          <p>Access your active Fastty terminal sessions from any web browser, iPad, or remote machine via the native embedded Web Gateway (<code>fastty gateway</code>) and WebAssembly client (<code>fastty-wasm</code>).</p>
+
+          <h3>Starting the Gateway</h3>
+          <div class="code-block">
+            <pre><code># Start on default port 8765 (http://localhost:8765)
+fastty gateway
+
+# Bind to custom port and network interface (e.g. Tailscale / LAN)
+fastty gateway --port 8765 --host 0.0.0.0
+
+# Enforce read-only access for all browser sessions
+fastty gateway --port 8765 --read-only</code></pre>
+          </div>
+
+          <h3>Pure WebAssembly VT Engine</h3>
+          <p>The web client is powered by <code>crates/fastty-wasm</code>, an optimized VT emulation engine compiled to WebAssembly that renders directly into an HTML5 <code>&lt;canvas&gt;</code>:</p>
           <ul>
-            <li>Plain text parsing: <strong>23.82 µs</strong></li>
-            <li>SGR ANSI sequences: <strong>40.87 µs</strong></li>
-            <li>Complex mixed output: <strong>23.41 µs</strong></li>
-            <li>Idle CPU consumption: <strong>&lt;0.7%</strong></li>
+            <li><strong>Zero External Dependencies:</strong> No heavy JavaScript terminal libraries needed.</li>
+            <li><strong>Batched 2D Canvas:</strong> Batched font rendering and background quad fills at 60/120 FPS.</li>
+            <li><strong>Interactive Controls:</strong> Zoom font in/out, draggable scrollbar, mouse wheel, and touch/trackpad navigation.</li>
+            <li><strong>RFC 6455 WebSockets:</strong> Low-latency streaming bridge directly to the Fastty daemon socket.</li>
           </ul>
         </section>
       </article>

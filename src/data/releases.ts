@@ -58,11 +58,40 @@ export const createDownloads = (tag: string): ReleaseDownload[] => [
 
 export const FALLBACK_RELEASES: ReleaseItem[] = [
   {
+    version: "0.7.7",
+    tag: "v0.7.7",
+    date: "2026-09-01",
+    title: "Local Daemon Protocol, Native Web Gateway & Fastty-Wasm Client",
+    isLatest: true,
+    highlights: [
+      "Local Unix Socket IPC Daemon (fasttyd.sock) for terminal session multiplexing",
+      "CLI subcommands: fastty sessions [--watch] and fastty attach <id> [--read-only]",
+      "Embedded Native Web Gateway (fastty gateway) serving HTTP & WebSocket with zero external dependencies",
+      "Fastty-Wasm client engine rendering terminal grids at 60/120 FPS via HTML5 Canvas 2D",
+    ],
+    downloads: createDownloads("v0.7.7"),
+    changes: {
+      features: [
+        "Implemented Unix domain socket IPC daemon in src/daemon.rs with NDJSON wire protocol.",
+        "Added CLI subcommands fastty sessions [--watch] [--wait] and fastty attach <id> [--read-only] [--wait].",
+        "Added embedded native Web Gateway (fastty gateway) supporting custom port/host and read-only mode.",
+        "Introduced fastty-wasm crate with pure WebAssembly VT emulation and batched HTML5 Canvas 2D renderer.",
+        "Web client interface featuring font zoom controls, interactive scrollback, and touch/trackpad navigation.",
+      ],
+      fixes: [
+        "Fixed ANSI SGR attribute reset sequence code 29 in snapshot_ansi.",
+        "Added CursorShape::Hidden handling across native GPUI renderer.",
+      ],
+      performance: [
+        "Batched Canvas 2D text runs and background spans in Wasm, reducing DOM/Canvas draw calls by over 95%.",
+      ],
+    },
+  },
+  {
     version: "0.7.4",
     tag: "v0.7.4",
     date: "2026-08-30",
     title: "In-Place Self-Updater Fixes, Permission Blocks & Clean Restart",
-    isLatest: true,
     highlights: [
       "In-place self-updater download trigger and unarchiving fixes",
       "Permission checks preventing accidental overwrite of package-manager installs (Homebrew, dpkg, AppImage)",

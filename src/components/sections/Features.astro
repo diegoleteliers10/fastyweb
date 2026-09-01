@@ -35,15 +35,14 @@ const features = [
 <section class="section features" id="features">
   <div class="container">
     <header class="features-intro">
-      <span class="section-num mono">[03 / 04]</span>
+      <span class="section-num mono">[03 / 03]</span>
       <h2 class="features-title">
         Six primitives, one<br />
         quiet terminal.
       </h2>
       <p class="features-lead">
-        Fastty is small on purpose. No plugin runtime, no daemon, no telemetry.
-        The whole binary is one Rust crate plus the bits you can see in
-        <span class="inline-mono">src/</span>. Every feature earned its keep.
+        Fastty is built for uncompromising speed, low memory footprint, and deep extensibility.
+        From local IPC session multiplexing and embedded WebAssembly gateways to pixel-perfect GPUI rendering.
       </p>
     </header>
 
@@ -199,6 +198,24 @@ const features = [
     </div>
 
     <div class="features-secondary" data-reveal>
+      <div class="secondary-row" style="margin-bottom: 48px;">
+        <div class="secondary-text">
+          <span class="feature-num mono">[+]</span>
+          <h3 class="feature-title secondary-title">Local Daemon & Web Gateway.</h3>
+          <p class="feature-body">
+            Fastty runs a built-in Unix domain socket multiplexer (<span class="inline-mono">fasttyd.sock</span>) and an embedded web server (<span class="inline-mono">fastty gateway</span>).
+            Attach from terminal (<span class="inline-mono">fastty attach</span>), watch sessions in real time, or open <span class="inline-mono">http://localhost:8765</span> to stream any terminal tab at 60/120 FPS via pure WebAssembly.
+          </p>
+        </div>
+        <pre class="code-block code-snippets"><code><span class="c-cmt"># Access active sessions from CLI or Web</span>
+<span class="c-fn">fastty</span> sessions --watch
+<span class="c-fn">fastty</span> attach 1 --read-only
+
+<span class="c-cmt"># Native Web Gateway with zero dependencies</span>
+<span class="c-fn">fastty</span> gateway --port 8765
+<span class="c-cmt"># → Open http://localhost:8765 in browser</span></code></pre>
+      </div>
+
       <div class="secondary-row">
         <div class="secondary-text">
           <span class="feature-num mono">[+]</span>
