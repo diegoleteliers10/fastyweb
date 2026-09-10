@@ -15,6 +15,7 @@ import Footer from "../components/Footer.astro";
             <li><a href="#introduction">Architecture</a></li>
             <li><a href="#installation">Installation</a></li>
             <li><a href="#cli-usage">CLI & AI Agents</a></li>
+            <li><a href="#ai-assistant">AI Assistant</a></li>
             <li><a href="#core-features">Core Features</a></li>
             <li><a href="#mission-control">Mission Control (⌘⇧O)</a></li>
             <li><a href="#multi-tab-search">Global Search (⌘⇧F)</a></li>
@@ -84,6 +85,20 @@ cargo build --release</code></pre>
           </div>
         </section>
 
+        <section id="ai-assistant" class="docs-section">
+          <h2>AI Assistant</h2>
+          <p>The built-in agent sidebar streams answers with collapsible reasoning and a live token-usage context ring. Tools (<code>read_file</code>, <code>search</code>, <code>run_command</code>, <code>edit_file</code>) request permission (<code>Allow</code> / <code>Allow Always</code> / <code>Decline</code>) and file edits render as reviewable diff cards before applying.</p>
+          <ul>
+            <li><strong>Providers (BYOK):</strong> Anthropic, OpenAI-compatible endpoints, and local Ollama (default) — configured in Settings → AI Assistant.</li>
+            <li><strong>Multimodal chat:</strong> paste images with <code>⌘V</code> (auto-scaled, sent as vision blocks) and attach PDFs (sent as native document blocks).</li>
+            <li><strong>Rich answers:</strong> Markdown with syntax highlighting, LaTeX math, and copy buttons on messages and code blocks.</li>
+            <li><strong>One-shot CLI:</strong> ask from any shell without opening the sidebar.</li>
+          </ul>
+          <div class="code-block">
+            <pre><code>fastty ask "why is this build failing?"</code></pre>
+          </div>
+        </section>
+
         <section id="core-features" class="docs-section">
           <h2>Core Features</h2>
           <ul>
@@ -102,6 +117,7 @@ cargo build --release</code></pre>
             <li><strong>Prompt Navigation:</strong> Jump between commands with <code>⌘⇧↑</code> and <code>⌘⇧↓</code> via semantic shell integration.</li>
             <li><strong>Synchronized Output:</strong> DEC Mode 2026 support for flicker-free TUI rendering.</li>
             <li><strong>Full IME & Latin Dead Keys:</strong> Native composition for international inputs.</li>
+            <li><strong>AI Assistant Sidebar:</strong> Agentic chat with tools, permission flow, diff cards, image/PDF attachments, and <code>fastty ask</code> CLI.</li>
           </ul>
         </section>
 

@@ -234,8 +234,28 @@ const features = [
 <span class="c-str">"gcm"</span> = <span class="c-str">"git commit -m \&#34;<span class="c-pp">$&#123;1:message&#125;</span>\&#34;"</span>
 <span class="c-str">"cb"</span>  = <span class="c-str">"cargo build"</span>
 <span class="c-str">"dps"</span> = <span class="c-str">"docker ps"</span>
-<span class="c-str">"ll"</span>  = <span class="c-str">"ls -lah"</span>
-<span class="c-str">"ports"</span> = <span class="c-str">"ss -tlnp"</span></code></pre>
+ <span class="c-str">"ll"</span>  = <span class="c-str">"ls -lah"</span>
+ <span class="c-str">"ports"</span> = <span class="c-str">"ss -tlnp"</span></code></pre>
+      </div>
+
+      <div class="secondary-row" style="margin-top: 48px;">
+        <div class="secondary-text">
+          <span class="feature-num mono">[+]</span>
+          <h3 class="feature-title secondary-title">AI Assistant, Multimodal.</h3>
+          <p class="feature-body">
+            A built-in agent sidebar with streaming responses, collapsible reasoning,
+            and a live context ring. Tools (<span class="inline-mono">read</span>, <span class="inline-mono">search</span>, <span class="inline-mono">run</span>, <span class="inline-mono">edit</span>)
+            ask permission first and show real diff cards. Bring your own key
+            (<span class="inline-mono">Anthropic</span>, <span class="inline-mono">OpenAI-compatible</span>, <span class="inline-mono">Ollama</span>),
+            paste images (<span class="inline-mono">⌘V</span>) and PDFs straight into the chat,
+            or ask from any shell with <span class="inline-mono">fastty ask</span>.
+          </p>
+        </div>
+        <pre class="code-block code-snippets"><code><span class="c-cmt"># One-shot question from any terminal</span>
+<span class="c-fn">fastty</span> ask <span class="c-str">"why is this build failing?"</span>
+
+<span class="c-cmt"># Sidebar composer: ⌘V pastes images,</span>
+<span class="c-cmt"># the clip button attaches images + PDFs</span></code></pre>
       </div>
     </div>
   </div>

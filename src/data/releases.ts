@@ -58,11 +58,124 @@ export const createDownloads = (tag: string): ReleaseDownload[] => [
 
 export const FALLBACK_RELEASES: ReleaseItem[] = [
   {
+    version: "0.10.0",
+    tag: "v0.10.0",
+    date: "2026-09-10",
+    title: "Multimodal Images, PDF Support & Markdown Rendering",
+    isLatest: true,
+    highlights: [
+      "Paste images into AI chat (⌘V) with auto downscale and base64 vision blocks",
+      "Native PDF attachments via Anthropic document blocks and OpenAI file blocks",
+      "Rich Markdown and LaTeX answers with syntax highlighting and copy buttons",
+      "Pixel-accurate composer selection and streamlined AI header with autoscroll",
+    ],
+    downloads: createDownloads("v0.10.0"),
+    changes: {
+      features: [
+        "Multimodal image support: clipboard paste (⌘V), downscaling to <= 1568px, and base64 encoding for Anthropic and OpenAI-compatible models.",
+        "Native PDF document support: PDF validation, base64 encoding, Anthropic document blocks, and OpenAI file blocks with endpoint fallback.",
+        "Rich Markdown and LaTeX rendering: syntax highlighting, math blocks, inline formulas, and interactive copy buttons for messages and code blocks.",
+        "Precision text selection and cursor placement: pixel-accurate shaped glyph measurements in composer and settings inputs.",
+        "Streamlined single-row AI header with truncated git branch and live autoscroll follow during streaming responses.",
+      ],
+    },
+  },
+  {
+    version: "0.9.0",
+    tag: "v0.9.0",
+    date: "2026-09-07",
+    title: "AI Agent Panel, Ask CLI & Editor-Grade File Editing",
+    highlights: [
+      "AI agent sidebar with streaming, reasoning view, and live context ring",
+      "Permission flow (Allow / Always / Decline) with real diff cards",
+      "edit_file with exact + fuzzy matching and CRLF-safe writes",
+      "fastty ask CLI, settings rework, and BYOK providers (Anthropic, OpenAI, Ollama)",
+    ],
+    downloads: createDownloads("v0.9.0"),
+    changes: {
+      features: [
+        "AI agent panel: streaming UI with activity indicators, real token-usage context ring, collapsible reasoning, and flat tool-call rows.",
+        "Permission flow: Allow / Allow Always / Decline with a real diff card.",
+        "edit_file: two-tier matching (exact + fuzzy over trimmed lines with re-indentation) and CRLF-safe writes.",
+        "Agent loop with Anthropic and OpenAI-compatible providers, SSE streaming, and tools (read_file, search, run_command).",
+        "ask CLI (fastty ask), settings rework, custom text input, and English UI.",
+      ],
+    },
+  },
+  {
+    version: "0.8.0",
+    tag: "v0.8.0",
+    date: "2026-09-06",
+    title: "Gateway Security, Binary Snapshots & Rendering Parity",
+    highlights: [
+      "Web gateway token auth and Origin header validation",
+      "Binary session snapshots with compressed transport",
+      "Renderer parity across GPU backends with new theme tokens",
+      "Daemon session multiplexing and terminal state sync improvements",
+    ],
+    downloads: createDownloads("v0.8.0"),
+    changes: {
+      features: [
+        "Gateway security: cryptographically random auth token and Origin-vs-Host validation.",
+        "Binary session snapshots with compressed transport for fast session sync.",
+        "Terminal state synchronization and rendering parity across GPU backends.",
+      ],
+    },
+  },
+  {
+    version: "0.7.10",
+    tag: "v0.7.10",
+    date: "2026-09-01",
+    title: "Config Preservation & Candidate Path Discovery",
+    highlights: [
+      "All config fields preserved on write",
+      "Expanded candidate path discovery",
+    ],
+    downloads: createDownloads("v0.7.10"),
+    changes: {
+      fixes: [
+        "Preserved all config fields on write and expanded candidate path discovery.",
+      ],
+    },
+  },
+  {
+    version: "0.7.9",
+    tag: "v0.7.9",
+    date: "2026-09-01",
+    title: "Embedded Wasm Assets & Pkg Routes",
+    highlights: [
+      "wasm-bindgen assets embedded in the gateway binary",
+      "pkg routes served for the web client",
+    ],
+    downloads: createDownloads("v0.7.9"),
+    changes: {
+      fixes: [
+        "Embedded wasm-bindgen assets and served pkg routes for the web client.",
+      ],
+    },
+  },
+  {
+    version: "0.7.8",
+    tag: "v0.7.8",
+    date: "2026-09-01",
+    title: "Autonomous Headless Terminals & Web Session Management",
+    highlights: [
+      "Autonomous headless terminal support",
+      "Spawn, list, and close sessions from the web client",
+    ],
+    downloads: createDownloads("v0.7.8"),
+    changes: {
+      features: [
+        "Autonomous headless terminal support.",
+        "Web session management: spawn, list, and close sessions from the web client.",
+      ],
+    },
+  },
+  {
     version: "0.7.7",
     tag: "v0.7.7",
     date: "2026-09-01",
     title: "Local Daemon Protocol, Native Web Gateway & Fastty-Wasm Client",
-    isLatest: true,
     highlights: [
       "Local Unix Socket IPC Daemon (fasttyd.sock) for terminal session multiplexing",
       "CLI subcommands: fastty sessions [--watch] and fastty attach <id> [--read-only]",
