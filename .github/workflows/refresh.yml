@@ -1,0 +1,65 @@
+name: Refresh Site Data
+
+# The site bakes the fasty version pill, star count, and release list at
+# build time. This workflow keeps the deployed site current: it polls the
+# fasty repo for a new release tag and, when one appears, bumps the fallback
+# version in src/lib/repo.ts and pushes. The push redeploys the site on
+# whatever host is connected to the repo, and the new build pulls the full
+# release data live from the GitHub API.
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Detect New Fastty Release
+        id: detect
+        run: |
+          LATEST_TAG=$(curl -fsSL --max-time 30 \
+            -H "Accept: application/vnd.github+json" \
+            -H "User-Agent: fastyweb-refresh" \
+            "https://api.github.com/repos/diegoleteliers10/fasty/releases/latest" \
+            | jq -r '.tag_name // empty')
+
+          if [[ -z "$LATEST_TAG" ]]; then
+            echo "Could not read latest fastty release; skipping."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          CURRENT_TAG=$(grep -o 'FALLBACK_VERSION = "[^"]*"' src/lib/repo.ts | cut -d'"' -f2)
+          echo "latest=$LATEST_TAG current=$CURRENT_TAG"
+
+          if [[ "$LATEST_TAG" != "$CURRENT_TAG" ]]; then
+            sed -i "s|FALLBACK_VERSION = \"[^\"]*\"|FALLBACK_VERSION = \"$LATEST_TAG\"|" src/lib/repo.ts
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "tag=$LATEST_TAG" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit Refreshed Version
+        if: steps.detect.outputs.changed == 'true'
+        env:
+          TAG: ${{ steps.detect.outputs.tag }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/lib/repo.ts
+          git commit -m "chore(site): refresh for fastty $TAG"
+          git pull --rebase origin main
+          git push

@@ -58,11 +58,110 @@ export const createDownloads = (tag: string): ReleaseDownload[] => [
 
 export const FALLBACK_RELEASES: ReleaseItem[] = [
   {
+    version: "0.13.0",
+    tag: "v0.13.0",
+    date: "2026-09-22",
+    title: "What's New Dialog & Instant Settings",
+    isLatest: true,
+    highlights: [
+      "What's new dialog after each update, once per version",
+      "Settings window opens instantly with background discovery",
+      "Font enumeration and Ollama model detection run in the background",
+      "Font combobox and model list fill in when discovery lands",
+    ],
+    downloads: createDownloads("v0.13.0"),
+    changes: {
+      features: [
+        "What's new dialog after each update, with per-version notes and a link to the full changelog. Shows once per version on macOS, Windows, and Linux.",
+        "Settings window opens instantly: font enumeration and Ollama model detection now run in the background, with the font list cached per process.",
+        "Font combobox and Ollama model list fill in when background discovery lands.",
+      ],
+    },
+  },
+  {
+    version: "0.12.0",
+    tag: "v0.12.0",
+    date: "2026-09-21",
+    title: "Performance Overhaul, Snippets & PR Picker",
+    highlights: [
+      "Cached git status, subprocess timeouts, and slow-poll backoff",
+      "Command palette live preview for themes, font size, and layouts",
+      "Snippet picker and pull-request picker with gh checkout, approve, and merge",
+      "Nerd Font auto-fallback and pane zoom with context menu",
+    ],
+    downloads: createDownloads("v0.12.0"),
+    changes: {
+      features: [
+        "Command palette live preview for themes, font size, and layouts.",
+        "Pane zoom with a context-menu entry.",
+        "Nerd Font auto-fallback when the configured font lacks glyphs.",
+        "Snippet picker and pull-request picker with gh checkout, approve, and merge.",
+        "Settings show a stale badge when the config file changes outside the app.",
+        "Config-error banner and missing-tool hints.",
+      ],
+      performance: [
+        "Cached git status, subprocess timeouts, slow-poll backoff, and reduced network traffic for status widgets.",
+      ],
+    },
+  },
+  {
+    version: "0.11.1",
+    tag: "v0.11.1",
+    date: "2026-09-15",
+    title: "Split Pane Routing, Font Combobox & Token Hovercard",
+    highlights: [
+      "New panes open where the active pane sits",
+      "Font combobox with search in Settings",
+      "Token usage hovercard in the AI sidebar",
+    ],
+    downloads: createDownloads("v0.11.1"),
+    changes: {
+      features: [
+        "Split pane routing: new panes open where the active pane sits.",
+        "Font combobox with search in Settings.",
+        "Token usage hovercard in the AI sidebar.",
+      ],
+    },
+  },
+  {
+    version: "0.11.0",
+    tag: "v0.11.0",
+    date: "2026-09-13",
+    title: "Agent Edit Review & New Selection Engine",
+    highlights: [
+      "Inspect and approve file edits before they apply",
+      "New selection engine for more precise text selection",
+      "Panel polish across the AI sidebar and status bar",
+    ],
+    downloads: createDownloads("v0.11.0"),
+    changes: {
+      features: [
+        "Agent edit review: inspect and approve file edits before they apply.",
+        "New selection engine for more precise text selection.",
+        "Panel polish across the AI sidebar and status bar.",
+      ],
+    },
+  },
+  {
+    version: "0.10.1",
+    tag: "v0.10.1",
+    date: "2026-09-12",
+    title: "Agent run_command Environment Fix",
+    highlights: [
+      "Agent run_command tool now inherits the user environment",
+    ],
+    downloads: createDownloads("v0.10.1"),
+    changes: {
+      fixes: [
+        "Agent run_command tool now inherits the user environment.",
+      ],
+    },
+  },
+  {
     version: "0.10.0",
     tag: "v0.10.0",
     date: "2026-09-10",
     title: "Multimodal Images, PDF Support & Markdown Rendering",
-    isLatest: true,
     highlights: [
       "Paste images into AI chat (⌘V) with auto downscale and base64 vision blocks",
       "Native PDF attachments via Anthropic document blocks and OpenAI file blocks",
