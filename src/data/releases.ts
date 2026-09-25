@@ -58,11 +58,69 @@ export const createDownloads = (tag: string): ReleaseDownload[] => [
 
 export const FALLBACK_RELEASES: ReleaseItem[] = [
   {
+    version: "0.14.0",
+    tag: "v0.14.0",
+    date: "2026-09-25",
+    title: "Editable Shortcuts & Engine Upgrades",
+    isLatest: true,
+    highlights: [
+      "Editable keyboard shortcuts in Settings, with per-preset defaults",
+      "Shortcut conflicts ask before reassigning, with reset and unbind",
+      "Terminal engine upgraded to alacritty_terminal 0.26",
+      "Unified dependency tree drops the old rustix 0.38 and vte 0.13 copies",
+    ],
+    downloads: createDownloads("v0.14.0"),
+    changes: {
+      features: [
+        "Editable keyboard shortcuts in Settings: click any shortcut and press the keys. All actions across Tabs, Panes, Search, Tools, and Application are customizable on macOS, Linux, and Windows, with per-preset defaults (Default, Ghostty, tmux, iTerm2) applied initially.",
+        "Shortcut conflicts ask before reassigning, with per-action reset, unbind, and reset-all back to the preset defaults.",
+        "Upgraded terminal engine to alacritty_terminal 0.26 with rustix 1.1, notify 8, notify-debouncer-mini 0.7, and criterion 0.8. The unified dependency tree drops the old rustix 0.38 and vte 0.13 copies.",
+        "Release pipeline actions updated: checkout v7, upload-artifact v7, download-artifact v8, action-gh-release v3.",
+      ],
+    },
+  },
+  {
+    version: "0.13.2",
+    tag: "v0.13.2",
+    date: "2026-09-25",
+    title: "Reliable Updates & What's-New Fix",
+    highlights: [
+      "Update checks no longer depend on the system curl",
+      "Update button appears reliably on Windows, including behind proxies",
+      "What's-new dialog appears when upgrading from any version older than 0.13.0",
+    ],
+    downloads: createDownloads("v0.13.2"),
+    changes: {
+      features: [
+        "Update checks and downloads no longer depend on the system curl. Fastty now uses its built-in HTTP client with request timeouts, so the update button appears reliably on Windows, including behind HTTP_PROXY/HTTPS_PROXY proxies.",
+        "The post-update changelog dialog now appears when upgrading from any version older than 0.13.0, not only after a previous 0.13.x run.",
+      ],
+    },
+  },
+  {
+    version: "0.13.1",
+    tag: "v0.13.1",
+    date: "2026-09-22",
+    title: "Web Reconnect Fix & Wasm Engine Upgrade",
+    highlights: [
+      "Web client restores the terminal screen after a reconnect",
+      "WebAssembly engine upgraded to vte 0.15 with bulk-memory ops",
+      "Release pipeline rebuilds the web client before every build",
+    ],
+    downloads: createDownloads("v0.13.1"),
+    changes: {
+      features: [
+        "Fixed the web client failing to restore the terminal screen after a reconnect.",
+        "Upgraded the WebAssembly terminal engine to vte 0.15 and wasm-bindgen 0.2.128, optimized with bulk-memory operations.",
+        "The release pipeline now rebuilds the web client before every release build, so the gateway always serves current assets.",
+      ],
+    },
+  },
+  {
     version: "0.13.0",
     tag: "v0.13.0",
     date: "2026-09-22",
     title: "What's New Dialog & Instant Settings",
-    isLatest: true,
     highlights: [
       "What's new dialog after each update, once per version",
       "Settings window opens instantly with background discovery",

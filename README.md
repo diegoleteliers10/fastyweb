@@ -4,7 +4,7 @@ Marketing site for [Fastty](https://github.com/diegoleteliers10/fasty), a GPU-ac
 
 ## Stack
 
-- [Astro 6](https://astro.build) — static site, zero JS by default
+- [Astro 7](https://astro.build) — static site, zero JS by default
 - Vanilla CSS with custom properties (no Tailwind, no CSS-in-JS)
 - [Geist](https://vercel.com/font) + [JetBrains Mono](https://www.jetbrains.com/lp/mono/) via `@fontsource-variable`
 - Vanilla TypeScript for the small interactive bits (theme picker, tab indicator, copy-to-clipboard)
@@ -63,7 +63,7 @@ Typography pair:
 
 The nav pulls two things from the GitHub API at build time:
 
-- **Latest release tag** — shown as the version pill (`v0.4.1`)
+- **Latest release tag** — shown as the version pill (`v0.14.0`)
 - **Star count** — shown in the GitHub badge
 
 Both calls live in `src/lib/repo.ts`. If the API fails, the build falls back to a hard-coded version and hides the star count.

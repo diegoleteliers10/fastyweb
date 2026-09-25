@@ -297,8 +297,8 @@ widgets = [
 
         <section id="keybindings" class="docs-section">
           <h2>Keyboard Shortcuts Reference</h2>
-          <p>Fastty includes an exhaustive set of keyboard shortcuts configured for maximum productivity:</p>
-          
+          <p>Since 0.14.0 every shortcut below is editable in Settings: click any shortcut and press the new keys. Conflicts ask before reassigning, and each action offers reset and unbind plus a reset-all back to the preset defaults (<code>Default</code>, <code>Ghostty</code>, <code>tmux</code>, <code>iTerm2</code>). The tables show the Default preset.</p>
+
           <h3>Default Keybindings</h3>
           <table>
             <thead>
@@ -778,7 +778,6 @@ fastty gateway --port 8765 --read-only</code></pre>
     border-radius: var(--radius-md);
     overflow: hidden;
   }
-
   th, td {
     text-align: left;
     padding: var(--space-sm) var(--space-md);
@@ -812,6 +811,12 @@ fastty gateway --port 8765 --read-only</code></pre>
   @media (max-width: 768px) {
     .docs-container {
       grid-template-columns: 1fr;
+    }
+
+    .docs-content table {
+      display: block;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
     
     .docs-sidebar {

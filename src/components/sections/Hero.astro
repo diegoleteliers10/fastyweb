@@ -98,8 +98,8 @@ const numericVersion = stripVersionPrefix(version);
           <span class="bb-seg bb-git"><span class="bb-icon">⎇</span> main <span class="bb-meta">↑2 <span class="bb-dirty">●3</span></span></span>
           <span class="bb-seg bb-time">14:32:08</span>
           <span class="bb-spacer"></span>
-          <span class="bb-seg">kube: <b>prod</b></span>
-          <span class="bb-seg">aws: <b>dev</b></span>
+          <span class="bb-seg bb-env">kube: <b>prod</b></span>
+          <span class="bb-seg bb-env">aws: <b>dev</b></span>
         </div>
       </div>
     </div>
@@ -530,6 +530,9 @@ const numericVersion = stripVersionPrefix(version);
       font-size: 10px;
       padding: 5px 10px;
       gap: 10px;
+    }
+    .bb-env {
+      display: none;
     }
   }
 </style>
