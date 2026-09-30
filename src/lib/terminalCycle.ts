@@ -21,6 +21,7 @@ const reset = (steps: TerminalStep[]): void => {
     if (step.typed) step.typed.textContent = "";
     if (step.output) {
       step.output.hidden = true;
+      step.output.classList.remove("is-complete");
       Array.from(step.output.children).forEach((line) => {
         const el = line as HTMLElement;
         el.style.opacity = "";
@@ -56,6 +57,7 @@ const revealOutput = async (output: HTMLElement, stagger: number): Promise<void>
     line.style.transform = "none";
     await sleep(stagger);
   }
+  output.classList.add("is-complete");
 };
 
 const collectSteps = (terminal: HTMLElement): TerminalStep[] => {
@@ -77,27 +79,22 @@ const collectSteps = (terminal: HTMLElement): TerminalStep[] => {
 };
 
 const runCycle = async (steps: TerminalStep[]): Promise<void> => {
-  while (true) {
-    await sleep(1800);
+  await sleep(600);
 
-    for (let i = 0; i < steps.length; i++) {
-      const step = steps[i];
+  for (let i = 0; i < steps.length; i++) {
+    const step = steps[i];
 
-      if (step.typed && step.typed.dataset.typed) {
-        await typeText(step.typed, step.typed.dataset.typed);
-        await sleep(300);
-      }
-
-      setActiveCursor(steps, i);
-
-      if (step.output) {
-        await revealOutput(step.output, 90);
-        await sleep(600);
-      }
+    if (step.typed && step.typed.dataset.typed) {
+      await typeText(step.typed, step.typed.dataset.typed);
+      await sleep(300);
     }
 
-    await sleep(5500);
-    reset(steps);
+    setActiveCursor(steps, i);
+
+    if (step.output) {
+      await revealOutput(step.output, 90);
+      await sleep(600);
+    }
   }
 };
 
@@ -113,8 +110,14 @@ export const setupTerminalCycle = (terminal: HTMLElement): void => {
   const steps = collectSteps(terminal);
   if (steps.length === 0) return;
 
-  reset(steps);
-  void runCycle(steps);
+  const observer = new IntersectionObserver((entries) => {
+    if (!entries.some((entry) => entry.isIntersecting)) return;
+    observer.disconnect();
+    reset(steps);
+    void runCycle(steps);
+  }, { threshold: 0.35 });
+
+  observer.observe(terminal);
 };
 
 export const initTerminalCycles = (): void => {

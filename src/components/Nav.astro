@@ -215,6 +215,16 @@ const starsLabel = stars > 0 ? formatStars(stars) : null;
     font-size: 13px;
   }
 
+  .nav-cta svg {
+    transition: transform 180ms var(--ease-out);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .nav-cta:hover svg {
+      transform: translateX(2px);
+    }
+  }
+
   @media (max-width: 720px) {
     .nav-links {
       display: none;

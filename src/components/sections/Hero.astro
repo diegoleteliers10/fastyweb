@@ -10,30 +10,30 @@ const numericVersion = stripVersionPrefix(version);
 <section class="hero">
   <div class="container hero-grid">
     <div class="hero-text">
-      <h1 class="hero-title">
+      <h1 class="hero-title" data-hero-enter="title">
         A terminal that<br />
         <span class="hero-title-accent">runs at idle.</span>
       </h1>
 
-      <p class="hero-sub">
+      <p class="hero-sub" data-hero-enter="copy">
         A GPU-accelerated terminal emulator written in Rust on
         GPUI and Alacritty Terminal. Pixel-perfect typography, seamless TUI rendering,
         command palette, and sub-1% idle CPU.
       </p>
 
-      <div class="hero-actions">
+      <div class="hero-actions" data-hero-enter="actions">
         <a class="btn btn-primary" href="#install">Install Fastty</a>
         <a class="btn btn-secondary" href="https://github.com/diegoleteliers10/fasty" target="_blank" rel="noreferrer">View source</a>
       </div>
 
-      <ul class="hero-platforms" aria-label="Available platforms">
+      <ul class="hero-platforms" aria-label="Available platforms" data-hero-enter="platforms">
         {platforms.map((p) => (
           <li class="hero-platform mono">{p}</li>
         ))}
       </ul>
     </div>
 
-    <div class="hero-terminal-wrap">
+    <div class="hero-terminal-wrap" data-hero-enter="terminal">
       <div class="terminal" role="img" aria-label="Fastty terminal showing a cargo bench session, fastty CLI invocation, and bottombar widgets">
         <div class="terminal-bar">
           <div class="terminal-dots" aria-hidden="true">
@@ -60,7 +60,7 @@ const numericVersion = stripVersionPrefix(version);
 
         <div class="terminal-body" data-terminal>
           <div class="terminal-line" data-line="1">
-            <span class="prompt-sigil">❯</span><span class="line-cmd mono" data-typed="cargo bench --release"></span><span class="cursor" data-cursor="1"></span>
+            <span class="prompt-sigil">❯</span><span class="line-cmd mono" data-typed="cargo bench --release">cargo bench --release</span><span class="cursor" data-cursor="1"></span>
           </div>
 
           <div class="terminal-output" data-output="1">
@@ -82,7 +82,7 @@ const numericVersion = stripVersionPrefix(version);
           </div>
 
           <div class="terminal-line" data-line="2">
-            <span class="prompt-sigil">❯</span><span class="line-cmd mono" data-typed='fastty --title "Dev Server" -d ~/api -e bun run dev'></span><span class="cursor" data-cursor="2"></span>
+            <span class="prompt-sigil">❯</span><span class="line-cmd mono" data-typed='fastty --title "Dev Server" -d ~/api -e bun run dev'>fastty --title "Dev Server" -d ~/api -e bun run dev</span><span class="cursor" data-cursor="2"></span>
           </div>
 
           <div class="terminal-output" data-output="2">
@@ -118,7 +118,7 @@ const numericVersion = stripVersionPrefix(version);
 
 <style>
   .hero {
-    padding-block: 56px 24px;
+    padding-block: 56px clamp(88px, 9vw, 132px);
   }
 
   .hero-grid {
@@ -180,6 +180,33 @@ const numericVersion = stripVersionPrefix(version);
 
   .hero-terminal-wrap {
     min-width: 0;
+    position: relative;
+    isolation: isolate;
+  }
+
+  .hero-terminal-wrap::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 12% -5% -12%;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(255, 157, 0, 0.11), transparent 68%);
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  :global(.motion-ready) [data-hero-enter] {
+    animation: hero-enter 780ms var(--ease-enter) both;
+  }
+
+  :global(.motion-ready) [data-hero-enter="copy"] { animation-delay: 100ms; }
+  :global(.motion-ready) [data-hero-enter="actions"] { animation-delay: 190ms; }
+  :global(.motion-ready) [data-hero-enter="platforms"] { animation-delay: 270ms; }
+  :global(.motion-ready) [data-hero-enter="terminal"] { animation-delay: 130ms; }
+
+  @keyframes hero-enter {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: none; }
   }
 
   .terminal {
@@ -301,6 +328,10 @@ const numericVersion = stripVersionPrefix(version);
     margin-top: 10px;
   }
 
+  .terminal-line:not(.terminal-line-active) .cursor {
+    display: none;
+  }
+
   .prompt-sigil {
     color: var(--theme-prompt, var(--voltage-orange));
     font-weight: 600;
@@ -384,10 +415,33 @@ const numericVersion = stripVersionPrefix(version);
   }
 
   .ok-time {
+    position: relative;
     margin-left: auto;
     color: var(--theme-accent, var(--voltage-orange));
     font-weight: 600;
     transition: color 320ms var(--ease-out);
+  }
+
+  .ok-time::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--theme-accent, var(--voltage-orange));
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .terminal-output.is-complete .ok-time::after {
+    animation: spawn-confirm 400ms var(--ease-enter) both;
+  }
+
+  @keyframes spawn-confirm {
+    0% { transform: scaleX(0); opacity: 1; }
+    55% { transform: scaleX(1); opacity: 1; }
+    100% { transform: scaleX(1); opacity: 0; }
   }
 
   .cursor {
@@ -463,6 +517,8 @@ const numericVersion = stripVersionPrefix(version);
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .terminal-output.is-complete .ok-time::after { animation: none; }
+    :global(.motion-ready) [data-hero-enter] { animation: none; }
     .terminal,
     .terminal-bar,
     .terminal-tab,
@@ -504,8 +560,9 @@ const numericVersion = stripVersionPrefix(version);
 
   @media (max-width: 720px) {
     .hero {
-      padding-block: 32px 16px;
+      padding-block: 32px 80px;
     }
+    :global(.motion-ready) [data-hero-enter] { animation-duration: 450ms; }
     .hero-title {
       font-size: 36px;
     }

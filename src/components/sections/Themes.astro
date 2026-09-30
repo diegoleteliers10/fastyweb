@@ -131,12 +131,11 @@ const STORAGE_KEY = "fastty-theme";
 <section class="section themes" id="themes">
   <div class="container">
     <header class="themes-intro">
-      <span class="section-num mono">[02 / 03]</span>
       <h2 class="themes-title">
         Five built-ins,<br />
         infinite drop-ins.
       </h2>
-      <p class="themes-lead">
+      <p class="themes-lead" data-reveal data-reveal-index="2">
         Fastty ships with five tuned palettes and reads custom JSON themes
         from <span class="inline-mono">~/.config/fastty/themes/</span>. Drop a
         file in, name it after the theme, switch from the command palette.
@@ -145,8 +144,9 @@ const STORAGE_KEY = "fastty-theme";
       </p>
     </header>
 
-    <div class="themes-split" data-reveal>
+    <div class="themes-split" data-reveal data-reveal-kind="surface">
       <div class="themes-featured">
+        <span class="theme-scan" aria-hidden="true"></span>
         <header class="featured-bar">
           <div class="featured-dots" aria-hidden="true">
             <span></span><span></span><span></span>
@@ -276,10 +276,25 @@ const STORAGE_KEY = "fastty-theme";
 
   applyTheme(initial);
 
+  const featured = document.querySelector(".themes-featured");
+  const scan = document.querySelector(".theme-scan");
+  let scanAnimation = null;
+
   document.querySelectorAll(".theme-item").forEach((el) => {
     const handler = () => {
       const id = el.dataset.theme;
-      if (id) applyTheme(id);
+      if (!id || el.dataset.active === "true") return;
+      applyTheme(id);
+      if (!featured || !scan || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      scanAnimation?.cancel();
+      scanAnimation = scan.animate(
+        [
+          { opacity: 0, transform: "translateX(0)" },
+          { opacity: 0.8, offset: 0.18 },
+          { opacity: 0, transform: `translateX(${featured.clientWidth}px)` },
+        ],
+        { duration: 360, easing: "cubic-bezier(0.23, 1, 0.32, 1)" },
+      );
     };
     el.addEventListener("click", handler);
     el.addEventListener("keydown", (e) => {
@@ -293,35 +308,21 @@ const STORAGE_KEY = "fastty-theme";
 
 <style>
   .themes {
-    border-top: 1px solid var(--voltage-line);
-    padding-block: 96px;
+    padding-block: var(--section-space);
   }
 
   .themes-intro {
-    display: grid;
-    grid-template-columns: 80px 1fr;
-    column-gap: 32px;
-    row-gap: 20px;
-    align-items: baseline;
-    max-width: 920px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    max-width: 720px;
     margin-bottom: 56px;
   }
 
-  .themes-intro .section-num {
-    grid-column: 1;
-    grid-row: 1;
-    font-size: 11px;
-    color: var(--voltage-text-muted);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding-top: 12px;
-  }
-
   .themes-title {
-    grid-column: 2;
-    grid-row: 1;
     font-family: var(--font-sans);
-    font-size: 40px;
+    font-size: clamp(42px, 4.4vw, 52px);
     font-weight: 600;
     line-height: 1.08;
     letter-spacing: -0.025em;
@@ -329,12 +330,10 @@ const STORAGE_KEY = "fastty-theme";
   }
 
   .themes-lead {
-    grid-column: 2;
-    grid-row: 2;
     font-size: 15.5px;
     line-height: 1.6;
     color: var(--voltage-text-muted);
-    max-width: 60ch;
+    max-width: 62ch;
   }
 
   .inline-mono {
@@ -355,12 +354,24 @@ const STORAGE_KEY = "fastty-theme";
   }
 
   .themes-featured {
+    position: relative;
     background: var(--theme-bg, #0C0C0C);
     border: 1px solid var(--voltage-line);
     border-radius: 6px;
     overflow: hidden;
     transition: background 320ms var(--ease-out),
       border-color 320ms var(--ease-out);
+  }
+
+  .theme-scan {
+    position: absolute;
+    z-index: 2;
+    inset: 0 auto 0 0;
+    width: 1px;
+    background: var(--theme-accent, var(--voltage-orange));
+    box-shadow: 0 0 16px 3px var(--theme-accent, var(--voltage-orange));
+    opacity: 0;
+    pointer-events: none;
   }
 
   .featured-bar {
@@ -497,6 +508,10 @@ const STORAGE_KEY = "fastty-theme";
     .theme-item:hover {
       background: var(--voltage-overlay);
     }
+
+    .theme-item:hover .theme-swatch {
+      transform: translateX(2px);
+    }
   }
 
   .theme-item:active {
@@ -535,6 +550,7 @@ const STORAGE_KEY = "fastty-theme";
     padding: 3px;
     background: var(--voltage-overlay);
     border-radius: var(--radius-sm);
+    transition: transform 200ms var(--ease-out);
   }
 
   .swatch-bg {
@@ -643,18 +659,13 @@ const STORAGE_KEY = "fastty-theme";
   }
 
   @media (max-width: 900px) {
-    .themes-intro {
-      grid-template-columns: 1fr;
-      row-gap: 8px;
-    }
-    .themes-intro .section-num,
-    .themes-title,
-    .themes-lead {
-      grid-column: 1;
-    }
     .themes-split {
       grid-template-columns: 1fr;
       gap: 32px;
     }
+  }
+
+  @media (max-width: 720px) {
+    .themes-title { font-size: 34px; }
   }
 </style>

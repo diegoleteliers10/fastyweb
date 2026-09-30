@@ -37,19 +37,18 @@ const platforms: Platform[] = [
 <section class="section install" id="install">
   <div class="container">
     <header class="install-intro">
-      <span class="section-num mono">[01 / 03]</span>
       <h2 class="install-title">
         One curl.<br />
         You're in.
       </h2>
-      <p class="install-lead">
+      <p class="install-lead" data-reveal data-reveal-index="2">
         The installer scripts detect your OS and architecture, pull the
         matching release, and drop the binary where it belongs. No daemon.
         No background service. No telemetry phone-home.
       </p>
     </header>
 
-    <div class="install-card" data-reveal>
+    <div class="install-card" data-reveal data-reveal-kind="surface">
       <div class="install-tabs" role="tablist">
         {platforms.map((p, i) => (
           <button
@@ -87,7 +86,7 @@ const platforms: Platform[] = [
                     <path d="M5 12l4 4 10-10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                   </svg>
                 </span>
-                <span class="copy-label">copy</span>
+                <span class="copy-label" aria-live="polite">copy</span>
               </button>
           </div>
           <p class="install-hint mono">{p.hint}</p>
@@ -159,62 +158,67 @@ const platforms: Platform[] = [
   const copyButtons = document.querySelectorAll<HTMLButtonElement>(".install-copy");
   copyButtons.forEach((btn) => {
     const label = btn.querySelector<HTMLElement>(".copy-label");
+    const command = btn.closest<HTMLElement>(".install-cmd");
     if (!label) return;
-    const originalText = label.textContent ?? "copy";
+    const copyLabel = label;
+    const originalText = copyLabel.textContent ?? "copy";
     let resetTimer: number | null = null;
+
+    function showFeedback(state: "copied" | "failed"): void {
+      copyLabel.textContent = state;
+      btn.classList.toggle("is-copied", state === "copied");
+      btn.classList.toggle("is-error", state === "failed");
+      command?.classList.toggle("is-copied", state === "copied");
+      btn.disabled = false;
+      if (resetTimer !== null) window.clearTimeout(resetTimer);
+      resetTimer = window.setTimeout(() => {
+        copyLabel.textContent = originalText;
+        btn.classList.remove("is-copied", "is-error");
+        command?.classList.remove("is-copied");
+        resetTimer = null;
+      }, 1600);
+    }
 
     btn.addEventListener("click", () => {
       const text = btn.dataset.copy;
       if (!text) return;
-
-      label.textContent = "copied";
-      btn.classList.add("is-copied");
-      if (resetTimer !== null) window.clearTimeout(resetTimer);
-      resetTimer = window.setTimeout(() => {
-        label.textContent = originalText;
-        btn.classList.remove("is-copied");
+      if (resetTimer !== null) {
+        window.clearTimeout(resetTimer);
         resetTimer = null;
-      }, 1600);
-
-      void navigator.clipboard.writeText(text).catch(() => {
-        // Clipboard permission denied or unavailable.
-        // UI feedback already shown above — user knows click was received.
-      });
+      }
+      btn.classList.remove("is-copied", "is-error");
+      command?.classList.remove("is-copied");
+      copyLabel.textContent = originalText;
+      if (!navigator.clipboard?.writeText) {
+        showFeedback("failed");
+        return;
+      }
+      btn.disabled = true;
+      void navigator.clipboard.writeText(text).then(
+        () => showFeedback("copied"),
+        () => showFeedback("failed"),
+      );
     });
   });
 </script>
 
 <style>
   .install {
-    border-top: 1px solid var(--voltage-line);
-    padding-block: 96px;
+    padding-block: var(--section-space);
   }
 
   .install-intro {
-    display: grid;
-    grid-template-columns: 80px 1fr;
-    column-gap: 32px;
-    row-gap: 20px;
-    align-items: baseline;
-    max-width: 920px;
-    margin-bottom: 48px;
-  }
-
-  .install-intro .section-num {
-    grid-column: 1;
-    grid-row: 1;
-    font-size: 11px;
-    color: var(--voltage-text-muted);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    max-width: 720px;
+    margin-bottom: 56px;
   }
 
   .install-title {
-    grid-column: 2;
-    grid-row: 1;
     font-family: var(--font-sans);
-    font-size: 40px;
+    font-size: clamp(42px, 4.4vw, 52px);
     font-weight: 600;
     line-height: 1.08;
     letter-spacing: -0.025em;
@@ -222,12 +226,10 @@ const platforms: Platform[] = [
   }
 
   .install-lead {
-    grid-column: 2;
-    grid-row: 2;
     font-size: 15.5px;
     line-height: 1.6;
     color: var(--voltage-text-muted);
-    max-width: 60ch;
+    max-width: 62ch;
   }
 
   .inline-mono {
@@ -307,7 +309,17 @@ const platforms: Platform[] = [
     display: none;
   }
 
+  .install-pane[data-active="true"] {
+    animation: install-pane-enter 300ms var(--ease-enter) both;
+  }
+
+  @keyframes install-pane-enter {
+    from { opacity: 0; transform: translateY(7px); }
+    to { opacity: 1; transform: none; }
+  }
+
   .install-cmd {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 12px;
@@ -316,6 +328,27 @@ const platforms: Platform[] = [
     border: 1px solid var(--voltage-line);
     border-radius: 4px;
     font-size: 14px;
+  }
+
+  .install-cmd::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 -1px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--voltage-orange), #6ec77a);
+    transform: scaleX(0);
+    transform-origin: left;
+    pointer-events: none;
+  }
+
+  .install-cmd.is-copied::after {
+    animation: copy-trace 480ms var(--ease-enter) both;
+  }
+
+  @keyframes copy-trace {
+    from { transform: scaleX(0); opacity: 1; }
+    70% { transform: scaleX(1); opacity: 1; }
+    to { transform: scaleX(1); opacity: 0; }
   }
 
   .install-prompt {
@@ -373,6 +406,11 @@ const platforms: Platform[] = [
     color: #6ec77a;
     border-color: #6ec77a;
     background: rgba(110, 199, 122, 0.08);
+  }
+
+  .install-copy.is-error {
+    color: var(--color-error);
+    border-color: var(--color-error);
   }
 
   .copy-icon-wrap {
@@ -446,6 +484,8 @@ const platforms: Platform[] = [
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .install-cmd.is-copied::after { animation: none; }
+    .install-pane[data-active="true"] { animation: none; }
     .install-tab-indicator {
       transition: none;
     }
@@ -463,17 +503,12 @@ const platforms: Platform[] = [
   }
 
   @media (max-width: 900px) {
-    .install-intro {
-      grid-template-columns: 1fr;
-      row-gap: 8px;
-    }
-    .install-intro .section-num,
-    .install-title,
-    .install-lead {
-      grid-column: 1;
-    }
     .install-code {
       font-size: 11px;
     }
+  }
+
+  @media (max-width: 720px) {
+    .install-title { font-size: 34px; }
   }
 </style>

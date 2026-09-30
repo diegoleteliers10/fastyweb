@@ -6,25 +6,21 @@ const numericVersion = stripVersionPrefix(version);
 
 const features = [
   {
-    eyebrow: "01",
     title: "Low-level Paint API & Pixel-Perfect Grid",
     body: "Direct GPU hardware quad rendering with per-cell advance control. Box-drawing characters and block elements are synthesized at exact pixel boundaries with zero hairline gaps for seamless TUI banners and logos.",
     visual: "wgsl",
   },
   {
-    eyebrow: "02",
     title: "Sub-1% CPU at idle & Synchronized Output",
     body: "The event loop rests when inactive. DEC mode 2026 synchronized output guarantees zero tearing or flicker during intensive CLI and TUI rendering.",
     visual: "idle",
   },
   {
-    eyebrow: "03",
     title: "Split Panes, Tab Tear-Out & AI Agent Control",
     body: "Split any tab horizontally or vertically (⌘D / ⌘⇧D). Drag tabs to tear out standalone windows. Launch targeted sessions from scripts and AI agents via CLI options.",
     visual: "tabs",
   },
   {
-    eyebrow: "04",
     title: "Widgets, Prompt Jumps & Token Detection",
     body: "Live status bar with Git, Kubernetes, AWS, and custom command widgets. Jump between prompts (⌘⇧↑ / ⌘⇧↓), and click auto-detected URLs, file paths, and hex colors.",
     visual: "bottombar",
@@ -35,12 +31,11 @@ const features = [
 <section class="section features" id="features">
   <div class="container">
     <header class="features-intro">
-      <span class="section-num mono">[03 / 03]</span>
       <h2 class="features-title">
         Four primitives, one<br />
         quiet terminal.
       </h2>
-      <p class="features-lead">
+      <p class="features-lead" data-reveal data-reveal-index="2">
         Fastty is built for uncompromising speed, low memory footprint, and deep extensibility.
         From local IPC session multiplexing and embedded WebAssembly gateways to pixel-perfect GPUI rendering.
       </p>
@@ -48,9 +43,8 @@ const features = [
 
     <div class="features-list">
       {features.map((f, i) => (
-        <article class="feature-row" data-side={i % 2 === 0 ? "left" : "right"} data-reveal data-reveal-index={i}>
+        <article class="feature-row" data-side={i % 2 === 0 ? "left" : "right"} data-reveal>
           <div class="feature-text">
-            <span class="feature-num mono">{f.eyebrow}</span>
             <h3 class="feature-title">{f.title}</h3>
             <p class="feature-body">{f.body}</p>
           </div>
@@ -66,7 +60,7 @@ const features = [
                 <div class="vc-screen mono" data-terminal>
                   <div class="vc-line" data-line="1">
                     <span class="vc-sigil">❯</span>
-                    <span class="vc-cmd" data-typed="ls --color=always"></span>
+                    <span class="vc-cmd" data-typed="ls --color=always">ls --color=always</span>
                     <span class="vc-cursor" data-cursor="1" aria-hidden="true"></span>
                   </div>
                   <div class="vc-output" data-output="1">
@@ -102,7 +96,7 @@ const features = [
                 <div class="vi-screen mono" data-terminal>
                   <div class="vi-line" data-line="1">
                     <span class="vi-sigil">❯</span>
-                    <span class="vi-cmd" data-typed="cargo build --release"></span>
+                    <span class="vi-cmd" data-typed="cargo build --release">cargo build --release</span>
                     <span class="vi-cursor" data-cursor="1" aria-hidden="true"></span>
                   </div>
                   <div class="vi-output" data-output="1">
@@ -117,22 +111,22 @@ const features = [
                 <div class="vi-foot mono">
                   <div class="vi-stat">
                     <span class="vi-stat-key">cpu</span>
-                    <span class="vi-stat-bar"><i style="--w: 1%"></i></span>
+                    <span class="vi-stat-bar"><i style="--scale: 0.01"></i></span>
                     <span class="vi-stat-val">0.7%</span>
                   </div>
                   <div class="vi-stat">
                     <span class="vi-stat-key">rss</span>
-                    <span class="vi-stat-bar"><i style="--w: 18%"></i></span>
+                    <span class="vi-stat-bar"><i style="--scale: 0.18"></i></span>
                     <span class="vi-stat-val">52 mb</span>
                   </div>
                   <div class="vi-stat">
                     <span class="vi-stat-key">wakeups</span>
-                    <span class="vi-stat-bar"><i style="--w: 0%"></i></span>
+                    <span class="vi-stat-bar"><i style="--scale: 0"></i></span>
                     <span class="vi-stat-val">0.0/s</span>
                   </div>
                   <div class="vi-stat">
                     <span class="vi-stat-key">energy</span>
-                    <span class="vi-stat-bar"><i style="--w: 4%"></i></span>
+                    <span class="vi-stat-bar"><i style="--scale: 0.04"></i></span>
                     <span class="vi-stat-val">12 mj</span>
                   </div>
                 </div>
@@ -140,7 +134,7 @@ const features = [
             )}
 
             {f.visual === "tabs" && (
-              <div class="tear-stage" aria-hidden="true">
+              <div class="tear-stage" data-motion-stage aria-hidden="true">
                 <div class="tear-window tear-window-1">
                   <div class="tear-tabs">
                     <span class="tear-tab tear-tab-active">~/projects/fastty</span>
@@ -198,9 +192,8 @@ const features = [
     </div>
 
     <div class="features-secondary" data-reveal>
-      <div class="secondary-row" style="margin-bottom: 48px;">
+      <div class="secondary-row">
         <div class="secondary-text">
-          <span class="feature-num mono">[+]</span>
           <h3 class="feature-title secondary-title">Local Daemon & Web Gateway.</h3>
           <p class="feature-body">
             Fastty runs a built-in Unix domain socket multiplexer (<span class="inline-mono">fasttyd.sock</span>) and an embedded web server (<span class="inline-mono">fastty gateway</span>).
@@ -218,7 +211,6 @@ const features = [
 
       <div class="secondary-row">
         <div class="secondary-text">
-          <span class="feature-num mono">[+]</span>
           <h3 class="feature-title secondary-title">Snippets, TUI-safe.</h3>
           <p class="feature-body">
             Type <span class="inline-mono">gst</span>, press Tab, get <span class="inline-mono">git status</span>.
@@ -238,9 +230,8 @@ const features = [
  <span class="c-str">"ports"</span> = <span class="c-str">"ss -tlnp"</span></code></pre>
       </div>
 
-      <div class="secondary-row" style="margin-top: 48px;">
+      <div class="secondary-row">
         <div class="secondary-text">
-          <span class="feature-num mono">[+]</span>
           <h3 class="feature-title secondary-title">AI Assistant, Multimodal.</h3>
           <p class="feature-body">
             A built-in agent sidebar with streaming responses, collapsible reasoning,
@@ -263,42 +254,21 @@ const features = [
 
 <style>
   .features {
-    border-top: 1px solid var(--voltage-line);
-    padding-block: 96px 72px;
-  }
-
-  @media (min-width: 901px) {
-    .features {
-      padding-block: 112px;
-    }
+    padding-block: var(--section-space);
   }
 
   .features-intro {
-    display: grid;
-    grid-template-columns: 80px 1fr;
-    column-gap: 32px;
-    row-gap: 20px;
-    align-items: baseline;
-    max-width: 920px;
-    margin-bottom: 80px;
-  }
-
-  .features-intro .section-num {
-    grid-column: 1;
-    grid-row: 1;
-    font-size: 11px;
-    color: var(--voltage-text-muted);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    align-self: start;
-    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    max-width: 720px;
+    margin-bottom: 64px;
   }
 
   .features-title {
-    grid-column: 2;
-    grid-row: 1;
     font-family: var(--font-sans);
-    font-size: 40px;
+    font-size: clamp(42px, 4.4vw, 52px);
     font-weight: 600;
     line-height: 1.08;
     letter-spacing: -0.025em;
@@ -306,12 +276,10 @@ const features = [
   }
 
   .features-lead {
-    grid-column: 2;
-    grid-row: 2;
     font-size: 15.5px;
     line-height: 1.6;
     color: var(--voltage-text-muted);
-    max-width: 60ch;
+    max-width: 62ch;
   }
 
   .inline-mono {
@@ -345,19 +313,37 @@ const features = [
     order: 1;
   }
 
+  :global(.motion-ready) .feature-row[data-reveal] .feature-text,
+  :global(.motion-ready) .feature-row[data-reveal] .feature-visual {
+    opacity: 0;
+    transform: translateX(-22px);
+    transition: opacity 520ms var(--ease-enter), transform 680ms var(--ease-enter);
+  }
+
+  :global(.motion-ready) .feature-row[data-reveal] .feature-visual {
+    transform: translateX(22px);
+    transition-delay: 110ms;
+  }
+
+  :global(.motion-ready) .feature-row[data-side="right"][data-reveal] .feature-text {
+    transform: translateX(22px);
+  }
+
+  :global(.motion-ready) .feature-row[data-side="right"][data-reveal] .feature-visual {
+    transform: translateX(-22px);
+  }
+
+  :global(.motion-ready) .feature-row[data-reveal].is-revealed .feature-text,
+  :global(.motion-ready) .feature-row[data-reveal].is-revealed .feature-visual {
+    opacity: 1;
+    transform: none;
+  }
+
   .feature-text {
     display: flex;
     flex-direction: column;
     gap: 12px;
     padding-top: 8px;
-  }
-
-  .feature-num {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    color: var(--voltage-text-muted);
-    text-transform: uppercase;
   }
 
   .feature-title {
@@ -499,8 +485,26 @@ const features = [
     font-size: 12.5px;
   }
 
+  .vc-output.is-complete .vc-glyphs {
+    animation: glyph-resolve 280ms var(--ease-enter) both;
+  }
+
+  .vc-output.is-complete .vc-glyphs:last-child {
+    animation-delay: 60ms;
+  }
+
+  @keyframes glyph-resolve {
+    from { opacity: 0.35; }
+    to { opacity: 1; }
+  }
+
   .vc-active {
     margin-top: 6px;
+  }
+
+  .vc-line:not(.vc-active) .vc-cursor,
+  .vi-line:not(.vi-active) .vi-cursor {
+    display: none;
   }
 
   .vc-cursor {
@@ -676,14 +680,16 @@ const features = [
   .vi-stat-bar i {
     display: block;
     height: 100%;
-    width: 0;
+    width: 100%;
     background: linear-gradient(90deg, var(--voltage-orange), var(--voltage-yellow));
     border-radius: 2px;
-    transition: width 900ms var(--ease-out);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 760ms var(--ease-enter);
   }
 
   .feature-row.is-revealed .vi-stat-bar i {
-    width: var(--w, 0);
+    transform: scaleX(var(--scale, 0));
   }
 
   .feature-row.is-revealed .vi-stat:nth-child(2) .vi-stat-bar i { transition-delay: 100ms; }
@@ -781,10 +787,19 @@ const features = [
 
   .tear-window-2 {
     z-index: 1;
+    opacity: 1;
+    transform: translate(118%, 14px);
+    transform-origin: 0 50%;
+  }
+
+  :global(.motion-ready) .tear-stage:not(.is-playing) .tear-window-2 {
     opacity: 0;
     transform: translate(0, 0) scale(0.96);
-    animation: tear-spawn 7s var(--ease-out) infinite;
-    transform-origin: 0 50%;
+  }
+
+  :global(.motion-ready) .tear-stage.is-playing .tear-window-2 {
+    animation: tear-spawn 1.35s var(--ease-enter) both;
+    animation-delay: 180ms;
   }
 
   .tear-tabs {
@@ -816,8 +831,17 @@ const features = [
   }
 
   .tear-tab-torn {
-    animation: tear-leave 7s var(--ease-out) infinite;
+    opacity: 0;
     transform-origin: center;
+  }
+
+  :global(.motion-ready) .tear-stage:not(.is-playing) .tear-tab-torn {
+    opacity: 1;
+  }
+
+  :global(.motion-ready) .tear-stage.is-playing .tear-tab-torn {
+    animation: tear-leave 1.35s var(--ease-enter) both;
+    animation-delay: 180ms;
   }
 
   .tear-tab-dragging {
@@ -847,59 +871,51 @@ const features = [
     z-index: 3;
     pointer-events: none;
     opacity: 0;
-    animation: tear-drag 7s var(--ease-out) infinite;
     transform-origin: 0 50%;
   }
 
+  :global(.motion-ready) .tear-stage.is-playing .tear-ghost {
+    animation: tear-drag 1.35s var(--ease-enter) both;
+    animation-delay: 180ms;
+  }
+
   @keyframes tear-drag {
-    0%, 18% {
+    0%, 14% {
       opacity: 0;
       transform: translate(0, 0) rotate(0deg);
     }
-    22% {
+    20% {
       opacity: 1;
       transform: translate(0, 0) rotate(0deg);
     }
-    56% {
+    62% {
       opacity: 1;
       transform: translate(118%, 14px) rotate(-2deg);
     }
-    62%, 100% {
+    73%, 100% {
       opacity: 0;
       transform: translate(118%, 14px) rotate(-2deg);
     }
   }
 
   @keyframes tear-leave {
-    0%, 22% {
+    0%, 20% {
       opacity: 1;
       transform: translate(0, 0) scale(1);
     }
-    40% {
+    48%, 100% {
       opacity: 0;
       transform: translate(0, 0) scale(0.92);
-    }
-    92% {
-      opacity: 0;
-      transform: translate(0, 0) scale(0.92);
-    }
-    100% {
-      opacity: 1;
-      transform: translate(0, 0) scale(1);
     }
   }
 
   @keyframes tear-spawn {
-    0%, 55% {
+    0%, 56% {
       opacity: 0;
       transform: translate(0, 0) scale(0.96);
     }
-    72%, 92% {
+    76%, 100% {
       opacity: 1;
-      transform: translate(118%, 14px) scale(1);
-    }
-    100% {
-      opacity: 0;
       transform: translate(118%, 14px) scale(1);
     }
   }
@@ -977,6 +993,18 @@ const features = [
     margin-top: 96px;
     padding-top: 64px;
     border-top: 1px solid var(--voltage-line);
+    display: grid;
+    gap: 56px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .feature-visual > :is(.visual-cell, .visual-idle, .tear-stage, .visual-bottombar) {
+      transition: transform 240ms var(--ease-out);
+    }
+
+    .feature-visual:hover > :is(.visual-cell, .visual-idle, .tear-stage, .visual-bottombar) {
+      transform: translateY(-3px);
+    }
   }
 
   .secondary-row {
@@ -998,6 +1026,22 @@ const features = [
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .vc-output.is-complete .vc-glyphs { animation: none; }
+    :global(.motion-ready) .tear-stage:not(.is-playing) .tear-window-2,
+    :global(.motion-ready) .tear-stage.is-playing .tear-window-2 {
+      opacity: 1;
+      transform: translate(118%, 14px);
+    }
+    :global(.motion-ready) .tear-stage:not(.is-playing) .tear-tab-torn,
+    :global(.motion-ready) .tear-stage.is-playing .tear-tab-torn {
+      opacity: 0;
+    }
+    :global(.motion-ready) .feature-row[data-reveal] .feature-text,
+    :global(.motion-ready) .feature-row[data-reveal] .feature-visual {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
     .tear-tab-torn,
     .tear-window-2,
     .tear-ghost {
@@ -1006,16 +1050,16 @@ const features = [
     }
   }
 
+  @media (max-width: 900px) and (prefers-reduced-motion: no-preference) {
+    :global(.motion-ready) .feature-row[data-reveal] .feature-text,
+    :global(.motion-ready) .feature-row[data-reveal] .feature-visual {
+      transform: translateY(8px);
+      transition-duration: 360ms;
+      transition-delay: 0ms;
+    }
+  }
+
   @media (max-width: 900px) {
-    .features-intro {
-      grid-template-columns: 1fr;
-      row-gap: 8px;
-    }
-    .features-intro .section-num,
-    .features-title,
-    .features-lead {
-      grid-column: 1;
-    }
     .feature-row,
     .secondary-row {
       grid-template-columns: 1fr;
@@ -1030,5 +1074,14 @@ const features = [
     .features-list {
       gap: 64px;
     }
+    .features-secondary {
+      margin-top: 72px;
+      padding-top: 48px;
+      gap: 40px;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .features-title { font-size: 34px; }
   }
 </style>
