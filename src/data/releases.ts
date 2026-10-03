@@ -58,11 +58,37 @@ export const createDownloads = (tag: string): ReleaseDownload[] => [
 
 export const FALLBACK_RELEASES: ReleaseItem[] = [
   {
+    version: "0.16.0",
+    tag: "v0.16.0",
+    date: "2026-10-03",
+    title: "MCP Agent Server, 20 Themes & Full-State Snapshots",
+    isLatest: true,
+    highlights: [
+      "fastty mcp: connect Claude Code, OpenCode, Codex and friends to your terminals",
+      "20 built-in themes (six light — fastty's first) with a Settings dropdown",
+      "Automatic Contrast Correction fixes clashing program colors in Oklab",
+      "Web client restores full scrollback on reconnect (FST1 v2 snapshots)",
+    ],
+    downloads: createDownloads("v0.16.0"),
+    changes: {
+      features: [
+        "MCP server (fastty mcp): seven tools over the daemon — list/spawn/write/read/resize/close sessions plus run_command, which runs a command in a throwaway headless session and returns the terminal's real rendered output. One command registers fastty into an agent's config: fastty mcp setup [claude-code|opencode|codex|gemini|cursor|zed|claude-desktop].",
+        "Theme suite grows from 5 to 20 built-ins: Catppuccin Frappé/Macchiato/Latte, Dracula, Nord, Tokyo Night + Storm, Gruvbox Dark/Light, Rosé Pine + Moon + Dawn, One Light, Solarized Light, and Kanagawa Wave — six light themes, fastty's first. Settings swaps the theme grid for a keyboard-navigable dropdown.",
+        "Automatic Contrast Correction: explicit program colors with WCAG contrast below 3:1 get their Oklab lightness binary-searched away from the background (hue preserved) until they read. Toggle in Settings or contrast_correction in fastty.toml.",
+        "Universal Insert (⌃⌘,): one fuzzy picker inserts workspace files, SSH hosts, git branches, snippets, and running docker containers at the prompt.",
+        "Kitty clipboard protocol (OSC 5522): programs can read and write the clipboard including images (as PNG); reads are permission-gated by clipboard_read.",
+        "Learned auto-allow: after 3 manual approvals of the same command family, the AI sidebar offers to auto-allow it — subcommand-aware, persistent, with the danger layer always first.",
+        "CLI session control: fastty spawn / write / resize / close / list over the daemon, with truthful exit codes via a new opt-in done ack.",
+        "Session content restore: saving a workspace now freezes each pane's terminal content; restoring replays scrollback + screen into the fresh shells.",
+        "Binary snapshots grow to FST1 v2: full state (scrollback + screen + cursor) Deflate-compressed (~184x on realistic scrollback); the web client restores scrollback on reconnect. Fixed hardcoded Catppuccin palette in snapshots — they now resolve against the active theme.",
+      ],
+    },
+  },
+  {
     version: "0.14.0",
     tag: "v0.14.0",
     date: "2026-09-25",
     title: "Editable Shortcuts & Engine Upgrades",
-    isLatest: true,
     highlights: [
       "Editable keyboard shortcuts in Settings, with per-preset defaults",
       "Shortcut conflicts ask before reassigning, with reset and unbind",

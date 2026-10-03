@@ -197,16 +197,42 @@ const features = [
           <h3 class="feature-title secondary-title">Local Daemon & Web Gateway.</h3>
           <p class="feature-body">
             Fastty runs a built-in Unix domain socket multiplexer (<span class="inline-mono">fasttyd.sock</span>) and an embedded web server (<span class="inline-mono">fastty gateway</span>).
-            Attach from terminal (<span class="inline-mono">fastty attach</span>), watch sessions in real time, or open <span class="inline-mono">http://localhost:8765</span> to stream any terminal tab at 60/120 FPS via pure WebAssembly.
+            Attach from terminal (<span class="inline-mono">fastty attach</span>), watch sessions in real time, spawn and drive sessions from scripts (<span class="inline-mono">fastty spawn</span>, <span class="inline-mono">write</span>, <span class="inline-mono">close</span>), or open <span class="inline-mono">http://localhost:8765</span> to stream any terminal tab at 60/120 FPS via pure WebAssembly — scrollback included.
           </p>
         </div>
         <pre class="code-block code-snippets"><code><span class="c-cmt"># Access active sessions from CLI or Web</span>
 <span class="c-fn">fastty</span> sessions --watch
 <span class="c-fn">fastty</span> attach 1 --read-only
 
+<span class="c-cmt"># Script the daemon: spawn, type, close</span>
+id=$(<span class="c-fn">fastty</span> spawn --cwd ~/api)
+<span class="c-fn">fastty</span> write $id --enter <span class="c-str">'bun test'</span>
+<span class="c-fn">fastty</span> close $id
+
 <span class="c-cmt"># Native Web Gateway with zero dependencies</span>
 <span class="c-fn">fastty</span> gateway --port 8765
 <span class="c-cmt"># → Open http://localhost:8765 in browser</span></code></pre>
+      </div>
+
+      <div class="secondary-row">
+        <div class="secondary-text">
+          <h3 class="feature-title secondary-title">MCP Agent Server.</h3>
+          <p class="feature-body">
+            Connect your AI agents to fastty over the Model Context Protocol — Claude Code,
+            OpenCode, Codex, Cursor, Zed, Gemini CLI. Agents get seven tools over your real
+            terminals: list, spawn, write, read the screen (scrollback included), resize, close,
+            and a one-shot <span class="inline-mono">run_command</span> that returns a command's
+            actual rendered output. One command registers fastty into any supported agent's config.
+          </p>
+        </div>
+        <pre class="code-block code-snippets"><code><span class="c-cmt"># Register into Claude Code, OpenCode, Codex,</span>
+<span class="c-cmt"># Cursor, Zed, Gemini CLI or Claude Desktop</span>
+<span class="c-fn">fastty</span> mcp setup opencode
+<span class="c-fn">fastty</span> mcp setup claude-code
+
+<span class="c-cmt"># Then your agent drives real terminals:</span>
+<span class="c-fn">fastty_run_command</span> <span class="c-str">"cargo build 2>&1 | tail"</span>
+<span class="c-fn">fastty_read_screen</span> <span class="c-str">"watch the dev server"</span></code></pre>
       </div>
 
       <div class="secondary-row">
@@ -232,18 +258,40 @@ const features = [
 
       <div class="secondary-row">
         <div class="secondary-text">
+          <h3 class="feature-title secondary-title">Insert anything, anywhere.</h3>
+          <p class="feature-body">
+            One anchored fuzzy picker (<span class="inline-mono">⌃⌘,</span>) inserts paths to
+            anything at the prompt: workspace files, SSH hosts from your config, local git
+            branches, snippet bodies, even running docker containers. Files land quoted,
+            commands pre-filled (<span class="inline-mono">ssh …</span>, <span class="inline-mono">git checkout …</span>),
+            snippets expanded. It complements your shell — it never hijacks it.
+          </p>
+        </div>
+        <pre class="code-block code-snippets"><code><span class="c-fn">❯</span> ssh <span class="c-str">▌</span>
+<span class="c-cmt">┌─ Insert anything ────────────────────┐</span>
+<span class="c-cmt">│</span> 🖥  prod-api     deploy@10.0.0.1      <span class="c-cmt">│</span>
+<span class="c-cmt">│</span> 🖥  homelab      root@192.168.1.10    <span class="c-cmt">│</span>
+<span class="c-cmt">└───────────────────────────────────────┘</span></code></pre>
+      </div>
+
+      <div class="secondary-row">
+        <div class="secondary-text">
           <h3 class="feature-title secondary-title">AI Assistant, Multimodal.</h3>
           <p class="feature-body">
             A built-in agent sidebar with streaming responses, collapsible reasoning,
             and a live context ring. Tools (<span class="inline-mono">read</span>, <span class="inline-mono">search</span>, <span class="inline-mono">run</span>, <span class="inline-mono">edit</span>)
-            ask permission first and show real diff cards. Bring your own key
+            ask permission first and show real diff cards — and after you approve the same
+            command family three times, fastty offers to auto-allow it for good. Bring your own key
             (<span class="inline-mono">Anthropic</span>, <span class="inline-mono">OpenAI-compatible</span>, <span class="inline-mono">Ollama</span>),
-            paste images (<span class="inline-mono">⌘V</span>) and PDFs straight into the chat,
+            paste images and PDFs straight into the chat,
             or ask from any shell with <span class="inline-mono">fastty ask</span>.
           </p>
         </div>
         <pre class="code-block code-snippets"><code><span class="c-cmt"># One-shot question from any terminal</span>
 <span class="c-fn">fastty</span> ask <span class="c-str">"why is this build failing?"</span>
+
+<span class="c-cmt"># Approved 'cargo test' 3 times —</span>
+<span class="c-cmt"># auto-allow it from now on? [Auto-allow]</span>
 
 <span class="c-cmt"># Sidebar composer: ⌘V pastes images,</span>
 <span class="c-cmt"># the clip button attaches images + PDFs</span></code></pre>

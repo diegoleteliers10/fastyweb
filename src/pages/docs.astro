@@ -15,18 +15,23 @@ import Footer from "../components/Footer.astro";
             <li><a href="#introduction">Architecture</a></li>
             <li><a href="#installation">Installation</a></li>
             <li><a href="#cli-usage">CLI & AI Agents</a></li>
+            <li><a href="#mcp">MCP Server & Agents</a></li>
             <li><a href="#ai-assistant">AI Assistant</a></li>
             <li><a href="#core-features">Core Features</a></li>
             <li><a href="#mission-control">Mission Control (⌘⇧O)</a></li>
             <li><a href="#multi-tab-search">Global Search (⌘⇧F)</a></li>
+            <li><a href="#universal-insert">Universal Insert (⌃⌘,)</a></li>
             <li><a href="#session-persistence">Workspace Persistence</a></li>
             <li><a href="#ssh-manager">SSH Manager & Mux</a></li>
             <li><a href="#split-panes">Split Panes</a></li>
             <li><a href="#config-importer">Config Importer & Presets</a></li>
             <li><a href="#kitty-graphics">Kitty Graphics Protocol</a></li>
+            <li><a href="#kitty-clipboard">Kitty Clipboard & Images</a></li>
             <li><a href="#widgets">Bottombar Widgets</a></li>
             <li><a href="#snippets">Snippets System</a></li>
             <li><a href="#configuration">Configuration</a></li>
+            <li><a href="#built-in-themes">Built-in Themes</a></li>
+            <li><a href="#contrast-correction">Contrast Correction</a></li>
             <li><a href="#custom-themes">Custom Themes</a></li>
             <li><a href="#keybindings">Keybindings</a></li>
             <li><a href="#daemon-protocol">Daemon Protocol & IPC</a></li>
@@ -79,10 +84,43 @@ cargo build --release</code></pre>
             <li><code>-v, --version</code>: Print version information.</li>
             <li><code>-h, --help</code>: Print help options.</li>
           </ul>
+          <h3>Session Control Subcommands</h3>
+          <p>Talk to a running fastty's daemon from scripts and agents:</p>
+          <div class="code-block">
+            <pre><code>id=$(fastty spawn --cwd ~/api -- bun run dev)  # headless session, prints id
+fastty write $id --enter 'git status'         # type into it (submits the line)
+fastty resize $id 120 40                      # resize its PTY
+fastty close $id                              # terminate a headless session
+fastty list --json                            # alias of `fastty sessions`</code></pre>
+          </div>
+          <p><code>write</code> and <code>resize</code> ack with a <code>done</code> event, so exit codes are truthful. GUI panes can't be closed over the protocol (<code>not_closable</code>).</p>
           <h3>AI Agent Example</h3>
           <div class="code-block">
             <pre><code>fastty --title "Dev Server" -d ~/api -e bun run dev</code></pre>
           </div>
+        </section>
+
+        <section id="mcp" class="docs-section">
+          <h2>MCP Server &amp; AI Agents</h2>
+          <p><code>fastty mcp</code> is a local Model Context Protocol server over stdio that connects AI agents — Claude Code, OpenCode, Codex, Cursor, Zed, Gemini CLI — to fastty's daemon. With the GUI open, agents share its live sessions; without it, the MCP process embeds its own daemon and agents work headless.</p>
+          <h3>Registering into an agent</h3>
+          <div class="code-block">
+            <pre><code>fastty mcp setup              # list supported agents and config paths
+fastty mcp setup opencode     # writes the fastty entry into opencode.json
+fastty mcp setup claude-code  # merges into the project's .mcp.json
+fastty mcp setup codex        # [mcp_servers.fastty] in config.toml (comments preserved)</code></pre>
+          </div>
+          <p>Supported agents: <code>claude-code</code>, <code>opencode</code>, <code>codex</code>, <code>gemini</code>, <code>cursor</code>, <code>zed</code>, <code>claude-desktop</code>. Registration is idempotent and uses the resolved fastty binary path. Manual registration also works: run <code>fastty mcp</code> as the server command (stdio transport).</p>
+          <h3>Tools exposed</h3>
+          <ul>
+            <li><code>fastty_list_sessions</code>: live sessions (id, title, cwd, size, alive).</li>
+            <li><code>fastty_spawn_session</code>: start a headless session, returns its id.</li>
+            <li><code>fastty_write_session</code>: type into a session, <code>enter</code> to submit.</li>
+            <li><code>fastty_read_screen</code>: read the screen as text (optionally with scrollback).</li>
+            <li><code>fastty_resize_session</code> / <code>fastty_close_session</code>: resize / terminate.</li>
+            <li><code>fastty_run_command</code>: run a shell command in a throwaway session, wait for exit, return the terminal's real rendered output (last 300 lines), close the session. The fast path for builds, <code>git status</code>, and inspection.</li>
+          </ul>
+          <p>Screens are read through the compressed binary snapshot protocol (FST1 v2, scrollback included) and rendered to text inside the MCP process. GUI panes can't be closed through MCP.</p>
         </section>
 
         <section id="ai-assistant" class="docs-section">
@@ -93,6 +131,7 @@ cargo build --release</code></pre>
             <li><strong>Multimodal chat:</strong> paste images with <code>⌘V</code> (auto-scaled, sent as vision blocks) and attach PDFs (sent as native document blocks).</li>
             <li><strong>Rich answers:</strong> Markdown with syntax highlighting, LaTeX math, and copy buttons on messages and code blocks.</li>
             <li><strong>One-shot CLI:</strong> ask from any shell without opening the sidebar.</li>
+            <li><strong>Learned auto-allow:</strong> after you manually approve the same command family three times (<code>cargo test</code>, <code>git status</code>…), fastty offers to auto-allow it from then on. Scoping is subcommand-aware (<code>git status</code> never unlocks <code>git push</code>), shells and interpreters are never suggested, the hardcoded danger layer always runs first, and rules persist across restarts. Disable with <code>[ai] learned_allow = false</code>.</li>
           </ul>
           <div class="code-block">
             <pre><code>fastty ask "why is this build failing?"</code></pre>
@@ -109,6 +148,11 @@ cargo build --release</code></pre>
             <li><strong>Deck Process Icons:</strong> Dynamic foreground process icons (<code>nvim</code>, <code>cargo</code>, <code>node</code>, <code>git</code>, <code>docker</code>, <code>ssh</code>) on tabs and sidebar.</li>
             <li><strong>Config Importer & Keybinding Presets:</strong> 1-click import from Ghostty, Alacritty, Kitty, tmux, and WezTerm, plus presets (<code>Default</code>, <code>Ghostty</code>, <code>tmux</code>, <code>iTerm2</code>).</li>
             <li><strong>Hardware-accelerated Kitty Graphics:</strong> Full protocol support (PNG/RGBA/RGB) rendered directly via GPUI on GPU.</li>
+            <li><strong>Kitty Clipboard Protocol (OSC 5522):</strong> programs can read and write the clipboard including images (as PNG) — the mechanism tools like Claude Code use to paste images into the terminal. Reads are permission-gated (<code>clipboard_read</code>).</li>
+            <li><strong>Universal Insert:</strong> <code>⌃⌘,</code> opens one anchored fuzzy picker that inserts workspace files, SSH hosts, git branches, snippets, or running docker containers at the prompt.</li>
+            <li><strong>Automatic Contrast Correction:</strong> program-requested colors that clash with the theme get their Oklab lightness adjusted (hue preserved) until they read — light themes included.</li>
+            <li><strong>20 Built-in Themes:</strong> Catppuccin (×4), Dracula, Nord, Tokyo Night (+ Storm), Gruvbox (dark/light), Rosé Pine (×3), One (dark/light), Solarized (dark/light), Kanagawa — with six light themes and a Settings dropdown.</li>
+            <li><strong>MCP Agent Server:</strong> <code>fastty mcp</code> connects Claude Code, OpenCode, Codex and friends to your terminals over the Model Context Protocol.</li>
             <li><strong>Command Palette:</strong> <code>⌘P</code> / <code>Ctrl+Shift+P</code> with fuzzy search.</li>
             <li><strong>Project Jumper:</strong> <code>⌘J</code> / <code>Ctrl+Shift+J</code> for quick directory navigation.</li>
             <li><strong>Git Worktree Switcher:</strong> <code>⌘⌥W</code> / <code>Ctrl+Alt+W</code> to switch worktrees instantly.</li>
@@ -192,6 +236,16 @@ cargo build --release</code></pre>
           </ul>
         </section>
 
+        <section id="kitty-clipboard" class="docs-section">
+          <h2>Kitty Clipboard Protocol &amp; Images</h2>
+          <p>Fastty implements kitty's multi-format clipboard protocol (OSC 5522) and answers the <code>CSI ? 5522 $ p</code> probe, so programs can detect and use it:</p>
+          <ul>
+            <li><strong>Writes:</strong> chunked multi-MIME clipboard writes — plain text and images (decoded through <code>image</code> and applied via arboard). Always allowed.</li>
+            <li><strong>Reads:</strong> <code>text/plain</code> and images (always returned as PNG) in ≤4KB packets. Permission-gated by <code>clipboard_read</code> in <code>fastty.toml</code> (default on; denied reads reply <code>EPERM</code>).</li>
+            <li><strong>Why it matters:</strong> this is the mechanism Claude Code-style tools use to paste images into the terminal. The classic text-only OSC 52 write path keeps working unchanged.</li>
+          </ul>
+        </section>
+
         <section id="widgets" class="docs-section">
           <h2>Bottombar Widgets</h2>
           <p>Fastty includes an extensible status bar with live widgets:</p>
@@ -242,6 +296,8 @@ copy_on_select = false
 notify_on_command_finish = true
 tab_layout = "horizontal" # or "vertical"
 option_as_meta = false    # true treats Option key as Alt (macOS)
+contrast_correction = true  # re-tune clashing program colors (Oklab)
+clipboard_read = true       # allow programs to read the clipboard (OSC 5522)
 
 [font]
 family = "monospace"
@@ -264,8 +320,34 @@ widgets = [
 
 [keybindings]
 "super+d" = "SplitRight"
-"super+shift+d" = "SplitDown"</code></pre>
+"super+shift+d" = "SplitDown"
+
+[ai]
+permission_mode = "confirm-writes" # or "confirm-all", "yolo"
+learned_allow = true               # offer auto-allow after 3 approvals of a family</code></pre>
           </div>
+        </section>
+
+        <section id="built-in-themes" class="docs-section">
+          <h2>Built-in Themes</h2>
+          <p>Fastty ships 20 built-in themes — six of them light, its first — switchable from the command palette (with live preview) or the Settings → Appearance dropdown:</p>
+          <p><strong>Dark:</strong> Fastty Default, Catppuccin Mocha / Frappé / Macchiato, Dracula, Nord, Tokyo Night / Storm, Gruvbox Dark, Rosé Pine / Moon, One Dark, Solarized Dark, Kanagawa Wave, High Contrast. <strong>Light:</strong> Catppuccin Latte, Gruvbox Light, Rosé Pine Dawn, One Light, Solarized Light.</p>
+          <p>Chrome (surfaces, borders, hover, selection) is derived from each theme's background lightness, so light themes get light chrome everywhere — tabs, sidebar, settings. Config: <code>theme = "tokyo-night-storm"</code>. The config importer maps theme names from all these families when migrating from Ghostty, Kitty, Alacritty, WezTerm or tmux.</p>
+        </section>
+
+        <section id="contrast-correction" class="docs-section">
+          <h2>Automatic Contrast Correction</h2>
+          <p>Terminal programs bias to dark mode: TUIs request explicit colors tuned for dark backgrounds that turn invisible on light themes (and vice versa). Fastty detects when a program-requested color's WCAG contrast against what it sits on drops below 3:1 and fixes it in Oklab space:</p>
+          <ul>
+            <li><strong>Hue &amp; chroma preserved:</strong> only the lightness channel is binary-searched away from the background, until the pair reads (~4.5:1).</li>
+            <li><strong>Theme colors untouched:</strong> named ANSI colors belong to the theme; only explicit truecolor and 256-color indexes are candidates. Explicit backgrounds are corrected against the theme foreground.</li>
+            <li><strong>Cheap:</strong> corrections are cached per (color, background) pair — the render loop pays one hash lookup per colored cell.</li>
+          </ul>
+          <div class="code-block">
+            <pre><code># fastty.toml (default on)
+contrast_correction = true</code></pre>
+          </div>
+          <p>Toggle in Settings → Terminal Behavior. Palette and global-search previews are corrected too.</p>
         </section>
 
         <section id="custom-themes" class="docs-section">
@@ -562,8 +644,24 @@ fastty attach 1 --read-only
 fastty attach 1 --wait=30</code></pre>
           </div>
 
+          <h3>Controlling Sessions from Scripts</h3>
+          <div class="code-block">
+            <pre><code># Spawn a headless session (prints its id; no command = user's shell)
+id=$(fastty spawn --cwd ~/api -- bun run dev)
+
+# Type into it (with --enter to submit), resize it, close it
+fastty write $id --enter 'git status'
+fastty resize $id 120 40
+fastty close $id</code></pre>
+          </div>
+
           <h3>JSON Wire Protocol</h3>
-          <p>All communication uses newline-delimited JSON (NDJSON) over the Unix socket. Key commands include <code>hello</code>, <code>list</code>, <code>subscribe_sessions</code>, <code>attach</code>, <code>detach</code>, <code>write</code>, and <code>resize</code>.</p>
+          <p>All communication uses newline-delimited JSON (NDJSON) over the Unix socket. Key commands include <code>hello</code>, <code>list</code>, <code>subscribe_sessions</code>, <code>attach</code>, <code>detach</code>, <code>write</code>, <code>resize</code>, <code>spawn</code>, <code>close</code>, and <code>binary_snapshot</code>. The full wire spec lives in the repo's <code>docs/daemon-protocol.md</code>.</p>
+          <ul>
+            <li><strong>Opt-in acks:</strong> <code>write</code> and <code>resize</code> accept <code>ack: true</code> and reply with a <code>done</code> event (or <code>error</code>) so scripts get truthful exit codes. Clients that omit it keep the silent streaming behavior.</li>
+            <li><strong>Error codes:</strong> <code>bad_request</code>, <code>no_such_session</code>, <code>invalid_base64</code>, <code>not_attached</code>, <code>read_only</code>, <code>spawn_failed</code>, <code>not_closable</code> (GUI panes are protocol-protected).</li>
+            <li><strong>Binary snapshots (FST1 v2):</strong> <code>binary_snapshot</code> returns the full terminal state — compressed scrollback + screen + cursor — restored in microseconds by the web client.</li>
+          </ul>
         </section>
 
         <section id="web-gateway" class="docs-section">
@@ -589,6 +687,7 @@ fastty gateway --port 8765 --read-only</code></pre>
             <li><strong>Batched 2D Canvas:</strong> Batched font rendering and background quad fills at 60/120 FPS.</li>
             <li><strong>Interactive Controls:</strong> Zoom font in/out, draggable scrollbar, mouse wheel, and touch/trackpad navigation.</li>
             <li><strong>RFC 6455 WebSockets:</strong> Low-latency streaming bridge directly to the Fastty daemon socket.</li>
+            <li><strong>Binary Snapshot Restore:</strong> on reconnect the client restores the full terminal state — including scrollback — from a compressed binary snapshot (FST1 v2) in microseconds, not by re-parsing ANSI.</li>
           </ul>
         </section>
       </article>
