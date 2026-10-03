@@ -114,13 +114,18 @@ fastty mcp setup codex        # [mcp_servers.fastty] in config.toml (comments pr
           <h3>Tools exposed</h3>
           <ul>
             <li><code>fastty_list_sessions</code>: live sessions (id, title, cwd, size, alive).</li>
-            <li><code>fastty_spawn_session</code>: start a headless session, returns its id.</li>
+            <li><code>fastty_spawn_session</code>: start a session and return its id — by default it also opens as a visible tab in the fastty window (<code>open: false</code> keeps it headless), sharing the exact same terminal: you watch the agent type.</li>
             <li><code>fastty_write_session</code>: type into a session, <code>enter</code> to submit.</li>
             <li><code>fastty_read_screen</code>: read the screen as text (optionally with scrollback).</li>
-            <li><code>fastty_resize_session</code> / <code>fastty_close_session</code>: resize / terminate.</li>
+            <li><code>fastty_resize_session</code> / <code>fastty_close_session</code>: resize a headless grid / terminate a session. Closing a GUI tab needs <code>force: true</code> — those tabs belong to you.</li>
             <li><code>fastty_run_command</code>: run a shell command in a throwaway session, wait for exit, return the terminal's real rendered output (last 300 lines), close the session. The fast path for builds, <code>git status</code>, and inspection.</li>
+            <li><code>fastty_layout</code>: the full window structure — every tab with its panes (ids, titles, cwds, sizes) — so the agent knows what shares a tab before splitting.</li>
+            <li><code>fastty_split_pane</code>: create a new pane beside any visible pane (same tab, <code>left/right/top/down</code>), running the shell or a custom command; returns its session id.</li>
+            <li><code>fastty_resize_pane</code>: move a pane divider by a fraction of the split axis.</li>
+            <li><code>fastty_focus_pane</code>: bring a pane's tab to the front and make it active, so you see what the agent is working on.</li>
+            <li><code>fastty_resize_window</code>: resize the fastty window itself, approximately to cols × rows.</li>
           </ul>
-          <p>Screens are read through the compressed binary snapshot protocol (FST1 v2, scrollback included) and rendered to text inside the MCP process. GUI panes can't be closed through MCP.</p>
+          <p>Screens are read through the compressed binary snapshot protocol (FST1 v2, scrollback included) and rendered to text inside the MCP process. With no fastty window running, agents still work headless — the MCP process embeds its own daemon, and layout tools answer <code>no_gui</code>.</p>
         </section>
 
         <section id="ai-assistant" class="docs-section">

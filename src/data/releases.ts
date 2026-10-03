@@ -58,11 +58,37 @@ export const createDownloads = (tag: string): ReleaseDownload[] => [
 
 export const FALLBACK_RELEASES: ReleaseItem[] = [
   {
+    version: "0.17.0",
+    tag: "v0.17.0",
+    date: "2026-10-03",
+    title: "Agent-Driven Layout Control & Contrast Fixes",
+    isLatest: true,
+    highlights: [
+      "Agents can now drive the fastty window: layout, split panes, resize dividers, focus tabs",
+      "Daemon-spawned sessions open as visible tabs you can watch in real time",
+      "fastty_close_session force: agents can close GUI tabs when asked",
+      "Fixed invisible text under selection and the over-bright contrast correction",
+    ],
+    downloads: createDownloads("v0.17.0"),
+    changes: {
+      features: [
+        "Five new MCP tools for layout control: fastty_layout (the full window structure — tabs, panes, sizes), fastty_split_pane (new pane beside any visible pane, same tab), fastty_resize_pane (move a pane divider), fastty_focus_pane (bring a tab to the front), and fastty_resize_window (resize the window to cols x rows). The MCP toolset grows to 12.",
+        "fastty_spawn_session now opens its session as a visible tab by default (open: true, or fastty spawn --open): the pane adopts the very same TerminalState, so the agent types into the tab you are watching. fastty_run_command stays headless.",
+        "close with force: true (fastty_close_session force, fastty close <id> --force) closes GUI tabs too, killing their process exactly like closing the tab in the window.",
+        "CLI: fastty split <pane-id> --direction right to part a visible pane from the shell.",
+        "spawned responses report opened, so callers can tell a visible tab from a headless session when no window is running.",
+      ],
+      fixes: [
+        "Automatic Contrast Correction: text no longer turns invisible when selected — explicit colors re-correct against the actual selection tint painted under the glyphs.",
+        "Contrast correction is now minimal: the Oklab bisection previously converged to the fully-corrected extreme, washing every dim TUI gray out to near-white (or near-black on light themes). It now applies the smallest lightness change that restores contrast, preserving dim/bright hierarchy in Claude Code, OpenCode, and friends.",
+      ],
+    },
+  },
+  {
     version: "0.16.0",
     tag: "v0.16.0",
     date: "2026-10-03",
     title: "MCP Agent Server, 20 Themes & Full-State Snapshots",
-    isLatest: true,
     highlights: [
       "fastty mcp: connect Claude Code, OpenCode, Codex and friends to your terminals",
       "20 built-in themes (six light — fastty's first) with a Settings dropdown",
