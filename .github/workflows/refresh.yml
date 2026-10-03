@@ -2,10 +2,18 @@ name: Refresh Site Data
 
 # The site bakes the fasty version pill, star count, and release list at
 # build time. This workflow keeps the deployed site current: it polls the
-# fasty repo for a new release tag and, when one appears, bumps the fallback
-# version in src/lib/repo.ts and pushes. The push redeploys the site on
-# whatever host is connected to the repo, and the new build pulls the full
-# release data live from the GitHub API.
+# fasty repo for a new release tag and pushes whenever the deployed site is
+# behind. A push redeploys the site on whatever host is connected to the
+# repo, and the new build pulls the full release data live from the GitHub
+# API.
+#
+# Staleness is detected two ways, because either one alone can miss:
+# - FALLBACK_VERSION in src/lib/repo.ts differs from the latest tag (the
+#   fallback constant was not bumped yet), or
+# - the live homepage does not mention the latest tag. The site only shows
+#   a tag once a build ran after the release was published; if the version
+#   was bumped manually before publishing, the constant matches but the
+#   deployed build is still stale and needs an explicit retrigger.
 
 on:
   schedule:
@@ -26,7 +34,7 @@ jobs:
       - name: Checkout Source Code
         uses: actions/checkout@v4
 
-      - name: Detect New Fastty Release
+      - name: Detect Stale Deployed Site
         id: detect
         run: |
           LATEST_TAG=$(curl -fsSL --max-time 30 \
@@ -42,10 +50,24 @@ jobs:
           fi
 
           CURRENT_TAG=$(grep -o 'FALLBACK_VERSION = "[^"]*"' src/lib/repo.ts | cut -d'"' -f2)
-          echo "latest=$LATEST_TAG current=$CURRENT_TAG"
+
+          SITE_FRESH=false
+          if SITE_HTML=$(curl -fsSL --max-time 30 "https://fastyterm.vercel.app/"); then
+            if grep -qF "$LATEST_TAG" <<<"$SITE_HTML"; then
+              SITE_FRESH=true
+            fi
+          else
+            echo "Live site unreachable; assuming it is fresh to avoid an empty rebuild."
+            SITE_FRESH=true
+          fi
+
+          echo "latest=$LATEST_TAG current=$CURRENT_TAG site_fresh=$SITE_FRESH"
 
           if [[ "$LATEST_TAG" != "$CURRENT_TAG" ]]; then
             sed -i "s|FALLBACK_VERSION = \"[^\"]*\"|FALLBACK_VERSION = \"$LATEST_TAG\"|" src/lib/repo.ts
+          fi
+
+          if [[ "$LATEST_TAG" != "$CURRENT_TAG" || "$SITE_FRESH" != "true" ]]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
             echo "tag=$LATEST_TAG" >> "$GITHUB_OUTPUT"
           else
@@ -60,6 +82,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/lib/repo.ts
-          git commit -m "chore(site): refresh for fastty $TAG"
+          # --allow-empty: when only the live site is stale (fallback already
+          # current), the push itself is the rebuild trigger for the host.
+          git commit --allow-empty -m "chore(site): refresh for fastty $TAG"
           git pull --rebase origin main
           git push
