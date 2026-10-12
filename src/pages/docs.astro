@@ -16,8 +16,10 @@ import Footer from "../components/Footer.astro";
             <li><a href="#installation">Installation</a></li>
             <li><a href="#cli-usage">CLI & AI Agents</a></li>
             <li><a href="#mcp">MCP Server & Agents</a></li>
+            <li><a href="#agent-status">Agent Status Hooks</a></li>
             <li><a href="#ai-assistant">AI Assistant</a></li>
             <li><a href="#core-features">Core Features</a></li>
+            <li><a href="#project-panel">Project Git Panel</a></li>
             <li><a href="#mission-control">Mission Control (⌘⇧O)</a></li>
             <li><a href="#multi-tab-search">Global Search (⌘⇧F)</a></li>
             <li><a href="#universal-insert">Universal Insert (⌃⌘,)</a></li>
@@ -128,6 +130,20 @@ fastty mcp setup codex        # [mcp_servers.fastty] in config.toml (comments pr
           <p>Screens are read through the compressed binary snapshot protocol (FST1 v2, scrollback included) and rendered to text inside the MCP process. With no fastty window running, agents still work headless — the MCP process embeds its own daemon, and layout tools answer <code>no_gui</code>.</p>
         </section>
 
+        <section id="agent-status" class="docs-section">
+          <h2>Agent Status Hooks</h2>
+          <p>Fastty can show when Claude Code, Gemini CLI, Codex CLI, OpenCode, and Pi are working, waiting, done, or in an error state. Start the agent from a Fastty terminal so it inherits the session token.</p>
+          <h3>Install or remove a hook</h3>
+          <div class="code-block">
+            <pre><code>fastty agent-hook install claude --project
+fastty agent-hook uninstall claude --project
+
+# Use --user to change the user-level configuration</code></pre>
+          </div>
+          <p>Replace <code>claude</code> with <code>gemini</code>, <code>codex</code>, <code>opencode</code>, or <code>pi</code>. Project hooks apply to the current project. User hooks apply to the user's configuration. Fastty preserves unrelated settings and removes only its own entries.</p>
+          <p>These hooks report agent status. They do not read agent messages, approve permissions, or send terminal input.</p>
+        </section>
+
         <section id="ai-assistant" class="docs-section">
           <h2>AI Assistant</h2>
           <p>The built-in agent sidebar streams answers with collapsible reasoning and a live token-usage context ring. Tools (<code>read_file</code>, <code>search</code>, <code>run_command</code>, <code>edit_file</code>) request permission (<code>Allow</code> / <code>Allow Always</code> / <code>Decline</code>) and file edits render as reviewable diff cards before applying.</p>
@@ -137,6 +153,8 @@ fastty mcp setup codex        # [mcp_servers.fastty] in config.toml (comments pr
             <li><strong>Rich answers:</strong> Markdown with syntax highlighting, LaTeX math, and copy buttons on messages and code blocks.</li>
             <li><strong>One-shot CLI:</strong> ask from any shell without opening the sidebar.</li>
             <li><strong>Learned auto-allow:</strong> after you manually approve the same command family three times (<code>cargo test</code>, <code>git status</code>…), fastty offers to auto-allow it from then on. Scoping is subcommand-aware (<code>git status</code> never unlocks <code>git push</code>), shells and interpreters are never suggested, the hardcoded danger layer always runs first, and rules persist across restarts. Disable with <code>[ai] learned_allow = false</code>.</li>
+            <li><strong>Attach terminal output:</strong> select text in a terminal, open its context menu, and choose <em>Attach to AI panel</em>. Fastty adds the selection, working directory, and a safe process command to the built-in AI draft. It opens the AI panel and keeps the draft unsent so you can review it.</li>
+            <li><strong>Focus and alerts:</strong> the terminal cursor appears when the terminal has focus, even while the AI panel stays open. Native alerts report agent completion, errors, or requests for input. Fastty suppresses interim alerts while an agent works.</li>
           </ul>
           <div class="code-block">
             <pre><code>fastty ask "why is this build failing?"</code></pre>
@@ -148,7 +166,7 @@ fastty mcp setup codex        # [mcp_servers.fastty] in config.toml (comments pr
           <ul>
             <li><strong>Mission Control / Tab Peek:</strong> <code>⌘⇧O</code> / <code>Ctrl+Shift+M</code> for interactive visual grid overlay of all tabs, split panes, process icons, and live buffer previews.</li>
             <li><strong>Global Multi-Tab Search:</strong> <code>⌘⇧F</code> / <code>Ctrl+Shift+F</code> powered by <code>fff-search</code> to search scrollback buffers across all active tabs simultaneously.</li>
-            <li><strong>Session & Workspace Persistence:</strong> Save and restore multi-tab and split pane trees from Command Palette (<code>⌘P</code>).</li>
+            <li><strong>Session & Workspace Persistence:</strong> Keep supported terminal processes alive when Fastty closes, then reconnect to the same host on launch.</li>
             <li><strong>SSH Host Manager with Mux Semantics:</strong> <code>⌘O</code> / <code>Ctrl+Shift+O</code> with environment tags (<code>#prod</code>, <code>#dev</code>, <code>#aws</code>), active connection badges, and 1-key reconnect (<code>r</code>).</li>
             <li><strong>Deck Process Icons:</strong> Dynamic foreground process icons (<code>nvim</code>, <code>cargo</code>, <code>node</code>, <code>git</code>, <code>docker</code>, <code>ssh</code>) on tabs and sidebar.</li>
             <li><strong>Config Importer & Keybinding Presets:</strong> 1-click import from Ghostty, Alacritty, Kitty, tmux, and WezTerm, plus presets (<code>Default</code>, <code>Ghostty</code>, <code>tmux</code>, <code>iTerm2</code>).</li>
@@ -168,6 +186,19 @@ fastty mcp setup codex        # [mcp_servers.fastty] in config.toml (comments pr
             <li><strong>Full IME & Latin Dead Keys:</strong> Native composition for international inputs.</li>
             <li><strong>AI Assistant Sidebar:</strong> Agentic chat with tools, permission flow, diff cards, image/PDF attachments, and <code>fastty ask</code> CLI.</li>
           </ul>
+        </section>
+
+        <section id="project-panel" class="docs-section">
+          <h2>Project Git Panel</h2>
+          <p>Open the project panel from the bottom bar in a Git repository. Use its tabs to switch between file changes and the commit graph.</p>
+          <h3>Changes</h3>
+          <ul>
+            <li>Review staged and unstaged files, with added and removed line counts.</li>
+            <li>Select files with the checkbox at the right of each row. A checkbox controls staging. It does not hide the file from the list.</li>
+            <li>Use the Stage All menu to stage or unstage all files, restore changes, stash all or tracked changes, view the stash, discard tracked changes, or trash untracked files.</li>
+          </ul>
+          <h3>Graph</h3>
+          <p>Browse commits with colored branch lines and labels for local and remote branches. Each color marks a different branch path through the commit history.</p>
         </section>
 
         <section id="mission-control" class="docs-section">
@@ -193,10 +224,11 @@ fastty mcp setup codex        # [mcp_servers.fastty] in config.toml (comments pr
 
         <section id="session-persistence" class="docs-section">
           <h2>Session & Workspace Persistence</h2>
-          <p>Fastty supports lightweight, zombie-proof workspace persistence stored in <code>~/.config/fastty/sessions/</code>:</p>
+          <p>Fastty keeps supported terminal hosts running when you close the app. On the next launch, it reconnects to the same host and restores its tabs and panes. Agent processes such as Claude Code and OpenCode can keep working while the Fastty window is closed.</p>
           <ul>
-            <li><strong>Save Snapshot:</strong> Open Command Palette (<code>⌘P</code>) and select <em>"Session: Save Current Workspace Snapshot"</em> to serialize the layout, working directories, and recursive split pane trees.</li>
-            <li><strong>Attach & Restore:</strong> Select <em>"Session: Attach / Restore Last Workspace"</em> to reconstruct all tabs and panes in one click.</li>
+            <li><strong>Restore:</strong> Fastty reconnects to the existing host. It does not start a replacement process when the original host is available.</li>
+            <li><strong>Older sessions:</strong> Fastty can restore saved workspaces from older versions. If an older host cannot report process state, Fastty asks before it closes that session.</li>
+            <li><strong>Missing host:</strong> Fastty opens a new shell when it cannot find the saved session. That shell does not resume the old process.</li>
           </ul>
         </section>
 
@@ -626,7 +658,7 @@ contrast_correction = true</code></pre>
 
         <section id="daemon-protocol" class="docs-section">
           <h2>Daemon Protocol & IPC Multiplexing</h2>
-          <p>Fastty includes an integrated, zero-overhead Unix domain socket IPC daemon (<code>~/.local/state/fastty/fasttyd.sock</code> with <code>0600</code> permissions). It enables external tools, scripts, and plugins (Neovim, Zed, VS Code) to interact with running terminal sessions without stealing window focus.</p>
+          <p>Fastty includes a local daemon that lets scripts and tools observe and control terminal sessions. The Unix socket uses user-only permissions. Access scopes limit each client to <code>observe</code>, <code>interact</code>, or <code>manage</code>. A client can lower its scope, but cannot raise it.</p>
 
           <h3>Listing Active Sessions</h3>
           <div class="code-block">
@@ -659,6 +691,16 @@ fastty write $id --enter 'git status'
 fastty resize $id 120 40
 fastty close $id</code></pre>
           </div>
+
+          <h3>Inspecting sessions and events</h3>
+          <div class="code-block">
+            <pre><code>fastty capture 1       # read the visible screen
+fastty focus 1         # show the session in the window
+fastty send 1 --enter -- 'git status'
+fastty events          # watch session and agent state changes</code></pre>
+          </div>
+          <p>The event stream sends an initial snapshot and then ordered changes. If a client falls behind, Fastty sends a gap event and a replacement snapshot. Replace local state with that snapshot before reading later events. Screen capture returns visible text only, with a 1 MiB limit.</p>
+          <p>External text input and session close actions can require approval in the visible Fastty window. A client with <code>interact</code> can send text. A client with <code>manage</code> can close sessions.</p>
 
           <h3>JSON Wire Protocol</h3>
           <p>All communication uses newline-delimited JSON (NDJSON) over the Unix socket. Key commands include <code>hello</code>, <code>list</code>, <code>subscribe_sessions</code>, <code>attach</code>, <code>detach</code>, <code>write</code>, <code>resize</code>, <code>spawn</code>, <code>close</code>, and <code>binary_snapshot</code>. The full wire spec lives in the repo's <code>docs/daemon-protocol.md</code>.</p>

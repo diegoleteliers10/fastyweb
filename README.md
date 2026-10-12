@@ -63,7 +63,7 @@ Typography pair:
 
 The nav pulls two things from the GitHub API at build time:
 
-- **Latest release tag** — shown as the version pill (`v0.14.0`)
+- **Latest release tag** — shown as the version pill (`v0.22.4` fallback)
 - **Star count** — shown in the GitHub badge
 
 Both calls live in `src/lib/repo.ts`. If the API fails, the build falls back to a hard-coded version and hides the star count.

@@ -58,11 +58,110 @@ export const createDownloads = (tag: string): ReleaseDownload[] => [
 
 export const FALLBACK_RELEASES: ReleaseItem[] = [
   {
+    version: "0.22.4",
+    tag: "v0.22.4",
+    date: "2026-10-12",
+    title: "Agent Status, Terminal Context & Safer Session Access",
+    isLatest: true,
+    highlights: [
+      "Attach selected terminal output and its working context to the AI panel",
+      "Track Claude Code, Gemini CLI, Codex CLI, OpenCode, and Pi activity",
+      "Add scoped session access, event recovery, screen capture, and approved actions",
+    ],
+    downloads: createDownloads("v0.22.4"),
+    changes: {
+      features: [
+        "Attach selected terminal output, its working directory, and a safe process command to the AI draft. Review the draft before you send it.",
+        "Install or remove project and user hooks for Claude Code, Gemini CLI, Codex CLI, OpenCode, and Pi without replacing unrelated settings.",
+        "Add session access scopes, ordered event streaming with gap recovery, screen capture, and approval-gated external actions.",
+      ],
+    },
+  },
+  {
+    version: "0.22.3",
+    tag: "v0.22.3",
+    date: "2026-10-11",
+    title: "Older Session Host Compatibility",
+    highlights: [
+      "Reconnect to older session hosts without restarting their processes",
+      "Restore mouse, focus, and paste input for recognized agents",
+      "Ask before closing a session when its process state is unknown",
+    ],
+    downloads: createDownloads("v0.22.3"),
+    changes: {
+      fixes: [
+        "Reconnect to older session hosts without restarting their running processes.",
+        "Ask before closing a restored session when an older host cannot confirm its process state.",
+        "Restore mouse, focus, and paste input for recognized agents on older hosts.",
+        "Open a new shell when a saved session no longer exists.",
+      ],
+    },
+  },
+  {
+    version: "0.22.2",
+    tag: "v0.22.2",
+    date: "2026-10-11",
+    title: "Restore Terminal Input Modes",
+    highlights: [
+      "Restore mouse, scroll, focus, paste, and key modes on reconnect",
+      "Ask before closing restored sessions only when a process is active",
+    ],
+    downloads: createDownloads("v0.22.2"),
+    changes: {
+      fixes: [
+        "Ask before closing a restored session only when it has an active process.",
+        "Restore mouse, scroll, focus, paste, and key modes when Fastty reconnects to a session.",
+      ],
+    },
+  },
+  {
+    version: "0.22.1",
+    tag: "v0.22.1",
+    date: "2026-10-11",
+    title: "Terminal Focus and Notifications",
+    highlights: [
+      "Show the terminal cursor in the focused area while the AI panel stays open",
+      "Suppress interim agent notifications and keep completion, error, and input alerts",
+    ],
+    downloads: createDownloads("v0.22.1"),
+    changes: {
+      fixes: [
+        "Show the terminal cursor when the terminal has focus, even while the AI panel stays open.",
+        "Suppress interim native notifications while a terminal agent works or waits for input.",
+        "Keep native notifications for program completion, errors, and requests for input.",
+      ],
+    },
+  },
+  {
+    version: "0.22.0",
+    tag: "v0.22.0",
+    date: "2026-10-11",
+    title: "Persistent Sessions and Project Git Panel",
+    highlights: [
+      "Keep terminal processes running when Fastty closes and restore their sessions on launch",
+      "Review staged and unstaged changes, stage or restore files, and browse a colored branch graph",
+      "Retry a session connection when a restored pane cannot connect",
+    ],
+    downloads: createDownloads("v0.22.0"),
+    changes: {
+      features: [
+        "Keep terminal sessions running when you close and reopen Fastty.",
+        "Restore terminal panes, split layouts, and active sessions when Fastty starts.",
+        "View staged and unstaged file changes in the project panel.",
+        "Browse repository commits with a colored branch graph.",
+        "Stage, unstage, stash, restore, and discard changes from the panel.",
+      ],
+      fixes: [
+        "Retry a session connection when a restored pane cannot connect to its host.",
+        "Hide the terminal cursor while the agent panel has focus.",
+      ],
+    },
+  },
+  {
     version: "0.17.0",
     tag: "v0.17.0",
     date: "2026-10-03",
     title: "Agent-Driven Layout Control & Contrast Fixes",
-    isLatest: true,
     highlights: [
       "Agents can now drive the fastty window: layout, split panes, resize dividers, focus tabs",
       "Daemon-spawned sessions open as visible tabs you can watch in real time",
