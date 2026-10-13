@@ -58,11 +58,32 @@ export const createDownloads = (tag: string): ReleaseDownload[] => [
 
 export const FALLBACK_RELEASES: ReleaseItem[] = [
   {
+    version: "0.22.8",
+    tag: "v0.22.8",
+    date: "2026-10-13",
+    title: "Session Restore & Terminal Input",
+    isLatest: true,
+    highlights: [
+      "Restore CLI and TUI state from the attached terminal snapshot",
+      "Return scroll to terminal history after an idle session restore",
+      "Show a recovery step when an older host cannot close an idle session",
+    ],
+    downloads: createDownloads("v0.22.8"),
+    changes: {
+      fixes: [
+        "Match the restored process state to the terminal snapshot.",
+        "Reset terminal modes that a child process leaves active after it exits.",
+        "Keep alternate-screen contents when Fastty restores an active TUI.",
+        "Show safe recovery steps when an older session host cannot close an idle session.",
+      ],
+    },
+  },
+  {
     version: "0.22.7",
     tag: "v0.22.7",
     date: "2026-10-13",
     title: "Terminal Status, Key Modes & Workflows",
-    isLatest: true,
+    isLatest: false,
     highlights: [
       "Restore agent status when Fastty reconnects to a terminal session",
       "Use multi-key shortcuts and configurable key modes",
