@@ -58,11 +58,37 @@ export const createDownloads = (tag: string): ReleaseDownload[] => [
 
 export const FALLBACK_RELEASES: ReleaseItem[] = [
   {
+    version: "0.22.7",
+    tag: "v0.22.7",
+    date: "2026-10-13",
+    title: "Terminal Status, Key Modes & Workflows",
+    isLatest: true,
+    highlights: [
+      "Restore agent status when Fastty reconnects to a terminal session",
+      "Use multi-key shortcuts and configurable key modes",
+      "Create safe command palette workflows and discover actions with JSON",
+    ],
+    downloads: createDownloads("v0.22.7"),
+    changes: {
+      features: [
+        "Add multi-key shortcuts, configurable key modes, and JSON discovery for keybindings.",
+        "Add declarative command palette workflows that run approved Fastty actions.",
+        "Add JSON discovery for Fastty actions with `fastty actions --json`.",
+        "Reply to OSC 7501 queries with the supported states and blocked kinds.",
+      ],
+      fixes: [
+        "Restore OSC 7501 agent status when Fastty reconnects to a running session.",
+        "Capture terminal contents, agent status, and live output from one session boundary.",
+        "Keep terminal status updates in the bounded daemon event stream.",
+      ],
+    },
+  },
+  {
     version: "0.22.4",
     tag: "v0.22.4",
     date: "2026-10-12",
     title: "Agent Status, Terminal Context & Safer Session Access",
-    isLatest: true,
+    isLatest: false,
     highlights: [
       "Attach selected terminal output and its working context to the AI panel",
       "Track Claude Code, Gemini CLI, Codex CLI, OpenCode, and Pi activity",
