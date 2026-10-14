@@ -58,11 +58,33 @@ export const createDownloads = (tag: string): ReleaseDownload[] => [
 
 export const FALLBACK_RELEASES: ReleaseItem[] = [
   {
+    version: "0.22.9",
+    tag: "v0.22.9",
+    date: "2026-10-14",
+    title: "Terminal Session Recovery",
+    isLatest: true,
+    highlights: [
+      "Open and save new tabs created with Cmd+T",
+      "Keep terminal panes visible while rendering waits for a lock",
+      "Close idle sessions safely with older session hosts",
+    ],
+    downloads: createDownloads("v0.22.9"),
+    changes: {
+      fixes: [
+        "Use safe compatibility paths when an older session host closes an idle tab.",
+        "Activate and save new tabs created with Cmd+T.",
+        "Keep terminal panes visible while rendering waits for a lock.",
+        "Move terminal replies off the parser thread and limit queued data.",
+        "Recover from uncertain session starts without creating duplicate sessions.",
+      ],
+    },
+  },
+  {
     version: "0.22.8",
     tag: "v0.22.8",
     date: "2026-10-13",
     title: "Session Restore & Terminal Input",
-    isLatest: true,
+    isLatest: false,
     highlights: [
       "Restore CLI and TUI state from the attached terminal snapshot",
       "Return scroll to terminal history after an idle session restore",
